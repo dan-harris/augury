@@ -1,10 +1,13 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { createServerClient } from "../../lib/supabase/server";
 
 export const prerender = false;
 
 const url = new URL(Astro.request.url);
 const code = url.searchParams.get("code");
+const tokenHash = url.searchParams.get("token_hash");
+const type = url.searchParams.get("type");
 const rawNext = url.searchParams.get("next");
 
 let next = "/admin";
@@ -20,16 +23,25 @@ if (rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//")) {
 }
 
 let errorMessage: string | null = null;
+const supabase = createServerClient(Astro.cookies, Astro.request.headers);
 
-if (!code) {
-  errorMessage = "No authentication code was provided in the confirmation link.";
-} else {
-  const { supabase } = Astro.locals;
+if (code) {
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (!error) {
     return Astro.redirect(next);
   }
   errorMessage = error.message;
+} else if (tokenHash && type) {
+  const { error } = await supabase.auth.verifyOtp({
+    token_hash: tokenHash,
+    type: type as any,
+  });
+  if (!error) {
+    return Astro.redirect(next);
+  }
+  errorMessage = error.message;
+} else {
+  errorMessage = "No code or token_hash was provided in the confirmation link.";
 }
 ---
 

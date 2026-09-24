@@ -1,5 +1,6 @@
 import { defineAction } from "astro:actions";
 import { z } from "astro:schema";
+import { createServerClient } from "../lib/supabase/server";
 
 export const server = {
   requestMagicLink: defineAction({
@@ -8,7 +9,7 @@ export const server = {
       next: z.string().optional().default("/"),
     }),
     handler: async (input, context) => {
-      const { supabase } = context.locals;
+      const supabase = createServerClient(context.cookies, context.request.headers);
       const requestUrl = new URL(context.request.url);
 
       let nextPath = input.next || "/";
