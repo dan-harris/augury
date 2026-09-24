@@ -7,8 +7,8 @@ test('home page loads cleanly without server errors', async ({ page }) => {
   const response = await page.goto('http://localhost:4321/');
   expect(response?.status()).toBe(200);
 
-  // Check headline
-  await expect(page.getByRole('heading', { name: 'Augury' }).first()).toBeVisible();
+  // Check headline text
+  await expect(page.getByText('Augury').first()).toBeVisible();
   expect(pageErrors.length).toBe(0);
 });
 

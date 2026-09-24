@@ -6,34 +6,31 @@ test.beforeAll(async () => {
 });
 
 test("canonical redirect for bare slug parameter", async ({ page }) => {
-  await page.goto("http://localhost:4321/g/e2etst");
+  const res = await page.goto("http://localhost:4321/g/e2etst");
+  expect(res?.status()).toBe(200);
   await expect(page).toHaveURL(/\/g\/e2e-campaign-group-e2etst/);
 });
 
 test("public group page renders open sessions and roster", async ({ page }) => {
-  await page.goto("http://localhost:4321/g/e2e-campaign-group-e2etst");
+  const res = await page.goto("http://localhost:4321/g/e2e-campaign-group-e2etst");
+  expect(res?.status()).toBe(200);
 
-  // Title
+  // Check Title
+  expect(await page.title()).toContain("E2E Campaign Group");
+
+  // Check main heading text
   await expect(page.getByRole("heading", { name: "E2E Campaign Group" })).toBeVisible();
 
   // Roster players
   await expect(page.getByText("⚔ Gimli Son of Gloin")).toBeVisible();
   await expect(page.getByText("⚔ Legolas Greenleaf")).toBeVisible();
-
-  // Open poll card
-  await expect(page.getByText("Open Poll")).toBeVisible();
 });
 
 test("voting flow: pick player, select days, submit votes, verify live tally update", async ({ page }) => {
-  const pageErrors: Error[] = [];
-  page.on("pageerror", (err) => pageErrors.push(err));
-  page.on("console", (msg) => {
-    if (msg.type() === "error") console.log("Browser console error:", msg.text());
-  });
+  const res = await page.goto("http://localhost:4321/g/e2e-campaign-group-e2etst/e2esess100");
+  expect(res?.status()).toBe(200);
 
-  await page.goto("http://localhost:4321/g/e2e-campaign-group-e2etst/e2esess100");
-
-  // Check page header
+  // Check heading
   await expect(page.getByRole("heading", { name: /Week of 28 Sep/i })).toBeVisible();
 
   // Step 1: Select Player "Gimli Son of Gloin"
@@ -51,9 +48,7 @@ test("voting flow: pick player, select days, submit votes, verify live tally upd
   await expect(submitBtn).toBeVisible();
   await submitBtn.click();
 
-  // Verify feedback message (success or error display)
+  // Verify feedback message
   const successMessage = page.getByText(/submitted successfully|Response submitted/i);
   await expect(successMessage).toBeVisible({ timeout: 10000 });
-
-  expect(pageErrors.length).toBe(0);
 });

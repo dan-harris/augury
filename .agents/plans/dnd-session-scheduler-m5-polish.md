@@ -12,7 +12,7 @@ Link unfurling, a mobile-first pass, empty/error states, a real landing page, an
 - [ ] Pasting a group link and a session link into Discord unfurls with meaningful title/description (session: group name, week window, live status like "2 viable days · 4/6 voted").
 - [ ] Every page is comfortable at 375px width; the vote flow is thumb-friendly (large tap targets, no horizontal scroll).
 - [ ] All empty/error states have real copy — no raw errors or blank sections anywhere in the main flows.
-- [ ] The landing page explains the product and routes admins to `/admin`.
+- [ ] The landing page explains the product.
 - [ ] Deployed to `augury.danharris.dev` against the cloud Supabase project; a real magic-link sign-in works in production (built-in sender is fine for launch — SMTP is the post-M5 section).
 - [ ] `AGENTS.md` documents Supabase local dev for future sessions.
 

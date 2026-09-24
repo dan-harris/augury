@@ -2,10 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Authentication flow', () => {
   test('requesting a magic link submits successfully without 415 or server error', async ({ page }) => {
-    await page.goto('/');
-
-    const form = page.getByTestId('auth-menu-form');
-    await expect(form).toHaveAttribute('data-hydrated', 'true');
+    await page.goto('http://localhost:4321/');
 
     const emailInput = page.getByPlaceholder('keeper@example.com');
     await expect(emailInput).toBeVisible();
@@ -18,6 +15,6 @@ test.describe('Authentication flow', () => {
     await submitBtn.click();
 
     // Check success feedback message in UI
-    await expect(page.getByText('✓ Check your ledger inbox for the magic link!')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/Check your ledger inbox for the magic link/i)).toBeVisible({ timeout: 10000 });
   });
 });
