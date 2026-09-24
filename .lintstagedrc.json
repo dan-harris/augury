@@ -1,0 +1,6 @@
+{
+  "*.{js,ts,mjs,cjs,jsx,tsx}": ["oxfmt --write", "oxlint --fix"],
+  "*.astro": ["oxlint --fix"],
+  "!(package-lock).json": ["oxfmt --write"],
+  "*.{css,md}": ["oxfmt --write"]
+}

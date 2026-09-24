@@ -1,0 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import "@astryxdesign/theme-matcha/theme.css";
+@import "tailwindcss";
+
+:root {
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+@layer base {
+  html,
+  body {
+    font-family: var(--font-sans);
+    background-color: #090d16;
+    color: #f3f4f6;
+    min-height: 100vh;
+  }
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
