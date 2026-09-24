@@ -8,7 +8,7 @@ interface Props {
 }
 
 const {
-  title = "Augury — Predictive Insights & Intelligence",
+  title = "Augury — D&D Session Scheduler & Character Ledger",
   description = "Augury D&D session scheduler and predictive gaming engine.",
 } = Astro.props;
 
@@ -16,7 +16,7 @@ const user = Astro.locals.user;
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,29 +25,64 @@ const user = Astro.locals.user;
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen bg-[#090d16] text-gray-100 antialiased selection:bg-indigo-500 selection:text-white flex flex-col">
-    <header class="sticky top-0 z-50 border-b border-gray-800/80 bg-[#090d16]/80 backdrop-blur-md">
-      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-        <a href="/" class="flex items-center gap-2 group focus:outline-none">
-          <div class="flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 transition-colors group-hover:bg-indigo-500/20">
-            <span class="font-gothic text-lg">A</span>
-          </div>
-          <span class="font-heading text-lg font-bold tracking-tight text-white group-hover:text-indigo-300 transition-colors">
-            Augury
-          </span>
-        </a>
+  <body class="min-h-screen bg-[#d1cbc1] text-ink-primary font-serif leading-relaxed flex flex-col selection:bg-rust-paper selection:text-ink-primary">
+    <!-- SVG Print Texture Filter -->
+    <svg width="0" height="0" class="absolute -z-10" aria-hidden="true">
+      <filter id="print-texture" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="1" result="noise"></feTurbulence>
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="noise"
+          scale="1.0"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        ></feDisplacementMap>
+      </filter>
+    </svg>
+
+    <header class="sticky top-0 z-50 border-b-2 border-ink-primary bg-parchment-secondary/90 backdrop-blur-sm shadow-sm">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-8">
+        <div class="flex items-center gap-6">
+          <a href="/" class="flex items-center gap-3 group focus:outline-none">
+            <img
+              src="/logo.png"
+              alt="Augury Logo"
+              class="h-10 mix-blend-multiply transition-transform group-hover:scale-105"
+              onerror="this.style.display='none'"
+            />
+            <div class="flex flex-col">
+              <span class="font-gothic text-3xl sm:text-4xl text-ink-primary leading-none group-hover:opacity-80 transition-opacity">
+                Augury
+              </span>
+              <span class="font-label text-[10px] uppercase tracking-[3px] opacity-70 leading-tight">
+                D&D Session Ledger
+              </span>
+            </div>
+          </a>
+
+          <nav class="hidden md:flex items-center gap-4 text-xs font-label uppercase tracking-widest border-l-2 border-ink-primary/30 pl-6">
+            <a href="/" class="hover:underline underline-offset-4 decoration-ink-primary">Ledger</a>
+            <a href="/admin" class="hover:underline underline-offset-4 decoration-ink-primary">Admin</a>
+            <a href="/styleguide" class="hover:underline underline-offset-4 decoration-ink-primary">Styleguide</a>
+          </nav>
+        </div>
 
         <AuthMenu client:load userEmail={user?.email} />
       </div>
     </header>
 
-    <div class="flex-1">
+    <div class="flex-1 py-8 px-4 sm:px-8">
       <slot />
     </div>
 
-    <footer class="border-t border-gray-800/40 py-6 text-center text-xs text-gray-500">
-      <div class="mx-auto max-w-7xl px-4">
-        Augury D&D Session Scheduler &copy; {new Date().getFullYear()}
+    <footer class="border-t-2 border-ink-primary bg-parchment-secondary/60 py-6 text-center text-xs font-serif text-ink-primary/80">
+      <div class="mx-auto max-w-6xl px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div class="font-label uppercase tracking-widest text-[11px]">
+          Augury &bull; Grim TTRPG Scheduling Ledger
+        </div>
+        <div class="italic">
+          Anno Domini {new Date().getFullYear()} &bull; augury.danharris.dev
+        </div>
       </div>
     </footer>
   </body>

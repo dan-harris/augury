@@ -2,65 +2,90 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="Augury — D&D Session Scheduler">
-	<main class="relative min-h-[calc(100vh-8rem)] px-4 py-12 sm:px-8 sm:py-16 max-w-6xl mx-auto flex flex-col justify-between">
-		<!-- Background Glow Effects -->
-		<div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
-		<div class="absolute bottom-1/3 left-1/3 w-80 h-80 bg-purple-600/15 rounded-full blur-3xl pointer-events-none"></div>
-
-		<section class="py-12 sm:py-16 text-center max-w-3xl mx-auto relative z-10">
-			<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800/80 border border-gray-700/60 text-indigo-300 text-xs font-medium mb-8 backdrop-blur-sm">
-				<span>D&D Session Scheduling & Availability</span>
-			</div>
-
-			<h1 class="font-heading text-4xl sm:text-6xl font-extrabold text-white tracking-tight mb-6 leading-tight">
-				Schedule D&D Sessions Without the Hassle
-			</h1>
-
-			<p class="text-base sm:text-xl text-gray-400 font-normal leading-relaxed mb-10 max-w-2xl mx-auto">
-				Augury helps campaign groups find viable session dates with instant voting, real-time tallies, and automated admin management.
-			</p>
-
-			<div class="flex flex-wrap justify-center gap-4">
-				<a href="/admin" id="admin-button" class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold text-sm hover:opacity-95 transition-all shadow-lg shadow-indigo-500/20">
-					Go to Admin Dashboard
-				</a>
-				<a href="/styleguide" id="styleguide-button" class="px-6 py-3 rounded-xl bg-gray-800/80 hover:bg-gray-800 border border-gray-700/80 text-gray-200 font-semibold text-sm transition-all backdrop-blur-sm">
-					View Styleguide
-				</a>
-			</div>
-		</section>
-
-		<section class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8 relative z-10">
-			<div class="p-6 rounded-2xl bg-gray-900/60 border border-gray-800/80 backdrop-blur-sm hover:border-gray-700/80 transition-all">
-				<div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-4">
-					<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+<Layout title="Augury — D&D Session Scheduler & Character Ledger">
+	<main class="max-w-[850px] mx-auto">
+		<div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-12 relative">
+			<header class="mb-10 text-center">
+				<div class="flex items-center justify-center gap-6 mb-3">
+					<img
+						src="/logo.png"
+						alt="Augury Logo"
+						class="h-20 mix-blend-multiply"
+						onerror="this.style.display = 'none'"
+					/>
+					<h1 class="font-gothic text-6xl sm:text-8xl text-ink-primary m-0 leading-none">
+						Augury
+					</h1>
 				</div>
-				<h3 class="font-heading text-lg font-semibold text-white mb-2">Magic Link Auth</h3>
-				<p class="text-sm text-gray-400 leading-relaxed">
-					Secure PKCE magic-link authentication for campaign admins with no passwords to remember.
-				</p>
-			</div>
-
-			<div class="p-6 rounded-2xl bg-gray-900/60 border border-gray-800/80 backdrop-blur-sm hover:border-gray-700/80 transition-all">
-				<div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center mb-4">
-					<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+				<div class="font-label uppercase tracking-[4px] opacity-80 text-sm sm:text-base">
+					D&D Session Scheduling & Availability Ledger
 				</div>
-				<h3 class="font-heading text-lg font-semibold text-white mb-2">Row-Level Security</h3>
-				<p class="text-sm text-gray-400 leading-relaxed">
-					Strict Supabase Postgres RLS policies protecting group administration and candidate day tallies.
-				</p>
-			</div>
+			</header>
 
-			<div class="p-6 rounded-2xl bg-gray-900/60 border border-gray-800/80 backdrop-blur-sm hover:border-gray-700/80 transition-all">
-				<div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4">
-					<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-				</div>
-				<h3 class="font-heading text-lg font-semibold text-white mb-2">Realtime Sync</h3>
-				<p class="text-sm text-gray-400 leading-relaxed">
-					Live availability updates broadcasted instantly to players as team votes come in.
+			<section class="mb-12 text-center max-w-2xl mx-auto">
+				<p class="font-serif text-xl leading-relaxed text-ink-primary mb-6">
+					Coordinate campaign sessions without the endless quest for consensus. Gather candidate days, tally player availability, and lock in confirmed dates with an archaic, reliable ledger.
 				</p>
-			</div>
-		</section>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+					<a
+						href="/admin"
+						class="btn-frame inline-block w-full p-4 bg-ink-primary text-parchment-base border-2 border-ink-primary font-label uppercase tracking-[2px] font-bold text-lg text-center hover:bg-parchment-secondary hover:text-ink-primary transition-colors shadow-sm"
+					>
+						Open Admin Dashboard
+					</a>
+					<a
+						href="/styleguide"
+						class="btn-frame inline-block w-full p-4 bg-transparent text-ink-primary border-2 border-ink-primary font-label uppercase tracking-[2px] font-bold text-lg text-center hover:bg-ink-primary hover:text-parchment-base transition-colors shadow-sm"
+					>
+						View Styleguide
+					</a>
+				</div>
+			</section>
+
+			<section class="mb-8">
+				<h2 class="font-label text-2xl sm:text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none">
+					Grim Features
+				</h2>
+
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+					<div class="border-2 border-ink-primary p-5 relative rounded-md bg-transparent">
+						<label class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider">
+							Auth Mechanism
+						</label>
+						<h3 class="font-label text-xl font-bold uppercase tracking-wider mb-2 text-ink-primary">
+							Magic Link Auth
+						</h3>
+						<p class="font-serif text-base text-ink-primary/90">
+							PKCE passwordless magic-link verification designed for campaign admins with long-lived session trust.
+						</p>
+					</div>
+
+					<div class="border-2 border-ink-primary p-5 relative rounded-md bg-transparent">
+						<label class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider">
+							Security Guard
+						</label>
+						<h3 class="font-label text-xl font-bold uppercase tracking-wider mb-2 text-ink-primary">
+							Row Level Security
+						</h3>
+						<p class="font-serif text-base text-ink-primary/90">
+							Postgres RLS policies and security-definer RPCs enforce strict administrative boundary rules.
+						</p>
+					</div>
+
+					<div class="border-2 border-ink-primary p-5 relative rounded-md bg-transparent">
+						<label class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider">
+							Live Updates
+						</label>
+						<h3 class="font-label text-xl font-bold uppercase tracking-wider mb-2 text-ink-primary">
+							Realtime Tallies
+						</h3>
+						<p class="font-serif text-base text-ink-primary/90">
+							Broadcast candidate day yes-counts instantly as adventuring party members submit their availability.
+						</p>
+					</div>
+				</div>
+			</section>
+		</div>
 	</main>
 </Layout>

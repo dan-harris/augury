@@ -25,9 +25,78 @@
 @layer base {
   html,
   body {
-    font-family: var(--font-sans);
-    background-color: #090d16;
-    color: #f3f4f6;
+    font-family: var(--font-serif);
+    background-color: #d1cbc1;
+    color: var(--color-ink-primary);
     min-height: 100vh;
+    line-height: 1.6;
   }
+}
+
+.page-container {
+  border-radius: 2px 255px 3px 25px / 255px 5px 225px 3px;
+  background-color: var(--color-parchment-base);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  box-shadow:
+    inset 0 0 60px rgba(24, 23, 22, 0.05),
+    5px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.page-container-inner {
+  position: relative;
+}
+
+.page-container-inner::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 1px solid var(--color-ink-primary, #181716);
+  border-radius: 255px 5px 225px 3px / 2px 255px 3px 25px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.btn-frame {
+  border-radius: 255px 5px 225px 3px / 2px 255px 3px 25px;
+  transition: all 0.2s ease;
+}
+
+.underline-input {
+  border-bottom: 2px solid var(--color-ink-primary);
+  background: transparent;
+  color: var(--color-ink-primary);
+}
+
+.underline-input:focus {
+  outline: none;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.tickbox-input {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 3px 255px 5px 25px / 255px 5px 225px 3px;
+}
+
+.tickbox-input[type="radio"] {
+  border-radius: 50% 45% 55% 50% / 45% 55% 45% 50%;
+}
+
+.tickbox-input:checked::after {
+  content: "✘";
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.4rem;
+  color: #181716;
+  font-family: sans-serif;
+}
+
+.tickbox-input[type="radio"]:checked::after {
+  content: "●";
+  font-size: 1rem;
 }

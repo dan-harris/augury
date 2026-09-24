@@ -33,38 +33,47 @@ if (!code) {
 }
 ---
 
-<Layout title="Sign In Verification — Augury">
-  <main class="mx-auto max-w-xl px-4 py-16 text-center">
-    <div class="rounded-2xl border border-red-500/20 bg-red-950/20 p-8 text-red-200 shadow-xl backdrop-blur-md">
-      <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 text-red-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
-      </div>
+<Layout title="Verification Failed — Augury Ledger">
+  <main class="max-w-[700px] mx-auto">
+    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-12 relative text-center">
+      <div class="border-2 border-rust-ink bg-rust-paper/20 p-8 rounded-md relative">
+        <label class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-parchment-base px-3 font-label font-bold uppercase text-xs tracking-widest text-rust-ink">
+          Verification Warning
+        </label>
 
-      <h1 class="font-heading text-2xl font-bold tracking-tight text-white">Sign In Failed</h1>
-      <p class="mt-2 text-sm text-red-300">{errorMessage}</p>
+        <div class="font-gothic text-6xl text-rust-ink mb-2">⚠</div>
 
-      <div class="mt-6 rounded-xl bg-black/30 p-4 text-left text-xs leading-relaxed text-gray-300">
-        <p class="font-semibold text-amber-400">💡 Important hint:</p>
-        <p class="mt-1">
-          Magic link sign-in uses PKCE verification code security. The confirmation link must be opened in the <strong>same browser</strong> and browser session where you initially requested the link.
+        <h1 class="font-gothic text-4xl sm:text-5xl text-rust-ink m-0 leading-tight">
+          Sign In Verification Failed
+        </h1>
+
+        <p class="font-serif text-lg text-rust-ink font-semibold mt-3 mb-6">
+          {errorMessage}
         </p>
-      </div>
 
-      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-        <a
-          href="/admin"
-          class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-        >
-          Request a New Link
-        </a>
-        <a
-          href="/"
-          class="inline-flex items-center justify-center rounded-lg border border-gray-700 bg-gray-900/60 px-5 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800 hover:text-white"
-        >
-          Return Home
-        </a>
+        <div class="border border-rust-ink/40 bg-parchment-base p-4 text-left font-serif text-sm leading-relaxed text-ink-primary rounded">
+          <p class="font-label font-bold uppercase text-xs tracking-wider text-rust-ink mb-1">
+            💡 Important PKCE Note:
+          </p>
+          <p>
+            Magic link sign-in relies on browser-stored PKCE security code verifiers. The emailed link <strong>must be opened in the same browser and session</strong> where you requested it. Opening the link in another browser or incognito tab will fail.
+          </p>
+        </div>
+
+        <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+          <a
+            href="/admin"
+            class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2.5 font-label uppercase text-sm tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary"
+          >
+            Request New Magic Link
+          </a>
+          <a
+            href="/"
+            class="btn-frame border-2 border-ink-primary bg-transparent px-6 py-2.5 font-label uppercase text-sm tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base"
+          >
+            Return to Main Ledger
+          </a>
+        </div>
       </div>
     </div>
   </main>
