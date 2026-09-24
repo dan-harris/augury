@@ -1,10 +1,19 @@
 ---
+import { actions } from "astro:actions";
 import Layout from "../../layouts/Layout.astro";
+import { composeSlug } from "../../lib/slugs";
 
 export const prerender = false;
 
 const user = Astro.locals.user;
 const supabase = Astro.locals.supabase;
+
+const createResult = Astro.getActionResult(actions.createGroup);
+if (createResult && !createResult.error && createResult.data?.success && createResult.data.redirectUrl) {
+  return Astro.redirect(createResult.data.redirectUrl);
+}
+
+const createErrorMessage = createResult?.error?.message || (createResult?.data && !createResult.data.success ? createResult.data.error : null);
 
 let groups: any[] = [];
 let isGroupCreator = false;
@@ -61,33 +70,73 @@ if (user) {
             )}
           </header>
 
+          {isGroupCreator && (
+            <section class="border-2 border-ink-primary p-6 mb-8 rounded-md bg-parchment-secondary/30">
+              <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold">
+                Create New Campaign Group
+              </h2>
+              {createErrorMessage && (
+                <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
+                  ⚠️ {createErrorMessage}
+                </div>
+              )}
+              <form method="POST" action={actions.createGroup} class="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  placeholder="e.g. Dungeons and Dads"
+                  class="underline-input flex-1 px-3 py-2 font-serif text-lg"
+                />
+                <button
+                  type="submit"
+                  class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2 font-label uppercase tracking-wider text-sm text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold transition-colors cursor-pointer"
+                >
+                  Create Group &rarr;
+                </button>
+              </form>
+            </section>
+          )}
+
           <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none">
             Your Campaign Groups
           </h2>
 
           {groups.length > 0 ? (
             <div class="grid gap-6 sm:grid-cols-2">
-              {groups.map((group) => (
-                <div class="border-2 border-ink-primary p-5 relative rounded-md bg-transparent flex flex-col justify-between">
-                  <label class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider">
-                    Slug: {group.slug_id}
-                  </label>
-                  <div>
-                    <h3 class="font-gothic text-3xl text-ink-primary mb-2">{group.name}</h3>
-                    <p class="font-serif text-sm text-ink-primary/80">
-                      Viability Threshold: <strong class="font-bold">{group.viability_threshold} players</strong>
-                    </p>
+              {groups.map((group) => {
+                const composed = composeSlug(group.name, group.slug_id);
+                const adminUrl = `/admin/${composed}`;
+                const publicUrl = `/g/${composed}`;
+                return (
+                  <div class="border-2 border-ink-primary p-5 relative rounded-md bg-transparent flex flex-col justify-between">
+                    <label class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider border border-ink-primary/30">
+                      ID: {group.slug_id}
+                    </label>
+                    <div>
+                      <h3 class="font-gothic text-3xl text-ink-primary mb-2">{group.name}</h3>
+                      <p class="font-serif text-sm text-ink-primary/80">
+                        Viability Threshold: <strong class="font-bold">{group.viability_threshold} players</strong>
+                      </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-ink-primary/30 flex justify-between items-center gap-2">
+                      <a
+                        href={publicUrl}
+                        class="text-xs font-label uppercase tracking-wider text-ink-primary/70 hover:underline"
+                        target="_blank"
+                      >
+                        Public Link ↗
+                      </a>
+                      <a
+                        href={adminUrl}
+                        class="btn-frame border-2 border-ink-primary bg-ink-primary px-4 py-1.5 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold"
+                      >
+                        Manage Group &rarr;
+                      </a>
+                    </div>
                   </div>
-                  <div class="mt-4 pt-3 border-t border-ink-primary/30 flex justify-end">
-                    <a
-                      href={`/g/${group.slug_id}`}
-                      class="btn-frame border-2 border-ink-primary bg-ink-primary px-3 py-1 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary"
-                    >
-                      Inspect Ledger &rarr;
-                    </a>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div class="border-2 border-dashed border-ink-primary/60 p-10 text-center rounded-md bg-transparent">
@@ -97,7 +146,7 @@ if (user) {
               </h3>
               <p class="font-serif text-base text-ink-primary/90 max-w-md mx-auto">
                 {isGroupCreator
-                  ? "You have not registered any campaign groups yet. Group creation will be available in Milestone 2."
+                  ? "You have not registered any campaign groups yet. Use the form above to create your first group."
                   : "You do not belong to any campaign groups yet. Ask a group admin for an invite link to gain access."}
               </p>
             </div>

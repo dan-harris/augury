@@ -1,0 +1,109 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { composeSlug, parseSlugId } from "../../../lib/slugs";
+
+export const prerender = false;
+
+const supabase = Astro.locals.supabase;
+const groupSlugParam = Astro.params.groupSlug;
+const slugId = parseSlugId(groupSlugParam);
+
+if (!slugId) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+// Fetch group
+const { data: group } = await supabase
+  .from("groups")
+  .select("*")
+  .eq("slug_id", slugId)
+  .maybeSingle();
+
+if (!group) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+// Canonical slug check (301 redirect if stale or bare slugId)
+const canonicalSlug = composeSlug(group.name, group.slug_id);
+if (groupSlugParam !== canonicalSlug) {
+  return Astro.redirect(`/g/${canonicalSlug}`, 301);
+}
+
+// Fetch roster
+const { data: playersList } = await supabase
+  .from("players")
+  .select("id, name")
+  .eq("group_id", group.id)
+  .order("name", { ascending: true });
+
+const players = playersList || [];
+---
+
+<Layout title={`${group.name} — Campaign Ledger`}>
+  <main class="max-w-[850px] mx-auto pb-16">
+    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-12 relative">
+      <!-- Public Group Header -->
+      <header class="border-b-2 border-ink-primary pb-6 mb-8 text-center sm:text-left">
+        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+          <h1 class="font-gothic text-5xl sm:text-6xl text-ink-primary m-0 leading-none">
+            {group.name}
+          </h1>
+          <span class="font-label uppercase tracking-widest text-xs px-3 py-1 border-2 border-ink-primary bg-parchment-secondary text-ink-primary font-bold inline-block self-start sm:self-auto">
+            Public Campaign Ledger
+          </span>
+        </div>
+        <p class="font-serif text-base text-ink-primary/80 mt-3">
+          Session Scheduling & Player Availability Polls &bull; Viability Threshold: <strong class="font-bold">{group.viability_threshold} players</strong>
+        </p>
+      </header>
+
+      <div class="space-y-10">
+        <!-- 1. OPEN SESSIONS SECTION (M3 PLACEHOLDER) -->
+        <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
+          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold">
+            ⚔ Open Session Polls
+          </h2>
+          <div class="border-2 border-dashed border-ink-primary/40 p-8 text-center rounded-md bg-transparent">
+            <div class="font-gothic text-4xl text-ink-primary mb-2">🎲</div>
+            <h3 class="font-label text-lg uppercase tracking-wider text-ink-primary font-bold mb-1">
+              No Open Polls Right Now
+            </h3>
+            <p class="font-serif text-sm text-ink-primary/80 max-w-md mx-auto">
+              There are currently no active session polls for {group.name}. Check back when your Dungeon Master posts a new schedule!
+            </p>
+          </div>
+        </section>
+
+        <!-- 2. CAMPAIGN ROSTER -->
+        <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
+          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold">
+            👥 Campaign Roster ({players.length})
+          </h2>
+          {players.length > 0 ? (
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {players.map((player) => (
+                <div class="p-3 border border-ink-primary/40 rounded bg-parchment-base text-center font-serif text-base font-bold text-ink-primary shadow-xs">
+                  ⚔ {player.name}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p class="font-serif italic text-sm text-ink-primary/70 text-center py-4 border border-dashed border-ink-primary/30 rounded">
+              No players registered in the roster yet.
+            </p>
+          )}
+        </section>
+
+        <!-- 3. SESSION HISTORY (PLACEHOLDER) -->
+        <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
+          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold">
+            📜 Confirmed Session History
+          </h2>
+          <p class="font-serif italic text-sm text-ink-primary/70 text-center py-4 border border-dashed border-ink-primary/30 rounded">
+            No confirmed past sessions recorded yet.
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+</Layout>

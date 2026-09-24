@@ -1,0 +1,80 @@
+---
+import { actions } from "astro:actions";
+import Layout from "../../layouts/Layout.astro";
+
+export const prerender = false;
+
+const user = Astro.locals.user;
+const token = Astro.url.searchParams.get("token") || "";
+
+const acceptResult = Astro.getActionResult(actions.acceptInvite);
+if (acceptResult && !acceptResult.error && acceptResult.data?.success && acceptResult.data.redirectUrl) {
+  return Astro.redirect(acceptResult.data.redirectUrl);
+}
+
+const errorMessage = acceptResult?.error?.message || (acceptResult?.data && !acceptResult.data.success ? acceptResult.data.error : null);
+const nextPath = `/admin/join?token=${encodeURIComponent(token)}`;
+---
+
+<Layout title="Accept Admin Invite — Augury">
+  <main class="max-w-[650px] mx-auto pt-8 pb-16">
+    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-10 relative text-center">
+      <div class="mx-auto mb-4 font-gothic text-6xl text-ink-primary">📜</div>
+      
+      <h1 class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-3 mb-6 block leading-none">
+        Group Admin Invitation
+      </h1>
+
+      {!token ? (
+        <div class="p-6 border-2 border-rust-ink bg-rust-paper/30 text-rust-ink rounded-md font-serif">
+          <p class="font-bold text-lg mb-2">Invalid Invite URL</p>
+          <p class="text-sm">No invite token was provided in the URL. Please check your invitation link.</p>
+          <div class="mt-4">
+            <a href="/admin" class="btn-frame border border-rust-ink bg-rust-ink text-parchment-base px-4 py-2 font-label uppercase text-xs tracking-wider font-bold">
+              Go to Dashboard
+            </a>
+          </div>
+        </div>
+      ) : !user ? (
+        <div class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/30">
+          <h2 class="font-label text-xl uppercase tracking-wider text-ink-primary font-bold mb-3">
+            Sign In Required
+          </h2>
+          <p class="font-serif text-base text-ink-primary/90 max-w-md mx-auto mb-6">
+            You have received an invitation to administer a D&D Campaign Group. Please sign in or enter your email address in the header ledger above to receive a magic link and accept this invitation.
+          </p>
+          <div class="p-4 border border-ink-primary/30 rounded bg-parchment-base text-left">
+            <h3 class="font-label text-xs uppercase tracking-wider text-ink-primary/80 font-bold mb-2">
+              Sign In via Header Magic Link
+            </h3>
+            <p class="font-serif text-sm text-ink-primary/80">
+              Enter your email into the form at the top right of the page. Once signed in, you will be automatically returned to this invite page.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/30">
+          <p class="font-serif text-lg text-ink-primary mb-6">
+            You have been invited to become an administrator of a campaign group!
+          </p>
+
+          {errorMessage && (
+            <div class="mb-6 p-4 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded text-left">
+              ⚠️ {errorMessage}
+            </div>
+          )}
+
+          <form method="POST" action={actions.acceptInvite}>
+            <input type="hidden" name="token" value={token} />
+            <button
+              type="submit"
+              class="btn-frame border-2 border-ink-primary bg-ink-primary px-8 py-3 font-label uppercase tracking-widest text-base text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold transition-colors cursor-pointer"
+            >
+              Accept Invite & Join Dashboard &rarr;
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  </main>
+</Layout>
