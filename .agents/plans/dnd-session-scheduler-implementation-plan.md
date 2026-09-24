@@ -12,14 +12,14 @@
 
 **No.** The single Astro Worker covers everything server-side we need:
 
-| Need | Covered by |
-|---|---|
-| SSR pages (`/g/<slug>`, `/admin/...`) | Astro on-demand routes in the existing Worker |
-| Mutations (create group/session, submit votes, confirm day) | **Astro Actions** (supported by the Cloudflare adapter) |
-| Magic-link confirm | An Astro server endpoint (`/auth/confirm`) |
-| Link unfurling (OG meta per group/session) | SSR-rendered `<meta>` tags — already possible |
-| Real-time vote updates | **Supabase Realtime**, browser → Supabase websocket; no Worker involved |
-| Data, auth, RLS | Supabase (Postgres + GoTrue) |
+| Need                                                        | Covered by                                                              |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------- |
+| SSR pages (`/g/<slug>`, `/admin/...`)                       | Astro on-demand routes in the existing Worker                           |
+| Mutations (create group/session, submit votes, confirm day) | **Astro Actions** (supported by the Cloudflare adapter)                 |
+| Magic-link confirm                                          | An Astro server endpoint (`/auth/confirm`)                              |
+| Link unfurling (OG meta per group/session)                  | SSR-rendered `<meta>` tags — already possible                           |
+| Real-time vote updates                                      | **Supabase Realtime**, browser → Supabase websocket; no Worker involved |
+| Data, auth, RLS                                             | Supabase (Postgres + GoTrue)                                            |
 
 No Durable Objects, no queues, no cron, no separate API Worker. Supabase Realtime replaces the one thing that would otherwise force a Durable Object (live fan-out).
 
@@ -41,13 +41,14 @@ Real-time updates are progressive enhancement: SSR renders current tallies (sati
 
 Env vars: `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY` (safe to expose; RLS-guarded). Local dev via `.dev.vars` / `.env`; production via `wrangler secret put` or the Cloudflare dashboard. Run `wrangler types` after adding bindings.
 
-### 2.3 Auth (admins only)
+### 2.3 Auth (available site-wide, required only for admin)
 
 - **Supabase Auth with email magic links** — no third-party OAuth provider at all. `supabase.auth.signInWithOtp({ email })` sends a sign-in link; no passwords, no Google/Discord app registration, no consent screens.
-- Flow: `/admin` → if no session, email form → `signInWithOtp` (via an Astro Action) → "check your email" state → emailed link lands on `/auth/confirm?token_hash=…&type=email` → server endpoint calls `verifyOtp`, `@supabase/ssr` sets the cookies, redirect to `/admin`.
-- Middleware guards `/admin/**`; public routes never require auth.
+- Flow (**PKCE, default email template**): email form → `signInWithOtp` via the `requestMagicLink` action (`@supabase/ssr` writes the PKCE code-verifier cookie) → "check your email" state → the default template's `{{ .ConfirmationURL }}` link verifies at Supabase and redirects to `/auth/confirm?code=…&next=<path>` → server endpoint calls `exchangeCodeForSession(code)`, `@supabase/ssr` sets the cookies, redirects to `next` (validated as a same-origin relative path to prevent open redirects; defaults to `/admin`). PKCE is used because the free tier locks email-template editing while on Supabase's built-in sender; the `token_hash`/`verifyOtp` variant — which drops PKCE's same-browser requirement — is a **post-M5 addition** alongside Resend SMTP (see the M5 plan).
+- **Sign-in is available from any page, not just `/admin`.** The shared layout header carries an `AuthMenu` island: signed-out it offers an email form (the action passes the current path as `next`, so a voter signing in from `/g/<slug>/<id>` lands back on that voting page); signed-in it shows the user's email, a sign-out button, and an admin link when relevant. Middleware resolves the session on every request either way — it only _enforces_ auth on `/admin/**`; public routes render both states.
+- On the voting page, a signed-in user linked to a player gets that player pre-selected and locked (PRD §4: linked users can't select other players); unlinked signed-in users vote exactly like anonymous ones.
 - **Admin invites are magic invite links**: admin generates an invite → row in `admin_invites` with a random `token` → shareable URL `/admin/join?token=…`. Invitee opens it, signs in via the same magic-link flow if needed, and the action consumes the token and inserts their `group_admins` row. No email-matching, no dependency on which address the invitee uses.
-- **Email delivery**: Supabase's built-in sender is heavily rate-limited (a couple of emails/hour) and dev-grade only — wire custom SMTP (e.g. Resend free tier) before real use. Local dev uses the Supabase CLI's bundled Inbucket/Mailpit inbox, so no SMTP needed locally. Flagged in §7.
+- **Email delivery**: Supabase's built-in sender is heavily rate-limited (a couple of emails/hour) and dev-grade, but acceptable at launch — sign-in volume is a handful of admins with long-lived sessions. Custom SMTP (Resend free tier) is a **post-M5 addition** (M5 plan), which also unlocks free-tier email-template editing and with it the `token_hash` flow. Local dev uses the Supabase CLI's bundled Inbucket/Mailpit inbox, so no SMTP needed locally. Flagged in §7.
 
 ### 2.4 UI interactivity
 
@@ -80,6 +81,15 @@ create table group_admins (
   group_id uuid not null references groups(id) on delete cascade,
   user_id uuid not null references auth.users(id) on delete cascade,
   primary key (group_id, user_id)
+);
+
+-- Allowlist gating who may create groups. Sign-up stays open (magic links
+-- double as sign-up, and invited admins need accounts), but a fresh account
+-- can do nothing until an existing admin invites them or they're added here.
+-- Seeded with the owner in migration 0001; extendable via the Supabase dashboard.
+create table group_creators (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
 );
 
 create table admin_invites (
@@ -181,17 +191,20 @@ This is the **only** write path anonymous users have. Direct `insert`/`update`/`
 
 RLS enabled on every table. `is_group_admin(group_id)` helper: `exists (select 1 from group_admins where group_id = $1 and user_id = auth.uid())` (`security definer` to avoid recursive-policy pitfalls on `group_admins` itself).
 
-| Table | `select` | `insert` | `update` | `delete` |
-|---|---|---|---|---|
-| `groups` | public (all data is public per PRD §4) | authenticated (creator; action also inserts `group_admins` row) | admin | admin |
-| `group_admins` | admin of that group | ✗ (RPCs only: `create_group`, `accept_invite`) | — | admin (trigger blocks last admin) |
-| `admin_invites` | admin | admin | — | admin (revoke) + consumed by `accept_invite` |
-| `players` | public | admin | admin | admin |
-| `sessions` | public | admin | admin (confirm/close/edit) | admin |
-| `votes` | public | ✗ (RPC only) | ✗ | ✗ (RPC only) |
-| `vote_responses` | public | ✗ (RPC only) | ✗ (RPC only) | — |
+| Table            | `select`                               | `insert`                                       | `update`                   | `delete`                                     |
+| ---------------- | -------------------------------------- | ---------------------------------------------- | -------------------------- | -------------------------------------------- |
+| `groups`         | public (all data is public per PRD §4) | ✗ (`create_group` RPC only, allowlist-gated)   | admin                      | admin                                        |
+| `group_admins`   | admin of that group                    | ✗ (RPCs only: `create_group`, `accept_invite`) | —                          | admin (trigger blocks last admin)            |
+| `group_creators` | own row (to show/hide the create UI)   | ✗ (seeded by migration / dashboard only)       | —                          | —                                            |
+| `admin_invites`  | admin                                  | admin                                          | —                          | admin (revoke) + consumed by `accept_invite` |
+| `players`        | public                                 | admin                                          | admin                      | admin                                        |
+| `sessions`       | public                                 | admin                                          | admin (confirm/close/edit) | admin                                        |
+| `votes`          | public                                 | ✗ (RPC only)                                   | ✗                          | ✗ (RPC only)                                 |
+| `vote_responses` | public                                 | ✗ (RPC only)                                   | ✗ (RPC only)               | —                                            |
 
-Group creation nuance: "creating user becomes first admin" needs `groups` insert + `group_admins` insert to be atomic → a small `create_group(name)` RPC (security definer) that does both and returns the `slug_id`, rather than two client calls. Invite acceptance is a second small RPC, `accept_invite(token)` — validates token + expiry, inserts the `group_admins` row for `auth.uid()`, deletes the invite.
+Group creation nuance: "creating user becomes first admin" needs `groups` insert + `group_admins` insert to be atomic → a small `create_group(name)` RPC (security definer) that first checks `auth.uid()` is in `group_creators` (raise otherwise), then does both inserts and returns the `slug_id`. Invite acceptance is a second small RPC, `accept_invite(token)` — validates token + expiry, inserts the `group_admins` row for `auth.uid()`, deletes the invite.
+
+Account/role summary: **sign-up is open** (magic link creates the account on first sign-in — required for the invite flow and harmless since a bare account grants nothing); **admin is per-group** (`group_admins` row, gained by creating a group or accepting an invite — no global role); **group creation is allowlisted** (`group_creators`, seeded with the owner). `/admin` hides the create-group UI for non-allowlisted users and just shows their groups (empty state: "ask a group admin for an invite link").
 
 ### 3.6 Realtime
 
@@ -203,17 +216,17 @@ Group creation nuance: "creating user becomes first admin" needs `groups` insert
 
 All dynamic routes: `export const prerender = false`.
 
-| Route | File | Auth | Purpose |
-|---|---|---|---|
-| `/` | `src/pages/index.astro` (replace placeholder) | — | Landing; link to `/admin` |
-| `/auth/confirm` | `src/pages/auth/confirm.ts` | — | Magic-link landing: `verifyOtp(token_hash)`, set cookies, redirect |
-| `/auth/signout` | `src/pages/auth/signout.ts` | ✓ | Clear session |
-| `/admin` | `src/pages/admin/index.astro` | ✓ | Sign-in gate (email → magic link); list my groups; create group |
-| `/admin/join` | `src/pages/admin/join.astro` | ✓ | Accept invite token → become group admin (prompts sign-in first if needed) |
-| `/admin/[groupSlug]` | `src/pages/admin/[groupSlug]/index.astro` | ✓ admin | Roster CRUD, admins, threshold, session list, share link |
-| `/admin/[groupSlug]/create` | `src/pages/admin/[groupSlug]/create.astro` | ✓ admin | New session; defaults from previous session's candidate days |
-| `/g/[groupSlug]` | `src/pages/g/[groupSlug]/index.astro` | — | Group home: open sessions + viability at a glance, confirmed days, history; optional link-my-player for signed-in users |
-| `/g/[groupSlug]/[sessionId]` | `src/pages/g/[groupSlug]/[sessionId].astro` | — | Voting page: pick player → toggle days → submit; live tally; confirmed banner when locked |
+| Route                        | File                                          | Auth    | Purpose                                                                                                                 |
+| ---------------------------- | --------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `/`                          | `src/pages/index.astro` (replace placeholder) | —       | Landing; link to `/admin`                                                                                               |
+| `/auth/confirm`              | `src/pages/auth/confirm.ts`                   | —       | Magic-link landing: `verifyOtp(token_hash)`, set cookies, redirect to validated `next` path                             |
+| `/auth/signout`              | `src/pages/auth/signout.ts`                   | ✓       | Clear session                                                                                                           |
+| `/admin`                     | `src/pages/admin/index.astro`                 | ✓       | Sign-in gate (email → magic link); list my groups; create group                                                         |
+| `/admin/join`                | `src/pages/admin/join.astro`                  | ✓       | Accept invite token → become group admin (prompts sign-in first if needed)                                              |
+| `/admin/[groupSlug]`         | `src/pages/admin/[groupSlug]/index.astro`     | ✓ admin | Roster CRUD, admins, threshold, session list, share link                                                                |
+| `/admin/[groupSlug]/create`  | `src/pages/admin/[groupSlug]/create.astro`    | ✓ admin | New session; defaults from previous session's candidate days                                                            |
+| `/g/[groupSlug]`             | `src/pages/g/[groupSlug]/index.astro`         | —       | Group home: open sessions + viability at a glance, confirmed days, history; optional link-my-player for signed-in users |
+| `/g/[groupSlug]/[sessionId]` | `src/pages/g/[groupSlug]/[sessionId].astro`   | —       | Voting page: pick player → toggle days → submit; live tally; confirmed banner when locked                               |
 
 All `[groupSlug]` params are parsed by taking the trailing 6-char slug-id (everything after the last hyphen); lookup is by `slug_id` only, with a 301 to the canonical slug when the name part is stale.
 
@@ -226,7 +239,7 @@ Supporting modules:
 - `src/lib/viability.ts` — best-day suggestion, "3 of 4 needed" copy, closest-day-when-nothing-viable.
 - `src/lib/weeks.ts` — week-window helpers (Monday-anchored, `Intl` day names, "week of 29 Sept" formatting).
 - `src/lib/slugs.ts` — slugify names, generate 6-char slug-ids, compose `slugify(name)-{slug_id}`, parse slug-id from a route param.
-- `src/components/` — static Astro components (`SessionCard`, `VoterList`, `OgMeta`, layout pieces); `src/components/islands/` — Preact islands (`VotingForm`, `LiveTally`, `DayPicker`, `PlayerPicker`, admin forms).
+- `src/components/` — static Astro components (`SessionCard`, `VoterList`, `OgMeta`, layout pieces); `src/components/islands/` — Preact islands (`VotingForm`, `LiveTally`, `DayPicker`, `PlayerPicker`, `AuthMenu` in the shared layout header, admin forms).
 
 ### Link unfurling (PRD non-functional)
 
@@ -234,12 +247,12 @@ SSR `<meta property="og:*">` on `/g/**`: group name + open-session count on the 
 
 ## 5. Build milestones
 
-Each milestone is shippable and testable on its own.
+Each milestone is shippable and testable on its own. **Each has a detailed, self-contained plan file for implementation sessions**: [M1](./dnd-session-scheduler-m1-foundations.md) · [M2](./dnd-session-scheduler-m2-groups-roster.md) · [M3](./dnd-session-scheduler-m3-sessions-voting.md) · [M4](./dnd-session-scheduler-m4-lifecycle-realtime.md) · [M5](./dnd-session-scheduler-m5-polish.md). M1's plan includes the manual Supabase setup steps (project creation, auth config, env vars, SMTP).
 
-1. **M1 — Foundations.** Supabase project (cloud) + CLI local stack; migration 0001 (schema, RLS, RPCs, triggers, view, realtime publication); env plumbing (`.dev.vars`, wrangler secrets, `wrangler types`); `@astrojs/preact` integration; middleware + client factories; magic-link auth end-to-end (`/admin` email form → emailed link → `/auth/confirm` → signed-in state), using the local CLI inbox for dev. *Exit: an authenticated user can hit `/admin` and see an empty group list backed by real queries.*
-2. **M2 — Groups & roster.** `createGroup` RPC + action (slug-id generation), `/admin` group list, `/admin/[groupSlug]` roster CRUD, threshold config, invite links (`createInvite` → `/admin/join` → `accept_invite` RPC) and admin removal (with last-admin guard surfaced), public `/g/[groupSlug]` shell with share link and slug-id routing. *Exit: create "Dungeons and Dads", add 6 players, open the public link at `/g/dungeons-and-dads-8efc4d`, and a second account joins as admin via an invite link.*
-3. **M3 — Sessions & voting.** Session creation with previous-session defaults; session voting page (player picker → day multi-select → `submitVotes`); re-select player shows existing votes for editing; tally view rendering with viability highlighting, best-day suggestion, voted/not-voted lists. *Exit: full vote round-trip on mobile viewport, no auth, under 30 seconds.*
-4. **M4 — Lifecycle & realtime.** Confirm/close actions with locked-session UI; confirmed day prominent on session + group pages; history section (past + closed sessions); Realtime island on the session page; threshold/day edits surfacing viability impact. *Exit: two browsers open, a vote in one appears in the other without refresh; admin confirms Thursday and both pages reflect it.*
+1. **M1 — Foundations.** Supabase project (cloud) + CLI local stack; migration 0001 (schema, RLS, RPCs, triggers, view, realtime publication); env plumbing (`.dev.vars`, wrangler secrets, `wrangler types`); `@astrojs/preact` integration; middleware + client factories; magic-link auth end-to-end (header `AuthMenu` email form → emailed link → `/auth/confirm` → back to the originating page via `next`), using the local CLI inbox for dev. _Exit: an authenticated user can hit `/admin` and see an empty group list backed by real queries._
+2. **M2 — Groups & roster.** `createGroup` RPC + action (slug-id generation), `/admin` group list, `/admin/[groupSlug]` roster CRUD, threshold config, invite links (`createInvite` → `/admin/join` → `accept_invite` RPC) and admin removal (with last-admin guard surfaced), public `/g/[groupSlug]` shell with share link and slug-id routing. _Exit: create "Dungeons and Dads", add 6 players, open the public link at `/g/dungeons-and-dads-8efc4d`, and a second account joins as admin via an invite link._
+3. **M3 — Sessions & voting.** Session creation with previous-session defaults; session voting page (player picker → day multi-select → `submitVotes`); re-select player shows existing votes for editing; signed-in users linked to a player get it pre-selected and locked; tally view rendering with viability highlighting, best-day suggestion, voted/not-voted lists. _Exit: full vote round-trip on mobile viewport, no auth, under 30 seconds; a signed-in linked user lands on the page with their player already selected._
+4. **M4 — Lifecycle & realtime.** Confirm/close actions with locked-session UI; confirmed day prominent on session + group pages; history section (past + closed sessions); Realtime island on the session page; threshold/day edits surfacing viability impact. _Exit: two browsers open, a vote in one appears in the other without refresh; admin confirms Thursday and both pages reflect it._
 5. **M5 — Polish.** OG meta tags verified in Discord; mobile-first pass over all pages; empty/error states ("nothing viable yet — Thursday is closest at 3 of 4"); landing page replacing the boilerplate; `AGENTS.md` notes for Supabase local dev.
 
 ## 6. Testing & tooling
@@ -252,10 +265,11 @@ Each milestone is shippable and testable on its own.
 
 All previously open questions are resolved (auth = Supabase magic links, no third-party OAuth; invites = magic invite links; weeks = ISO Monday-start, noted in the PRD; slugs = name + stable 6-char slug-id). Remaining risks to watch:
 
-1. **Magic-link email delivery** — Supabase's built-in sender is rate-limited to a couple of emails/hour and not production-grade. Mitigation: configure custom SMTP (e.g. Resend free tier) before anyone real signs in; local dev uses the CLI's bundled inbox so this only affects deployed environments. Sign-in volume is tiny (admins only), so free tiers suffice indefinitely.
+1. **Magic-link email delivery** — Supabase's built-in sender is rate-limited to a couple of emails/hour and not production-grade. Accepted at launch (admin-only sign-in, long-lived refresh tokens keep round-trips rare); the post-M5 addition in the M5 plan wires Resend SMTP, which also unlocks template editing and the `token_hash` flow. Pull it forward if sign-ins bounce off the rate limit. Local dev uses the CLI's bundled inbox so this only affects deployed environments.
 2. **Auth cookie size on Workers** — `@supabase/ssr` chunks large cookies; verified pattern on Cloudflare, but test the `/auth/confirm` flow early in M1 (it's the usual place this stack bites).
 3. **Supabase free-tier realtime limits** — 200 concurrent connections; a friend group won't dent it, just don't leave the island subscribed on hidden tabs indefinitely (pause on `visibilitychange` if it ever matters).
 4. **Magic-link sign-in friction** — an email round-trip per sign-in is slower than OAuth. Acceptable because admin sessions are long-lived (refresh tokens keep admins signed in for months); if it grates, an OAuth provider can be added later without schema changes.
+5. **Magic links, PKCE, and in-app browsers** — the PKCE flow requires the emailed link to be opened in the **same browser** that requested it (the code verifier lives in a cookie). A voter who signs in from a Discord/WhatsApp in-app browser and opens the email in the system browser fails the code exchange — `/auth/confirm` shows a friendly "request a new link from this browser" error, never a broken session. Harmless for voting (auth is optional); mitigation is copy, admins doing real work will be in a proper browser, and the post-M5 `token_hash` flow removes the same-browser requirement entirely.
 
 ## 8. Explicitly not needed (answering the setup questions)
 

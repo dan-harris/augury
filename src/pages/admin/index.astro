@@ -1,0 +1,93 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+export const prerender = false;
+
+const user = Astro.locals.user;
+const supabase = Astro.locals.supabase;
+
+let groups: any[] = [];
+let isGroupCreator = false;
+
+if (user) {
+  const { data: adminGroups } = await supabase
+    .from("group_admins")
+    .select("group_id, groups(id, name, slug_id, viability_threshold, created_at)")
+    .eq("user_id", user.id);
+
+  if (adminGroups) {
+    groups = adminGroups.map((ag: any) => ag.groups).filter(Boolean);
+  }
+
+  const { data: creatorRecord } = await supabase
+    .from("group_creators")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  isGroupCreator = !!creatorRecord;
+}
+---
+
+<Layout title="Admin Dashboard — Augury">
+  <main class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    {!user ? (
+      <div class="rounded-2xl border border-gray-800 bg-gray-900/60 p-8 text-center backdrop-blur-md shadow-xl">
+        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h1 class="font-heading text-2xl font-bold tracking-tight text-white">Sign In Required</h1>
+        <p class="mt-2 text-sm text-gray-400 max-w-md mx-auto">
+          Please enter your email in the header form above to receive a magic link and access your admin dashboard.
+        </p>
+      </div>
+    ) : (
+      <div>
+        <div class="flex items-center justify-between border-b border-gray-800 pb-6 mb-8">
+          <div>
+            <h1 class="font-heading text-3xl font-bold tracking-tight text-white">Admin Dashboard</h1>
+            <p class="mt-1 text-sm text-gray-400">Manage your D&D campaign groups and session schedules.</p>
+          </div>
+          {isGroupCreator && (
+            <span class="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-300">
+              Group Creator Allowed
+            </span>
+          )}
+        </div>
+
+        {groups.length > 0 ? (
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {groups.map((group) => (
+              <div class="rounded-xl border border-gray-800 bg-gray-900/50 p-5 hover:border-gray-700 transition-colors">
+                <h3 class="font-heading text-lg font-semibold text-white">{group.name}</h3>
+                <p class="mt-1 text-xs font-mono text-gray-400">Slug: {group.slug_id}</p>
+                <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
+                  <span>Threshold: {group.viability_threshold} players</span>
+                  <a href={`/g/${group.slug_id}`} class="text-indigo-400 hover:text-indigo-300 font-medium">
+                    View &rarr;
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="rounded-2xl border border-dashed border-gray-800 bg-gray-900/30 p-12 text-center">
+            <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-800/60 text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <h3 class="font-heading text-lg font-semibold text-white">No Groups Found</h3>
+            <p class="mt-2 text-sm text-gray-400 max-w-sm mx-auto">
+              {isGroupCreator
+                ? "You haven't created any groups yet. Create your first group (available in Milestone 2) to get started."
+                : "You don't belong to any campaign groups yet. Ask a group admin for an invite link to gain access."}
+            </p>
+          </div>
+        )}
+      </div>
+    )}
+  </main>
+</Layout>

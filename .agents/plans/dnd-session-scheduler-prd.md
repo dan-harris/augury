@@ -39,7 +39,7 @@ User (authenticated)
 ### 1. Group management (admin only)
 
 - `/admin`
-  - Create a group with a name (slug generated from this, suffixed with a stable 6-character slug-id — see resolved decision 5); the creating user becomes its first admin.
+  - Create a group with a name (slug generated from this, suffixed with a stable 6-character slug-id — see resolved decision 6); the creating user becomes its first admin. Group creation is allowlisted (resolved decision 5); non-allowlisted users just see the groups they administer.
 - `/admin/<group-slug>`
   - Manage the roster: add, rename, remove players. Removing a player should warn if they have votes in open sessions.
   - Manage admins: invite/remove other admin users, with a hard rule that the last admin cannot be removed (a group always has ≥1 admin).
@@ -86,7 +86,7 @@ User (authenticated)
 
 ## Non-functional expectations
 
-- **Auth is admin-only.** Voters never sign in — the link plus roster selection is the whole identity story. This is the WhenAvailable-style low-friction core, now with the added structure of a fixed roster. Admin auth uses **Supabase Auth email magic links** — no passwords and no third-party OAuth provider.
+- **Auth is required for admins only.** Voters never need to sign in — the link plus roster selection is the whole identity story. This is the WhenAvailable-style low-friction core, now with the added structure of a fixed roster. Auth uses **Supabase Auth email magic links** — no passwords and no third-party OAuth provider. Signing in is optionally available from the site header on every page (including public group/session pages), returning the user to the page they started on — this is how a voter links themselves to a player without leaving the voting flow.
 - **Real-time or near-real-time results** — new votes appear without a manual refresh, or at minimum on reload.
 - **Mobile-first** — players vote from a phone via a Discord/WhatsApp link; pick-your-name → tap days → done in under 30 seconds.
 - **Link unfurling** — group and session links should preview nicely in Discord/messaging apps (group name, week, vote status). Group URLs use the name+slug-id slug (resolved by slug-id only); sessions use short ids.
@@ -105,4 +105,5 @@ User (authenticated)
 2. **The viability threshold is static and group-level.** It's an absolute number configured on the group, inherited by sessions, and does not change when the roster grows or shrinks mid-vote (a newly added player can simply vote in open sessions).
 3. **Admin auth is Supabase magic links.** Admin users sign in with an email magic link via Supabase Auth — no passwords, no third-party OAuth provider (one could be added later without schema changes). Admin invites work the same way: a shareable single-use invite link, not email-address matching. Future direction: "normal" (non-admin) users can also log in to view the groups they belong to and be attached to player identities within them.
 4. **Week windows are ISO weeks.** A session's week starts on Monday and is stored as the week-start date. The unit is days-of-week, not datetimes, so the model is timezone-free by design.
-5. **Group slugs are name + stable slug-id.** The full slug is the slugified group name plus a stable 6-character id suffix (e.g. `dungeons-and-dads-8efc4d`). Only the trailing slug-id is parsed from the URL to resolve the group — the name part is cosmetic, so renames never break shared links.
+5. **Sign-up is open; group creation is allowlisted.** Anyone can create an account (magic-link sign-in doubles as sign-up, which the invite flow relies on), and a bare account grants nothing. Admin is per-group, gained only by creating a group or accepting an invite link — there is no global admin role. Creating groups is restricted to an allowlist seeded with the owner, so strangers who find the site cannot mint groups.
+6. **Group slugs are name + stable slug-id.** The full slug is the slugified group name plus a stable 6-character id suffix (e.g. `dungeons-and-dads-8efc4d`). Only the trailing slug-id is parsed from the URL to resolve the group — the name part is cosmetic, so renames never break shared links.

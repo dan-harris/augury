@@ -5,9 +5,12 @@ import tailwindcss from "@tailwindcss/vite";
 
 import cloudflare from "@astrojs/cloudflare";
 
+import preact from "@astrojs/preact";
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://augury.danharris.dev",
+
   vite: {
     plugins: [tailwindcss()],
     server: {
@@ -16,7 +19,10 @@ export default defineConfig({
       },
     },
   },
+
   adapter: cloudflare({
     imageService: "compile",
   }),
+
+  integrations: [preact()],
 });

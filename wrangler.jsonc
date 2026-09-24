@@ -11,4 +11,8 @@
   "observability": {
     "enabled": true,
   },
+  "vars": {
+    "PUBLIC_SUPABASE_URL": "https://mlcveolbzsrkckkbtxeu.supabase.co",
+    "PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_slNGtO25bsEEFw9HIj3Lvg_FhKeoO97",
+  },
 }

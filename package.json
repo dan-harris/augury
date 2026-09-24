@@ -16,11 +16,16 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.7",
+    "@astrojs/preact": "^6.0.5",
     "@astryxdesign/theme-matcha": "^0.3.0",
     "@emnapi/core": "^1.11.3",
     "@emnapi/runtime": "^1.11.3",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.1",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.1.6",
+    "nanoid": "^6.0.1",
+    "preact": "^10.29.8",
     "tailwindcss": "^4.3.3",
     "yaml": "^2.9.1"
   },

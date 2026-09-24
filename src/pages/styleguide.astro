@@ -1,0 +1,268 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Augury Styleguide — Character Ledger" description="Design tokens, typography, and character ledger components for Augury.">
+	<div class="min-h-screen bg-[#d1cbc1] text-ink-primary font-serif leading-relaxed px-4 py-12 text-lg">
+		<!-- SVG Filters -->
+		<svg width="0" height="0" class="absolute -z-10">
+			<filter id="print-texture" x="-10%" y="-10%" width="120%" height="120%">
+				<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="1" result="noise"></feTurbulence>
+				<feDisplacementMap
+					in="SourceGraphic"
+					in2="noise"
+					scale="1.0"
+					xChannelSelector="R"
+					yChannelSelector="G"
+				></feDisplacementMap>
+			</filter>
+		</svg>
+
+		<div
+			class="page-container max-w-[850px] mx-auto border-2 border-ink-primary p-6 sm:p-12 relative bg-parchment-base"
+		>
+			<header class="mb-10">
+				<div class="flex items-center justify-center gap-6 mb-2">
+					<img
+						src="/logo.png"
+						alt="Augury Logo"
+						class="h-20 mix-blend-multiply"
+						onerror="this.style.display = 'none'"
+					/>
+					<h1
+						class="font-gothic text-7xl sm:text-8xl text-center text-ink-primary m-0 leading-none drop-shadow-sm"
+					>
+						Augury
+					</h1>
+				</div>
+				<div class="text-center font-label uppercase tracking-[4px] opacity-80 text-sm">
+					Character Ledger Styleguide
+				</div>
+			</header>
+
+			<main>
+				<div class="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-12 mt-8">
+					<!-- Left Column: Details -->
+					<div class="flex flex-col">
+						<h2
+							class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none"
+						>
+							Identity
+						</h2>
+
+						<div class="flex items-end mb-6">
+							<label class="font-label font-bold uppercase text-lg mr-3 leading-tight">Name</label>
+							<input
+								type="text"
+								class="underline-input flex-1 border-b-2 border-ink-primary bg-transparent font-serif text-2xl text-ink-primary px-2 rounded-none"
+								placeholder="Silas the Unyielding"
+							/>
+						</div>
+
+						<div class="flex items-end mb-6">
+							<label class="font-label font-bold uppercase text-lg mr-3 leading-tight">Class</label>
+							<input
+								type="text"
+								class="underline-input flex-1 border-b-2 border-ink-primary bg-transparent font-serif text-2xl text-ink-primary px-2 rounded-none"
+								placeholder="The Worker"
+							/>
+						</div>
+
+						<div
+							class="border-2 border-ink-primary p-5 mt-8 mb-8 relative rounded-md bg-transparent"
+						>
+							<label
+								class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-sm tracking-wider"
+								>Background & Info</label
+							>
+							<textarea
+								rows="4"
+								class="w-full border-none bg-transparent font-serif text-xl text-ink-primary resize-y outline-none"
+								placeholder="Write your grim history here..."
+							></textarea>
+						</div>
+
+						<h2
+							class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none mt-6"
+						>
+							Inventory
+						</h2>
+						<div class="flex flex-col gap-3 mb-8">
+							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+								<input
+									type="checkbox"
+									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
+								/>
+								Lantern (lit)
+							</label>
+							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+								<input
+									type="checkbox"
+									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
+									checked
+								/>
+								Rope (50ft)
+							</label>
+							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+								<input
+									type="checkbox"
+									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
+								/>
+								Iron Rations
+							</label>
+						</div>
+					</div>
+
+					<!-- Right Column: Stats & Status -->
+					<div class="flex flex-col">
+						<h2
+							class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none"
+						>
+							Attributes
+						</h2>
+
+						<div class="flex justify-between mb-8">
+							<div class="flex flex-col items-center">
+								<div
+									class="w-16 h-16 border-2 border-ink-primary rounded-[55%_45%_50%_50%/50%_55%_45%_50%] flex items-center justify-center font-gothic text-4xl mb-2 bg-transparent"
+								>
+									12
+								</div>
+								<label class="font-label font-bold uppercase text-sm tracking-wider">Might</label>
+							</div>
+							<div class="flex flex-col items-center">
+								<div
+									class="w-16 h-16 border-2 border-ink-primary rounded-[55%_45%_50%_50%/50%_55%_45%_50%] flex items-center justify-center font-gothic text-4xl mb-2 bg-transparent"
+								>
+									8
+								</div>
+								<label class="font-label font-bold uppercase text-sm tracking-wider">Grace</label>
+							</div>
+							<div class="flex flex-col items-center">
+								<div
+									class="w-16 h-16 border-2 border-ink-primary rounded-[55%_45%_50%_50%/50%_55%_45%_50%] flex items-center justify-center font-gothic text-4xl mb-2 bg-transparent"
+								>
+									14
+								</div>
+								<label class="font-label font-bold uppercase text-sm tracking-wider">Will</label>
+							</div>
+						</div>
+
+						<h2
+							class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none mt-6"
+						>
+							Condition
+						</h2>
+
+						<div class="border-2 border-ink-primary p-5 mb-6 relative rounded-md bg-transparent">
+							<label
+								class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-sm tracking-wider"
+								>Current Health</label
+							>
+							<input
+								type="text"
+								class="w-full border-none bg-transparent font-gothic text-5xl text-center text-ink-primary outline-none"
+								value="10 / 10"
+							/>
+						</div>
+
+						<div class="flex flex-col gap-3 mb-8">
+							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+								<input
+									type="radio"
+									name="status"
+									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
+									checked
+								/>
+								Healthy & Hale
+							</label>
+							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+								<input
+									type="radio"
+									name="status"
+									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
+								/>
+								Severely Wounded
+							</label>
+							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+								<input
+									type="radio"
+									name="status"
+									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
+								/>
+								Doomed
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="mt-12">
+					<button
+						class="btn-frame inline-block w-full p-4 bg-ink-primary text-parchment-base border-2 border-ink-primary font-label uppercase tracking-[2px] font-bold text-2xl cursor-pointer text-center hover:bg-parchment-secondary hover:text-ink-primary transition-colors"
+					>
+						Commit to the Ledger
+					</button>
+				</div>
+			</main>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.page-container {
+		border-radius: 2px 255px 3px 25px / 255px 5px 225px 3px;
+		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+		box-shadow:
+			inset 0 0 60px rgba(24, 23, 22, 0.05),
+			5px 5px 15px rgba(0, 0, 0, 0.1);
+		filter: url("#print-texture");
+	}
+
+	.page-container::before {
+		content: "";
+		position: absolute;
+		top: 8px;
+		left: 8px;
+		right: 8px;
+		bottom: 8px;
+		border: 1px solid var(--color-ink-primary, #181716);
+		border-radius: 255px 5px 225px 3px / 2px 255px 3px 25px;
+		pointer-events: none;
+		opacity: 0.6;
+	}
+
+	.underline-input:focus {
+		outline: none;
+		background-color: rgba(0, 0, 0, 0.03);
+	}
+
+	.tickbox-input {
+		appearance: none;
+		-webkit-appearance: none;
+		border-radius: 3px 255px 5px 25px / 255px 5px 225px 3px;
+	}
+
+	.tickbox-input[type="radio"] {
+		border-radius: 50% 45% 55% 50% / 45% 55% 45% 50%;
+	}
+
+	.tickbox-input:checked::after {
+		content: "✘";
+		position: absolute;
+		top: 45%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: 1.8rem;
+		color: #181716;
+		font-family: sans-serif;
+	}
+
+	.tickbox-input[type="radio"]:checked::after {
+		content: "●";
+		font-size: 1.2rem;
+	}
+
+	.btn-frame {
+		border-radius: 255px 5px 225px 3px / 2px 255px 3px 25px;
+	}
+</style>

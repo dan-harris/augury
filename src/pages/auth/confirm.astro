@@ -1,0 +1,71 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+export const prerender = false;
+
+const url = new URL(Astro.request.url);
+const code = url.searchParams.get("code");
+const rawNext = url.searchParams.get("next");
+
+let next = "/admin";
+if (rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//")) {
+  try {
+    const parsed = new URL(rawNext, url.origin);
+    if (parsed.origin === url.origin) {
+      next = parsed.pathname + parsed.search + parsed.hash;
+    }
+  } catch {
+    next = "/admin";
+  }
+}
+
+let errorMessage: string | null = null;
+
+if (!code) {
+  errorMessage = "No authentication code was provided in the confirmation link.";
+} else {
+  const { supabase } = Astro.locals;
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  if (!error) {
+    return Astro.redirect(next);
+  }
+  errorMessage = error.message;
+}
+---
+
+<Layout title="Sign In Verification — Augury">
+  <main class="mx-auto max-w-xl px-4 py-16 text-center">
+    <div class="rounded-2xl border border-red-500/20 bg-red-950/20 p-8 text-red-200 shadow-xl backdrop-blur-md">
+      <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 text-red-400">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+
+      <h1 class="font-heading text-2xl font-bold tracking-tight text-white">Sign In Failed</h1>
+      <p class="mt-2 text-sm text-red-300">{errorMessage}</p>
+
+      <div class="mt-6 rounded-xl bg-black/30 p-4 text-left text-xs leading-relaxed text-gray-300">
+        <p class="font-semibold text-amber-400">💡 Important hint:</p>
+        <p class="mt-1">
+          Magic link sign-in uses PKCE verification code security. The confirmation link must be opened in the <strong>same browser</strong> and browser session where you initially requested the link.
+        </p>
+      </div>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+        <a
+          href="/admin"
+          class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+        >
+          Request a New Link
+        </a>
+        <a
+          href="/"
+          class="inline-flex items-center justify-center rounded-lg border border-gray-700 bg-gray-900/60 px-5 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800 hover:text-white"
+        >
+          Return Home
+        </a>
+      </div>
+    </div>
+  </main>
+</Layout>

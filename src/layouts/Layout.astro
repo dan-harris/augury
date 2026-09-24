@@ -1,37 +1,54 @@
 ---
 import "../styles/global.css";
+import { AuthMenu } from "../components/islands/AuthMenu";
 
 interface Props {
-	title?: string;
-	description?: string;
+  title?: string;
+  description?: string;
 }
 
 const {
-	title = "Augury — Predictive Insights & Intelligence",
-	description = "Base Astro application deployed on Cloudflare Pages for augury.danharris.dev",
+  title = "Augury — Predictive Insights & Intelligence",
+  description = "Augury D&D session scheduler and predictive gaming engine.",
 } = Astro.props;
+
+const user = Astro.locals.user;
 ---
 
 <!doctype html>
 <html lang="en" class="dark">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={description} />
-		<title>{title}</title>
-	</head>
-	<body class="min-h-screen bg-[#090d16] text-gray-100 antialiased selection:bg-indigo-500 selection:text-white">
-		<slot />
-	</body>
-</html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-[#090d16] text-gray-100 antialiased selection:bg-indigo-500 selection:text-white flex flex-col">
+    <header class="sticky top-0 z-50 border-b border-gray-800/80 bg-[#090d16]/80 backdrop-blur-md">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+        <a href="/" class="flex items-center gap-2 group focus:outline-none">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 transition-colors group-hover:bg-indigo-500/20">
+            <span class="font-gothic text-lg">A</span>
+          </div>
+          <span class="font-heading text-lg font-bold tracking-tight text-white group-hover:text-indigo-300 transition-colors">
+            Augury
+          </span>
+        </a>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		min-height: 100vh;
-	}
-</style>
+        <AuthMenu client:load userEmail={user?.email} />
+      </div>
+    </header>
+
+    <div class="flex-1">
+      <slot />
+    </div>
+
+    <footer class="border-t border-gray-800/40 py-6 text-center text-xs text-gray-500">
+      <div class="mx-auto max-w-7xl px-4">
+        Augury D&D Session Scheduler &copy; {new Date().getFullYear()}
+      </div>
+    </footer>
+  </body>
+</html>
