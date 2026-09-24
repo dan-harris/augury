@@ -58,19 +58,6 @@
   position: relative;
 }
 
-.page-container-inner::before {
-  content: "";
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-  border: 1px solid var(--color-ink-primary, #181716);
-  border-radius: 255px 5px 225px 3px / 2px 255px 3px 25px;
-  pointer-events: none;
-  opacity: 0.6;
-}
-
 .btn-frame {
   border-radius: 255px 5px 225px 3px / 2px 255px 3px 25px;
   transition: all 0.2s ease;
@@ -111,4 +98,59 @@
 .tickbox-input[type="radio"]:checked::after {
   content: "●";
   font-size: 1rem;
+}
+
+/* OSR Ledger Block Design System */
+.ledger-block {
+  border: 3px solid var(--color-ink-primary, #000000);
+  background-color: var(--color-parchment-base, #ffffff);
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.12);
+  position: relative;
+}
+
+.ledger-block-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 3px solid var(--color-ink-primary, #000000);
+  background-color: var(--color-parchment-base, #ffffff);
+}
+
+.ledger-initial-box {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-right: 3px solid var(--color-ink-primary, #000000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-gothic);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-ink-primary, #000000);
+  flex-shrink: 0;
+  user-select: none;
+  background-color: var(--color-parchment-base, #ffffff);
+}
+
+.ledger-block-title {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-family: var(--font-gothic);
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--color-ink-primary, #000000);
+  letter-spacing: 0.025em;
+  line-height: 1;
+}
+
+.ledger-banner {
+  background-color: var(--color-ink-primary, #000000);
+  color: var(--color-parchment-base, #ffffff);
+  padding: 0.35rem 1rem;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  border-bottom: 2px solid var(--color-ink-primary, #000000);
 }

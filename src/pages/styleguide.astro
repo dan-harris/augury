@@ -58,188 +58,232 @@ import Layout from "../layouts/Layout.astro";
 
 			<main>
 				<div
-					class="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-12 mt-8"
+					class="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-8 mt-8"
 				>
 					<!-- Left Column: Details -->
-					<div class="flex flex-col">
-						<h2
-							class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none"
-						>
-							Identity
-						</h2>
+					<div class="flex flex-col gap-8">
+						<!-- Identity Block -->
+						<section class="ledger-block">
+							<div class="ledger-block-header">
+								<div class="ledger-initial-box">I</div>
+								<div class="ledger-block-title">dentity</div>
+							</div>
+							<div class="ledger-banner">
+								1. Character Background & Designation:
+							</div>
+							<div class="p-6 flex flex-col gap-6">
+								<div class="flex items-end">
+									<label
+										class="font-label font-bold uppercase text-lg mr-3 leading-tight w-20 shrink-0"
+										>Name</label
+									>
+									<input
+										type="text"
+										class="underline-input flex-1 border-b-2 border-ink-primary bg-transparent font-serif text-2xl text-ink-primary px-2 rounded-none"
+										placeholder="Silas the Unyielding"
+									/>
+								</div>
 
-						<div class="flex items-end mb-6">
-							<label
-								class="font-label font-bold uppercase text-lg mr-3 leading-tight"
-								>Name</label
-							>
-							<input
-								type="text"
-								class="underline-input flex-1 border-b-2 border-ink-primary bg-transparent font-serif text-2xl text-ink-primary px-2 rounded-none"
-								placeholder="Silas the Unyielding"
-							/>
-						</div>
+								<div class="flex items-end">
+									<label
+										class="font-label font-bold uppercase text-lg mr-3 leading-tight w-20 shrink-0"
+										>Class</label
+									>
+									<input
+										type="text"
+										class="underline-input flex-1 border-b-2 border-ink-primary bg-transparent font-serif text-2xl text-ink-primary px-2 rounded-none"
+										placeholder="The Worker"
+									/>
+								</div>
 
-						<div class="flex items-end mb-6">
-							<label
-								class="font-label font-bold uppercase text-lg mr-3 leading-tight"
-								>Class</label
-							>
-							<input
-								type="text"
-								class="underline-input flex-1 border-b-2 border-ink-primary bg-transparent font-serif text-2xl text-ink-primary px-2 rounded-none"
-								placeholder="The Worker"
-							/>
-						</div>
+								<div
+									class="border-2 border-ink-primary p-4 relative rounded-none bg-transparent mt-2"
+								>
+									<label
+										class="absolute -top-3 left-3 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider"
+										>Background & Info</label
+									>
+									<textarea
+										rows="4"
+										class="w-full border-none bg-transparent font-serif text-xl text-ink-primary resize-y outline-none"
+										placeholder="Write your grim history here..."
+									></textarea>
+								</div>
+							</div>
+						</section>
 
-						<div
-							class="border-2 border-ink-primary p-5 mt-8 mb-8 relative rounded-md bg-transparent"
-						>
-							<label
-								class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-sm tracking-wider"
-								>Background & Info</label
-							>
-							<textarea
-								rows="4"
-								class="w-full border-none bg-transparent font-serif text-xl text-ink-primary resize-y outline-none"
-								placeholder="Write your grim history here..."
-							></textarea>
-						</div>
-
-						<h2
-							class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none mt-6"
-						>
-							Inventory
-						</h2>
-						<div class="flex flex-col gap-3 mb-8">
-							<label
-								class="font-serif text-xl cursor-pointer flex items-center gap-4"
-							>
-								<input
-									type="checkbox"
-									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
-								/>
-								Lantern (lit)
-							</label>
-							<label
-								class="font-serif text-xl cursor-pointer flex items-center gap-4"
-							>
-								<input
-									type="checkbox"
-									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
-									checked
-								/>
-								Rope (50ft)
-							</label>
-							<label
-								class="font-serif text-xl cursor-pointer flex items-center gap-4"
-							>
-								<input
-									type="checkbox"
-									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
-								/>
-								Iron Rations
-							</label>
-						</div>
+						<!-- Inventory Block -->
+						<section class="ledger-block">
+							<div class="ledger-block-header">
+								<div class="ledger-initial-box">I</div>
+								<div class="ledger-block-title">nventory</div>
+							</div>
+							<div class="ledger-banner">
+								3. Gear & Equipment Carried:
+							</div>
+							<div class="p-6 flex flex-col gap-4">
+								<label
+									class="font-serif text-xl cursor-pointer flex items-center gap-4"
+								>
+									<input
+										type="checkbox"
+										class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
+									/>
+									Lantern (lit)
+								</label>
+								<label
+									class="font-serif text-xl cursor-pointer flex items-center gap-4"
+								>
+									<input
+										type="checkbox"
+										class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
+										checked
+									/>
+									Rope (50ft)
+								</label>
+								<label
+									class="font-serif text-xl cursor-pointer flex items-center gap-4"
+								>
+									<input
+										type="checkbox"
+										class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
+									/>
+									Iron Rations (3 days)
+								</label>
+								<label
+									class="font-serif text-xl cursor-pointer flex items-center gap-4"
+								>
+									<input
+										type="checkbox"
+										class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
+									/>
+									Tinderbox & Torches
+								</label>
+							</div>
+						</section>
 					</div>
 
 					<!-- Right Column: Stats & Status -->
-					<div class="flex flex-col">
-						<h2
-							class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none"
-						>
-							Attributes
-						</h2>
-
-						<div class="flex justify-between mb-8">
-							<div class="flex flex-col items-center">
-								<div
-									class="w-16 h-16 border-2 border-ink-primary rounded-[55%_45%_50%_50%/50%_55%_45%_50%] flex items-center justify-center font-gothic text-4xl mb-2 bg-transparent"
-								>
-									12
-								</div>
-								<label
-									class="font-label font-bold uppercase text-sm tracking-wider"
-									>Might</label
-								>
+					<div class="flex flex-col gap-8">
+						<!-- Stats / Attributes Block -->
+						<section class="ledger-block">
+							<div class="ledger-block-header">
+								<div class="ledger-initial-box">S</div>
+								<div class="ledger-block-title">tats</div>
 							</div>
-							<div class="flex flex-col items-center">
-								<div
-									class="w-16 h-16 border-2 border-ink-primary rounded-[55%_45%_50%_50%/50%_55%_45%_50%] flex items-center justify-center font-gothic text-4xl mb-2 bg-transparent"
-								>
-									8
-								</div>
-								<label
-									class="font-label font-bold uppercase text-sm tracking-wider"
-									>Grace</label
-								>
+							<div class="ledger-banner">
+								1. Roll 6d10 each:
 							</div>
-							<div class="flex flex-col items-center">
-								<div
-									class="w-16 h-16 border-2 border-ink-primary rounded-[55%_45%_50%_50%/50%_55%_45%_50%] flex items-center justify-center font-gothic text-4xl mb-2 bg-transparent"
-								>
-									14
+							<div class="p-6 flex flex-col gap-6">
+								<!-- Strength -->
+								<div class="flex flex-col items-center gap-2">
+									<span class="font-label font-bold uppercase tracking-widest text-lg">Strength</span>
+									<div class="relative w-24 h-24 border-2 border-ink-primary flex items-center justify-center bg-transparent">
+										<div class="absolute top-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="absolute top-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="absolute bottom-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="absolute bottom-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="w-18 h-18 rounded-full border-2 border-ink-primary flex items-center justify-center">
+											<div class="w-15 h-15 rounded-full border border-ink-primary flex items-center justify-center font-gothic text-4xl font-bold">
+												12
+											</div>
+										</div>
+									</div>
 								</div>
-								<label
-									class="font-label font-bold uppercase text-sm tracking-wider"
-									>Will</label
-								>
+
+								<!-- Intellect -->
+								<div class="flex flex-col items-center gap-2">
+									<span class="font-label font-bold uppercase tracking-widest text-lg">Intellect</span>
+									<div class="relative w-24 h-24 border-2 border-ink-primary flex items-center justify-center bg-transparent">
+										<div class="absolute top-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="absolute top-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="absolute bottom-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="absolute bottom-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="w-18 h-18 rounded-full border-2 border-ink-primary flex items-center justify-center">
+											<div class="w-15 h-15 rounded-full border border-ink-primary flex items-center justify-center font-gothic text-4xl font-bold">
+												8
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Will -->
+								<div class="flex flex-col items-center gap-2">
+									<span class="font-label font-bold uppercase tracking-widest text-lg">Will</span>
+									<div class="relative w-24 h-24 border-2 border-ink-primary flex items-center justify-center bg-transparent">
+										<div class="absolute top-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="absolute top-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="absolute bottom-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="absolute bottom-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
+										<div class="w-18 h-18 rounded-full border-2 border-ink-primary flex items-center justify-center">
+											<div class="w-15 h-15 rounded-full border border-ink-primary flex items-center justify-center font-gothic text-4xl font-bold">
+												14
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
-						</div>
+						</section>
 
-						<h2
-							class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none mt-6"
-						>
-							Condition
-						</h2>
+						<!-- Condition Block -->
+						<section class="ledger-block">
+							<div class="ledger-block-header">
+								<div class="ledger-initial-box">C</div>
+								<div class="ledger-block-title">ondition</div>
+							</div>
+							<div class="ledger-banner">
+								4. Health & Physical State:
+							</div>
+							<div class="p-6 flex flex-col gap-6">
+								<div
+									class="border-2 border-ink-primary p-4 relative rounded-none bg-transparent"
+								>
+									<label
+										class="absolute -top-3 left-3 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider"
+										>Current Health</label
+									>
+									<input
+										type="text"
+										class="w-full border-none bg-transparent font-gothic text-5xl text-center text-ink-primary outline-none"
+										value="10 / 10"
+									/>
+								</div>
 
-						<div
-							class="border-2 border-ink-primary p-5 mb-6 relative rounded-md bg-transparent"
-						>
-							<label
-								class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-sm tracking-wider"
-								>Current Health</label
-							>
-							<input
-								type="text"
-								class="w-full border-none bg-transparent font-gothic text-5xl text-center text-ink-primary outline-none"
-								value="10 / 10"
-							/>
-						</div>
-
-						<div class="flex flex-col gap-3 mb-8">
-							<label
-								class="font-serif text-xl cursor-pointer flex items-center gap-4"
-							>
-								<input
-									type="radio"
-									name="status"
-									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
-									checked
-								/>
-								Healthy & Hale
-							</label>
-							<label
-								class="font-serif text-xl cursor-pointer flex items-center gap-4"
-							>
-								<input
-									type="radio"
-									name="status"
-									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
-								/>
-								Severely Wounded
-							</label>
-							<label
-								class="font-serif text-xl cursor-pointer flex items-center gap-4"
-							>
-								<input
-									type="radio"
-									name="status"
-									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
-								/>
-								Doomed
-							</label>
-						</div>
+								<div class="flex flex-col gap-3">
+									<label
+										class="font-serif text-xl cursor-pointer flex items-center gap-4"
+									>
+										<input
+											type="radio"
+											name="status"
+											class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
+											checked
+										/>
+										Healthy & Hale
+									</label>
+									<label
+										class="font-serif text-xl cursor-pointer flex items-center gap-4"
+									>
+										<input
+											type="radio"
+											name="status"
+											class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
+										/>
+										Severely Wounded
+									</label>
+									<label
+										class="font-serif text-xl cursor-pointer flex items-center gap-4"
+									>
+										<input
+											type="radio"
+											name="status"
+											class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
+										/>
+										Doomed
+									</label>
+								</div>
+							</div>
+						</section>
 					</div>
 				</div>
 
