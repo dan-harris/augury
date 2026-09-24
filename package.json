@@ -17,9 +17,12 @@
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.7",
     "@astryxdesign/theme-matcha": "^0.3.0",
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.1.6",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "husky": "^9.1.7",
