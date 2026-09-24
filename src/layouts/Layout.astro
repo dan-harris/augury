@@ -25,23 +25,30 @@ const user = Astro.locals.user;
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen bg-[#d1cbc1] text-ink-primary font-serif leading-relaxed flex flex-col selection:bg-rust-paper selection:text-ink-primary">
+  <body
+    class="min-h-screen text-ink-primary font-serif leading-relaxed flex flex-col selection:bg-rust-paper selection:text-ink-primary"
+  >
     <!-- SVG Print Texture Filter -->
     <svg width="0" height="0" class="absolute -z-10" aria-hidden="true">
       <filter id="print-texture" x="-10%" y="-10%" width="120%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="1" result="noise"></feTurbulence>
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.6"
+          numOctaves="1"
+          result="noise"></feTurbulence>
         <feDisplacementMap
           in="SourceGraphic"
           in2="noise"
           scale="1.0"
           xChannelSelector="R"
-          yChannelSelector="G"
-        ></feDisplacementMap>
+          yChannelSelector="G"></feDisplacementMap>
       </filter>
     </svg>
 
-    <header class="sticky top-0 z-50 border-b-2 border-ink-primary bg-parchment-secondary/90 backdrop-blur-sm shadow-sm">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-8">
+    <header class="sticky top-0 z-50">
+      <div
+        class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-8"
+      >
         <div class="flex items-center gap-6">
           <a href="/" class="flex items-center gap-3 group focus:outline-none">
             <img
@@ -51,19 +58,27 @@ const user = Astro.locals.user;
               onerror="this.style.display='none'"
             />
             <div class="flex flex-col">
-              <span class="font-gothic text-3xl sm:text-4xl text-ink-primary leading-none group-hover:opacity-80 transition-opacity">
+              <span
+                class="font-gothic text-3xl sm:text-4xl text-ink-primary leading-none group-hover:opacity-80 transition-opacity"
+              >
                 Augury
-              </span>
-              <span class="font-label text-[10px] uppercase tracking-[3px] opacity-70 leading-tight">
-                D&D Session Ledger
               </span>
             </div>
           </a>
 
-          <nav class="hidden md:flex items-center gap-4 text-xs font-label uppercase tracking-widest border-l-2 border-ink-primary/30 pl-6">
-            <a href="/" class="hover:underline underline-offset-4 decoration-ink-primary">Ledger</a>
-            <a href="/admin" class="hover:underline underline-offset-4 decoration-ink-primary">Admin</a>
-            <a href="/styleguide" class="hover:underline underline-offset-4 decoration-ink-primary">Styleguide</a>
+          <nav
+            class="hidden md:flex items-center gap-4 text-xs font-label uppercase tracking-widest border-l-2 border-ink-primary/30 pl-6"
+          >
+            <a
+              href="/"
+              class="hover:underline underline-offset-4 decoration-ink-primary"
+              >Ledger</a
+            >
+            <a
+              href="/admin"
+              class="hover:underline underline-offset-4 decoration-ink-primary"
+              >Admin</a
+            >
           </nav>
         </div>
 
@@ -75,13 +90,14 @@ const user = Astro.locals.user;
       <slot />
     </div>
 
-    <footer class="border-t-2 border-ink-primary bg-parchment-secondary/60 py-6 text-center text-xs font-serif text-ink-primary/80">
-      <div class="mx-auto max-w-6xl px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
-        <div class="font-label uppercase tracking-widest text-[11px]">
-          Augury &bull; Grim TTRPG Scheduling Ledger
-        </div>
-        <div class="italic">
-          Anno Domini {new Date().getFullYear()} &bull; augury.danharris.dev
+    <footer class="py-6 text-center text-xs font-serif text-ink-primary/80">
+      <div
+        class="mx-auto max-w-6xl px-4 flex flex-col sm:flex-row justify-end items-center gap-2"
+      >
+        <div class="italic text-sm">
+          Anno Domini {new Date().getFullYear()} &bull; <a
+            href="https://danharris.dev">danharris.dev</a
+          >
         </div>
       </div>
     </footer>

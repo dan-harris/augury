@@ -2,19 +2,33 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="Augury Styleguide — Character Ledger" description="Design tokens, typography, and character ledger components for Augury.">
-	<div class="min-h-screen bg-[#d1cbc1] text-ink-primary font-serif leading-relaxed px-4 py-12 text-lg">
+<Layout
+	title="Augury Styleguide — Character Ledger"
+	description="Design tokens, typography, and character ledger components for Augury."
+>
+	<div
+		class="min-h-screen text-ink-primary font-serif leading-relaxed px-4 py-12 text-lg"
+	>
 		<!-- SVG Filters -->
 		<svg width="0" height="0" class="absolute -z-10">
-			<filter id="print-texture" x="-10%" y="-10%" width="120%" height="120%">
-				<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="1" result="noise"></feTurbulence>
+			<filter
+				id="print-texture"
+				x="-10%"
+				y="-10%"
+				width="120%"
+				height="120%"
+			>
+				<feTurbulence
+					type="fractalNoise"
+					baseFrequency="0.6"
+					numOctaves="1"
+					result="noise"></feTurbulence>
 				<feDisplacementMap
 					in="SourceGraphic"
 					in2="noise"
 					scale="1.0"
 					xChannelSelector="R"
-					yChannelSelector="G"
-				></feDisplacementMap>
+					yChannelSelector="G"></feDisplacementMap>
 			</filter>
 		</svg>
 
@@ -35,13 +49,17 @@ import Layout from "../layouts/Layout.astro";
 						Augury
 					</h1>
 				</div>
-				<div class="text-center font-label uppercase tracking-[4px] opacity-80 text-sm">
+				<div
+					class="text-center font-label uppercase tracking-[4px] opacity-80 text-sm"
+				>
 					Character Ledger Styleguide
 				</div>
 			</header>
 
 			<main>
-				<div class="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-12 mt-8">
+				<div
+					class="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-12 mt-8"
+				>
 					<!-- Left Column: Details -->
 					<div class="flex flex-col">
 						<h2
@@ -51,7 +69,10 @@ import Layout from "../layouts/Layout.astro";
 						</h2>
 
 						<div class="flex items-end mb-6">
-							<label class="font-label font-bold uppercase text-lg mr-3 leading-tight">Name</label>
+							<label
+								class="font-label font-bold uppercase text-lg mr-3 leading-tight"
+								>Name</label
+							>
 							<input
 								type="text"
 								class="underline-input flex-1 border-b-2 border-ink-primary bg-transparent font-serif text-2xl text-ink-primary px-2 rounded-none"
@@ -60,7 +81,10 @@ import Layout from "../layouts/Layout.astro";
 						</div>
 
 						<div class="flex items-end mb-6">
-							<label class="font-label font-bold uppercase text-lg mr-3 leading-tight">Class</label>
+							<label
+								class="font-label font-bold uppercase text-lg mr-3 leading-tight"
+								>Class</label
+							>
 							<input
 								type="text"
 								class="underline-input flex-1 border-b-2 border-ink-primary bg-transparent font-serif text-2xl text-ink-primary px-2 rounded-none"
@@ -88,14 +112,18 @@ import Layout from "../layouts/Layout.astro";
 							Inventory
 						</h2>
 						<div class="flex flex-col gap-3 mb-8">
-							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+							<label
+								class="font-serif text-xl cursor-pointer flex items-center gap-4"
+							>
 								<input
 									type="checkbox"
 									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
 								/>
 								Lantern (lit)
 							</label>
-							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+							<label
+								class="font-serif text-xl cursor-pointer flex items-center gap-4"
+							>
 								<input
 									type="checkbox"
 									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
@@ -103,7 +131,9 @@ import Layout from "../layouts/Layout.astro";
 								/>
 								Rope (50ft)
 							</label>
-							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+							<label
+								class="font-serif text-xl cursor-pointer flex items-center gap-4"
+							>
 								<input
 									type="checkbox"
 									class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative"
@@ -128,7 +158,10 @@ import Layout from "../layouts/Layout.astro";
 								>
 									12
 								</div>
-								<label class="font-label font-bold uppercase text-sm tracking-wider">Might</label>
+								<label
+									class="font-label font-bold uppercase text-sm tracking-wider"
+									>Might</label
+								>
 							</div>
 							<div class="flex flex-col items-center">
 								<div
@@ -136,7 +169,10 @@ import Layout from "../layouts/Layout.astro";
 								>
 									8
 								</div>
-								<label class="font-label font-bold uppercase text-sm tracking-wider">Grace</label>
+								<label
+									class="font-label font-bold uppercase text-sm tracking-wider"
+									>Grace</label
+								>
 							</div>
 							<div class="flex flex-col items-center">
 								<div
@@ -144,7 +180,10 @@ import Layout from "../layouts/Layout.astro";
 								>
 									14
 								</div>
-								<label class="font-label font-bold uppercase text-sm tracking-wider">Will</label>
+								<label
+									class="font-label font-bold uppercase text-sm tracking-wider"
+									>Will</label
+								>
 							</div>
 						</div>
 
@@ -154,7 +193,9 @@ import Layout from "../layouts/Layout.astro";
 							Condition
 						</h2>
 
-						<div class="border-2 border-ink-primary p-5 mb-6 relative rounded-md bg-transparent">
+						<div
+							class="border-2 border-ink-primary p-5 mb-6 relative rounded-md bg-transparent"
+						>
 							<label
 								class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-sm tracking-wider"
 								>Current Health</label
@@ -167,7 +208,9 @@ import Layout from "../layouts/Layout.astro";
 						</div>
 
 						<div class="flex flex-col gap-3 mb-8">
-							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+							<label
+								class="font-serif text-xl cursor-pointer flex items-center gap-4"
+							>
 								<input
 									type="radio"
 									name="status"
@@ -176,7 +219,9 @@ import Layout from "../layouts/Layout.astro";
 								/>
 								Healthy & Hale
 							</label>
-							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+							<label
+								class="font-serif text-xl cursor-pointer flex items-center gap-4"
+							>
 								<input
 									type="radio"
 									name="status"
@@ -184,7 +229,9 @@ import Layout from "../layouts/Layout.astro";
 								/>
 								Severely Wounded
 							</label>
-							<label class="font-serif text-xl cursor-pointer flex items-center gap-4">
+							<label
+								class="font-serif text-xl cursor-pointer flex items-center gap-4"
+							>
 								<input
 									type="radio"
 									name="status"

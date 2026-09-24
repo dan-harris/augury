@@ -240,7 +240,7 @@ export function LiveTally({
 
       {/* Per-Day Tally Cards */}
       <div class="space-y-4">
-        <h3 class="font-label text-base uppercase tracking-widest text-ink-primary font-bold">
+        <h3 class="font-label uppercase tracking-widest text-ink-primary font-bold">
           Per-Day Availability Tally
         </h3>
 
