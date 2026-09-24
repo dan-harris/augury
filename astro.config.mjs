@@ -21,7 +21,7 @@ export default defineConfig({
   },
 
   adapter: cloudflare({
-    imageService: "compile",
+    imageService: "passthrough",
   }),
 
   integrations: [preact()],
