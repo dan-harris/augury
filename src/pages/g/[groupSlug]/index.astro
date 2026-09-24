@@ -1,9 +1,13 @@
 ---
+import { actions } from "astro:actions";
+import SessionCard from "../../../components/SessionCard.astro";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
+import { weekStart } from "../../../lib/weeks";
 
 export const prerender = false;
 
+const user = Astro.locals.user;
 const supabase = Astro.locals.supabase;
 const groupSlugParam = Astro.params.groupSlug;
 const slugId = parseSlugId(groupSlugParam);
@@ -29,14 +33,76 @@ if (groupSlugParam !== canonicalSlug) {
   return Astro.redirect(`/g/${canonicalSlug}`, 301);
 }
 
+// Action results for player linking
+const linkResult = Astro.getActionResult(actions.linkPlayerToUser);
+const unlinkResult = Astro.getActionResult(actions.unlinkPlayerFromUser);
+
+const linkError = linkResult?.error?.message || (linkResult?.data && !linkResult.data.success ? linkResult.data.error : null);
+const unlinkError = unlinkResult?.error?.message || (unlinkResult?.data && !unlinkResult.data.success ? unlinkResult.data.error : null);
+
 // Fetch roster
 const { data: playersList } = await supabase
   .from("players")
-  .select("id, name")
+  .select("id, name, user_id")
   .eq("group_id", group.id)
   .order("name", { ascending: true });
 
 const players = playersList || [];
+const linkedPlayer = user ? players.find((p) => p.user_id === user.id) : null;
+
+// Fetch sessions
+const { data: sessionsList } = await supabase
+  .from("sessions")
+  .select("*")
+  .eq("group_id", group.id)
+  .order("week_start", { ascending: false });
+
+const sessions = sessionsList || [];
+const currentMonday = weekStart();
+
+// Separate sessions into open, confirmed upcoming, and history
+const openSessions = sessions.filter((s) => s.status === "open");
+const confirmedUpcomingSessions = sessions.filter(
+  (s) => s.status === "confirmed" && s.week_start >= currentMonday
+);
+const historySessions = sessions.filter(
+  (s) => s.status === "closed" || (s.week_start < currentMonday && s.status !== "open")
+);
+
+// Fetch tallies for all sessions in group
+const sessionIds = sessions.map((s) => s.id);
+let allTallies: Record<string, any[]> = {};
+let voteCounts: Record<string, number> = {};
+
+if (sessionIds.length > 0) {
+  const { data: talliesData } = await supabase
+    .from("session_day_tallies")
+    .select("*")
+    .in("session_id", sessionIds);
+
+  if (talliesData) {
+    for (const t of talliesData) {
+      if (!allTallies[t.session_id]) allTallies[t.session_id] = [];
+      allTallies[t.session_id].push({
+        day: Number(t.day),
+        yes_count: Number(t.yes_count),
+        voter_ids: Array.isArray(t.voter_ids) ? t.voter_ids : [],
+        viable: Boolean(t.viable),
+      });
+    }
+  }
+
+  const { data: responsesData } = await supabase
+    .from("vote_responses")
+    .select("session_id, player_id")
+    .in("session_id", sessionIds);
+
+  if (responsesData) {
+    for (const r of responsesData) {
+      voteCounts[r.session_id] = (voteCounts[r.session_id] || 0) + 1;
+    }
+  }
+}
 ---
 
 <Layout title={`${group.name} — Campaign Ledger`}>
@@ -57,35 +123,137 @@ const players = playersList || [];
         </p>
       </header>
 
+      {linkError && (
+        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
+          ⚠️ {linkError}
+        </div>
+      )}
+      {unlinkError && (
+        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
+          ⚠️ {unlinkError}
+        </div>
+      )}
+
       <div class="space-y-10">
-        <!-- 1. OPEN SESSIONS SECTION (M3 PLACEHOLDER) -->
+        <!-- 1. CONFIRMED UPCOMING SESSIONS (M4 Task 3) -->
+        {confirmedUpcomingSessions.length > 0 && (
+          <section class="border-2 border-green-800 p-6 rounded-md bg-green-50/60 shadow-xs">
+            <h2 class="font-label text-2xl uppercase tracking-widest text-green-950 border-b border-green-800/30 pb-2 mb-4 block font-bold flex items-center gap-2">
+              <span>🎲 Confirmed Upcoming Sessions ({confirmedUpcomingSessions.length})</span>
+            </h2>
+            <div class="space-y-4">
+              {confirmedUpcomingSessions.map((sess) => (
+                <SessionCard
+                  session={sess}
+                  groupSlug={canonicalSlug}
+                  viabilityThreshold={group.viability_threshold}
+                  tallies={allTallies[sess.id] || []}
+                  totalPlayersCount={players.length}
+                  votedCount={voteCounts[sess.id] || 0}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- 2. OPEN SESSIONS SECTION (M3 / M4) -->
         <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
-          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold">
-            ⚔ Open Session Polls
+          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold flex items-center gap-2">
+            <span>⚔ Open Session Polls ({openSessions.length})</span>
           </h2>
-          <div class="border-2 border-dashed border-ink-primary/40 p-8 text-center rounded-md bg-transparent">
-            <div class="font-gothic text-4xl text-ink-primary mb-2">🎲</div>
-            <h3 class="font-label text-lg uppercase tracking-wider text-ink-primary font-bold mb-1">
-              No Open Polls Right Now
-            </h3>
-            <p class="font-serif text-sm text-ink-primary/80 max-w-md mx-auto">
-              There are currently no active session polls for {group.name}. Check back when your Dungeon Master posts a new schedule!
-            </p>
-          </div>
+
+          {openSessions.length > 0 ? (
+            <div class="space-y-4">
+              {openSessions.map((sess) => (
+                <SessionCard
+                  session={sess}
+                  groupSlug={canonicalSlug}
+                  viabilityThreshold={group.viability_threshold}
+                  tallies={allTallies[sess.id] || []}
+                  totalPlayersCount={players.length}
+                  votedCount={voteCounts[sess.id] || 0}
+                />
+              ))}
+            </div>
+          ) : (
+            <div class="border-2 border-dashed border-ink-primary/40 p-8 text-center rounded-md bg-transparent">
+              <div class="font-gothic text-4xl text-ink-primary mb-2">🎲</div>
+              <h3 class="font-label text-lg uppercase tracking-wider text-ink-primary font-bold mb-1">
+                No Open Polls Right Now
+              </h3>
+              <p class="font-serif text-sm text-ink-primary/80 max-w-md mx-auto">
+                There are currently no active session polls for {group.name}. Check back when your Dungeon Master posts a new schedule!
+              </p>
+            </div>
+          )}
         </section>
 
-        <!-- 2. CAMPAIGN ROSTER -->
+        <!-- 3. CAMPAIGN ROSTER & USER LINKING (M3 Task 5) -->
         <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
-          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold">
-            👥 Campaign Roster ({players.length})
-          </h2>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-ink-primary/40 pb-2 mb-4 gap-2">
+            <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary font-bold m-0">
+              👥 Campaign Roster ({players.length})
+            </h2>
+            {user && (
+              <span class="font-serif text-xs text-ink-primary/80 italic">
+                {linkedPlayer ? `Linked to ${linkedPlayer.name}` : "Signed in — click 'Is this you?' to link your character"}
+              </span>
+            )}
+          </div>
+
           {players.length > 0 ? (
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {players.map((player) => (
-                <div class="p-3 border border-ink-primary/40 rounded bg-parchment-base text-center font-serif text-base font-bold text-ink-primary shadow-xs">
-                  ⚔ {player.name}
-                </div>
-              ))}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {players.map((player) => {
+                const isLinkedToMe = user && player.user_id === user.id;
+                const isUnlinked = !player.user_id;
+
+                return (
+                  <div class={`p-3.5 border-2 rounded bg-parchment-base flex flex-col justify-between gap-2 shadow-xs ${
+                    isLinkedToMe ? "border-ink-primary bg-ink-primary/5" : "border-ink-primary/40"
+                  }`}>
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="font-serif text-base font-bold text-ink-primary">
+                        ⚔ {player.name}
+                      </span>
+                      {isLinkedToMe && (
+                        <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-ink-primary text-parchment-base rounded font-bold">
+                          You
+                        </span>
+                      )}
+                    </div>
+
+                    <!-- User Link Affordance -->
+                    {user && (
+                      <div class="pt-1 border-t border-ink-primary/20 flex items-center justify-between text-xs">
+                        {isLinkedToMe ? (
+                          <form method="POST" action={actions.unlinkPlayerFromUser} class="w-full text-right">
+                            <input type="hidden" name="playerId" value={player.id} />
+                            <button
+                              type="submit"
+                              class="text-[11px] font-label uppercase tracking-wider text-ink-primary/60 hover:text-rust-ink underline cursor-pointer"
+                            >
+                              Unlink Account
+                            </button>
+                          </form>
+                        ) : isUnlinked && !linkedPlayer ? (
+                          <form method="POST" action={actions.linkPlayerToUser} class="w-full flex items-center justify-between">
+                            <span class="font-serif text-[11px] text-ink-primary/60 italic">Unlinked</span>
+                            <input type="hidden" name="playerId" value={player.id} />
+                            <button
+                              type="submit"
+                              class="btn-frame border border-ink-primary bg-parchment-secondary px-2.5 py-0.5 font-label uppercase text-[10px] tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold cursor-pointer"
+                            >
+                              Is this you?
+                            </button>
+                          </form>
+                        ) : player.user_id ? (
+                          <span class="font-serif text-[11px] text-ink-primary/50 italic">Linked to user</span>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <p class="font-serif italic text-sm text-ink-primary/70 text-center py-4 border border-dashed border-ink-primary/30 rounded">
@@ -94,14 +262,30 @@ const players = playersList || [];
           )}
         </section>
 
-        <!-- 3. SESSION HISTORY (PLACEHOLDER) -->
+        <!-- 4. SESSION HISTORY (M4 Task 3) -->
         <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
           <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold">
-            📜 Confirmed Session History
+            📜 Past & Closed Session History ({historySessions.length})
           </h2>
-          <p class="font-serif italic text-sm text-ink-primary/70 text-center py-4 border border-dashed border-ink-primary/30 rounded">
-            No confirmed past sessions recorded yet.
-          </p>
+
+          {historySessions.length > 0 ? (
+            <div class="space-y-3">
+              {historySessions.map((sess) => (
+                <SessionCard
+                  session={sess}
+                  groupSlug={canonicalSlug}
+                  viabilityThreshold={group.viability_threshold}
+                  tallies={allTallies[sess.id] || []}
+                  totalPlayersCount={players.length}
+                  votedCount={voteCounts[sess.id] || 0}
+                />
+              ))}
+            </div>
+          ) : (
+            <p class="font-serif italic text-sm text-ink-primary/70 text-center py-4 border border-dashed border-ink-primary/30 rounded">
+              No past or closed sessions in history.
+            </p>
+          )}
         </section>
       </div>
     </div>

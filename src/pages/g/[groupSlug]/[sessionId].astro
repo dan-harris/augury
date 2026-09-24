@@ -1,0 +1,244 @@
+---
+import { actions } from "astro:actions";
+import Layout from "../../../layouts/Layout.astro";
+import { LiveTally } from "../../../components/islands/LiveTally";
+import { VotingForm } from "../../../components/islands/VotingForm";
+import { composeSlug, parseSlugId } from "../../../lib/slugs";
+import { formatDayDate, formatWeekLabel } from "../../../lib/weeks";
+import { getBestDay, type TallyRow } from "../../../lib/viability";
+
+export const prerender = false;
+
+const user = Astro.locals.user;
+const supabase = Astro.locals.supabase;
+
+const groupSlugParam = Astro.params.groupSlug;
+const sessionId = Astro.params.sessionId;
+const slugId = parseSlugId(groupSlugParam);
+
+if (!slugId || !sessionId) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+// Fetch group
+const { data: group } = await supabase
+  .from("groups")
+  .select("*")
+  .eq("slug_id", slugId)
+  .maybeSingle();
+
+if (!group) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+// Canonical slug check
+const canonicalSlug = composeSlug(group.name, group.slug_id);
+if (groupSlugParam !== canonicalSlug) {
+  return Astro.redirect(`/g/${canonicalSlug}/${sessionId}`, 301);
+}
+
+// Fetch session
+const { data: session } = await supabase
+  .from("sessions")
+  .select("*")
+  .eq("id", sessionId)
+  .eq("group_id", group.id)
+  .maybeSingle();
+
+if (!session) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+// Action results for admin confirm / close
+const confirmResult = Astro.getActionResult(actions.confirmSession);
+const closeResult = Astro.getActionResult(actions.closeSession);
+const confirmError = confirmResult?.error?.message || (confirmResult?.data && !confirmResult.data.success ? confirmResult.data.error : null);
+const closeError = closeResult?.error?.message || (closeResult?.data && !closeResult.data.success ? closeResult.data.error : null);
+
+// Check if current user is an admin of this group
+let isAdmin = false;
+if (user) {
+  const { data: adminRecord } = await supabase
+    .from("group_admins")
+    .select("user_id")
+    .eq("group_id", group.id)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  isAdmin = Boolean(adminRecord);
+}
+
+// Fetch players roster
+const { data: playersList } = await supabase
+  .from("players")
+  .select("id, name, user_id")
+  .eq("group_id", group.id)
+  .order("name", { ascending: true });
+
+const players = playersList || [];
+const linkedPlayer = user ? players.find((p) => p.user_id === user.id) : null;
+const linkedPlayerId = linkedPlayer ? linkedPlayer.id : null;
+
+// Fetch session day tallies
+const { data: talliesData } = await supabase
+  .from("session_day_tallies")
+  .select("day, yes_count, voter_ids, viable")
+  .eq("session_id", sessionId);
+
+const tallies: TallyRow[] = (talliesData || []).map((t: any) => ({
+  day: Number(t.day),
+  yes_count: Number(t.yes_count),
+  voter_ids: Array.isArray(t.voter_ids) ? t.voter_ids : [],
+  viable: Boolean(t.viable),
+}));
+
+// Fetch vote responses (who voted)
+const { data: responsesData } = await supabase
+  .from("vote_responses")
+  .select("player_id")
+  .eq("session_id", sessionId);
+
+const votedPlayerIds = (responsesData || []).map((r) => r.player_id);
+
+// Fetch raw votes per player
+const { data: rawVotes } = await supabase
+  .from("votes")
+  .select("player_id, day")
+  .eq("session_id", sessionId);
+
+const playerVotesMap: Record<string, number[]> = {};
+if (rawVotes) {
+  for (const v of rawVotes) {
+    if (!playerVotesMap[v.player_id]) playerVotesMap[v.player_id] = [];
+    playerVotesMap[v.player_id].push(Number(v.day));
+  }
+}
+
+const weekLabel = formatWeekLabel(session.week_start);
+const bestDay = getBestDay(tallies, group.viability_threshold);
+---
+
+<Layout title={`${weekLabel} — ${group.name} Session Poll`}>
+  <main class="max-w-[900px] mx-auto pb-16">
+    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-10 relative">
+      <!-- Header Navigation -->
+      <nav class="mb-6 flex justify-between items-center border-b border-ink-primary/30 pb-3">
+        <a href={`/g/${canonicalSlug}`} class="font-label text-sm uppercase tracking-wider text-ink-primary hover:underline">
+          &larr; Back to {group.name} Ledger
+        </a>
+        {isAdmin && (
+          <a
+            href={`/admin/${canonicalSlug}`}
+            class="btn-frame border border-ink-primary bg-parchment-secondary px-3 py-1 font-label uppercase text-xs tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold"
+          >
+            🛡 Admin Controls
+          </a>
+        )}
+      </nav>
+
+      <!-- Session Title Header -->
+      <header class="border-b-2 border-ink-primary pb-6 mb-8">
+        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+          <h1 class="font-gothic text-4xl sm:text-5xl text-ink-primary m-0 leading-none">
+            {weekLabel}
+          </h1>
+          <span class={`font-label uppercase tracking-widest text-xs px-3 py-1 border-2 font-bold inline-block self-start sm:self-auto ${
+            session.status === "confirmed"
+              ? "border-green-800 bg-green-100 text-green-950"
+              : session.status === "closed"
+              ? "border-ink-primary/40 bg-parchment-secondary text-ink-primary/70"
+              : "border-ink-primary bg-ink-primary text-parchment-base"
+          }`}>
+            {session.status.toUpperCase()}
+          </span>
+        </div>
+        <p class="font-serif text-sm text-ink-primary/80 mt-2">
+          Group: <strong class="font-bold">{group.name}</strong> &bull; Viability Threshold: <strong class="font-bold">{group.viability_threshold} players</strong> &bull; Roster Size: <strong class="font-bold">{players.length} players</strong>
+        </p>
+      </header>
+
+      {confirmError && (
+        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
+          ⚠️ {confirmError}
+        </div>
+      )}
+      {closeError && (
+        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
+          ⚠️ {closeError}
+        </div>
+      )}
+
+      <!-- Admin Inline Controls Section (If Admin & Open) -->
+      {isAdmin && session.status === "open" && (
+        <section class="mb-8 p-5 border-2 border-ink-primary bg-parchment-secondary/40 rounded-md">
+          <h3 class="font-label text-sm uppercase tracking-wider text-ink-primary font-bold mb-3 flex items-center gap-2">
+            <span>🛡 Admin Session Lifecycle Controls</span>
+          </h3>
+
+          <div class="flex flex-wrap items-center gap-3">
+            {session.candidate_days.map((dayIdx) => {
+              const isBest = bestDay === dayIdx;
+              const formatted = formatDayDate(session.week_start, dayIdx);
+              return (
+                <form method="POST" action={actions.confirmSession} class="inline">
+                  <input type="hidden" name="sessionId" value={session.id} />
+                  <input type="hidden" name="day" value={dayIdx} />
+                  <button
+                    type="submit"
+                    class={`btn-frame border-2 px-3 py-1 font-label uppercase text-xs tracking-wider font-bold cursor-pointer transition-colors ${
+                      isBest
+                        ? "border-green-800 bg-green-800 text-green-50 hover:bg-green-900"
+                        : "border-ink-primary bg-parchment-base text-ink-primary hover:bg-ink-primary hover:text-parchment-base"
+                    }`}
+                  >
+                    Confirm {formatted} {isBest ? "★" : ""}
+                  </button>
+                </form>
+              );
+            })}
+
+            <form method="POST" action={actions.closeSession} class="inline ml-auto">
+              <input type="hidden" name="sessionId" value={session.id} />
+              <button
+                type="submit"
+                class="btn-frame border border-rust-ink bg-rust-paper/40 text-rust-ink px-3 py-1 font-label uppercase text-xs tracking-wider font-bold hover:bg-rust-ink hover:text-parchment-base cursor-pointer"
+              >
+                Close Without Pick
+              </button>
+            </form>
+          </div>
+        </section>
+      )}
+
+      <div class="space-y-10">
+        <!-- 1. Voting Form (If Session is Open) -->
+        {session.status === "open" && (
+          <VotingForm
+            client:load
+            sessionId={session.id}
+            weekStart={session.week_start}
+            candidateDays={session.candidate_days}
+            players={players}
+            playerVotesMap={playerVotesMap}
+            votedPlayerIds={votedPlayerIds}
+            linkedPlayerId={linkedPlayerId}
+          />
+        )}
+
+        <!-- 2. Realtime Tally Board -->
+        <LiveTally
+          client:load
+          sessionId={session.id}
+          weekStart={session.week_start}
+          candidateDays={session.candidate_days}
+          viabilityThreshold={group.viability_threshold}
+          initialStatus={session.status}
+          initialConfirmedDay={session.confirmed_day}
+          initialTallies={tallies}
+          initialVotedPlayerIds={votedPlayerIds}
+          players={players}
+          isAdmin={isAdmin}
+        />
+      </div>
+    </div>
+  </main>
+</Layout>

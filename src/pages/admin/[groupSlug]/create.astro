@@ -1,0 +1,167 @@
+---
+import { actions } from "astro:actions";
+import Layout from "../../../layouts/Layout.astro";
+import { composeSlug, parseSlugId } from "../../../lib/slugs";
+import { getDayName, getNextNWeeks, weekStart } from "../../../lib/weeks";
+
+export const prerender = false;
+
+const user = Astro.locals.user;
+const supabase = Astro.locals.supabase;
+
+const groupSlugParam = Astro.params.groupSlug;
+const slugId = parseSlugId(groupSlugParam);
+
+if (!slugId || !user) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+// Fetch group
+const { data: group } = await supabase
+  .from("groups")
+  .select("*")
+  .eq("slug_id", slugId)
+  .maybeSingle();
+
+if (!group) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+// Verify user is group admin
+const { data: adminRecord } = await supabase
+  .from("group_admins")
+  .select("user_id")
+  .eq("group_id", group.id)
+  .eq("user_id", user.id)
+  .maybeSingle();
+
+if (!adminRecord) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+// Canonical slug check
+const canonicalSlug = composeSlug(group.name, group.slug_id);
+if (groupSlugParam !== canonicalSlug) {
+  return Astro.redirect(`/admin/${canonicalSlug}/create`, 301);
+}
+
+// Handle form action result if posted directly
+const result = Astro.getActionResult(actions.createSession);
+if (result?.data && result.data.success && result.data.redirectUrl) {
+  return Astro.redirect(result.data.redirectUrl);
+}
+
+const errorMessage = result?.error?.message || (result?.data && !result.data.success ? result.data.error : null);
+
+// Fetch previous session to carry default candidate days
+const { data: lastSession } = await supabase
+  .from("sessions")
+  .select("candidate_days")
+  .eq("group_id", group.id)
+  .order("created_at", { ascending: false })
+  .limit(1)
+  .maybeSingle();
+
+const defaultCandidateDays: number[] = lastSession?.candidate_days || [0, 1, 2, 3, 4, 5, 6];
+
+// Week options
+const weekOptions = getNextNWeeks(8);
+const upcomingMonday = weekStart();
+---
+
+<Layout title={`Create Session Poll — ${group.name}`}>
+  <main class="max-w-[750px] mx-auto pb-12">
+    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-10 relative">
+      <nav class="mb-6 flex justify-between items-center border-b border-ink-primary/30 pb-3">
+        <a href={`/admin/${canonicalSlug}`} class="font-label text-sm uppercase tracking-wider text-ink-primary hover:underline">
+          &larr; Back to {group.name} Admin
+        </a>
+      </nav>
+
+      <header class="border-b-2 border-ink-primary pb-6 mb-8">
+        <h1 class="font-gothic text-4xl sm:text-5xl text-ink-primary m-0 leading-none">
+          Create New Session Poll
+        </h1>
+        <p class="font-serif text-sm text-ink-primary/80 mt-2">
+          Group: <strong class="font-bold">{group.name}</strong> &bull; Select the Target ISO Week and Candidate Playing Days.
+        </p>
+      </header>
+
+      {errorMessage && (
+        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
+          ⚠️ {errorMessage}
+        </div>
+      )}
+
+      <form method="POST" action={actions.createSession} class="space-y-8">
+        <input type="hidden" name="groupId" value={group.id} />
+
+        <!-- 1. Select ISO Week -->
+        <div class="space-y-2">
+          <label for="weekStart" class="block font-label text-sm uppercase tracking-wider text-ink-primary font-bold">
+            1. Target Week (Starts Monday)
+          </label>
+          <select
+            id="weekStart"
+            name="weekStart"
+            required
+            class="w-full px-4 py-2.5 border-2 border-ink-primary bg-parchment-base font-serif text-base text-ink-primary rounded focus:outline-none"
+          >
+            {weekOptions.map((opt) => (
+              <option value={opt.value} selected={opt.value === upcomingMonday}>
+                {opt.label} ({opt.value})
+              </option>
+            ))}
+          </select>
+          <p class="font-serif text-xs italic text-ink-primary/70">
+            Sessions are anchored to Monday YYYY-MM-DD dates.
+          </p>
+        </div>
+
+        <!-- 2. Select Candidate Days -->
+        <div class="space-y-3">
+          <label class="block font-label text-sm uppercase tracking-wider text-ink-primary font-bold">
+            2. Candidate Days to Poll (Multi-Select)
+          </label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[0, 1, 2, 3, 4, 5, 6].map((dayIdx) => {
+              const dayName = getDayName(dayIdx);
+              const isCheckedDefault = defaultCandidateDays.includes(dayIdx);
+              return (
+                <label class="btn-frame border-2 border-ink-primary/60 bg-parchment-base hover:bg-parchment-secondary p-3 rounded flex items-center gap-2 cursor-pointer font-serif text-sm">
+                  <input
+                    type="checkbox"
+                    name="candidateDays"
+                    value={dayIdx}
+                    checked={isCheckedDefault}
+                    class="accent-ink-primary w-4 h-4 cursor-pointer"
+                  />
+                  <span class="font-bold">{dayName}</span>
+                </label>
+              );
+            })}
+          </div>
+          <p class="font-serif text-xs italic text-ink-primary/70">
+            {lastSession ? "Defaults loaded from your previous session poll." : "All 7 days selected by default."}
+          </p>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-4 border-t border-ink-primary/30 flex justify-end gap-3">
+          <a
+            href={`/admin/${canonicalSlug}`}
+            class="btn-frame border border-ink-primary bg-parchment-base px-5 py-2 font-label uppercase text-xs tracking-wider font-bold"
+          >
+            Cancel
+          </a>
+          <button
+            type="submit"
+            class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer transition-colors"
+          >
+            Publish Session Poll 🎲
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</Layout>

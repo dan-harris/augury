@@ -1,5 +1,6 @@
 ---
 import { actions } from "astro:actions";
+import SessionCard from "../../../components/SessionCard.astro";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
 
@@ -23,6 +24,8 @@ const removePlayerResult = Astro.getActionResult(actions.removePlayer);
 const createInviteResult = Astro.getActionResult(actions.createInvite);
 const revokeInviteResult = Astro.getActionResult(actions.revokeInvite);
 const removeAdminResult = Astro.getActionResult(actions.removeAdmin);
+const confirmSessionResult = Astro.getActionResult(actions.confirmSession);
+const closeSessionResult = Astro.getActionResult(actions.closeSession);
 
 // Fetch group
 const { data: group } = await supabase
@@ -77,12 +80,59 @@ const { data: invitesList } = await supabase
 
 const invites = invitesList || [];
 
+// Fetch sessions
+const { data: sessionsList } = await supabase
+  .from("sessions")
+  .select("*")
+  .eq("group_id", group.id)
+  .order("week_start", { ascending: false });
+
+const sessions = sessionsList || [];
+
+// Fetch tallies for all sessions in group
+const sessionIds = sessions.map((s) => s.id);
+let allTallies: Record<string, any[]> = {};
+let voteCounts: Record<string, number> = {};
+
+if (sessionIds.length > 0) {
+  const { data: talliesData } = await supabase
+    .from("session_day_tallies")
+    .select("*")
+    .in("session_id", sessionIds);
+
+  if (talliesData) {
+    for (const t of talliesData) {
+      if (!allTallies[t.session_id]) allTallies[t.session_id] = [];
+      allTallies[t.session_id].push({
+        day: Number(t.day),
+        yes_count: Number(t.yes_count),
+        voter_ids: Array.isArray(t.voter_ids) ? t.voter_ids : [],
+        viable: Boolean(t.viable),
+      });
+    }
+  }
+
+  const { data: responsesData } = await supabase
+    .from("vote_responses")
+    .select("session_id, player_id")
+    .in("session_id", sessionIds);
+
+  if (responsesData) {
+    for (const r of responsesData) {
+      voteCounts[r.session_id] = (voteCounts[r.session_id] || 0) + 1;
+    }
+  }
+}
+
 const origin = Astro.url.origin;
 const publicGroupUrl = `${origin}/g/${canonicalSlug}`;
 
 // Error messages
 const updateError = updateResult?.error?.message || (updateResult?.data && !updateResult.data.success ? updateResult.data.error : null);
 const addPlayerError = addPlayerResult?.error?.message || (addPlayerResult?.data && !addPlayerResult.data.success ? addPlayerResult.data.error : null);
+const confirmSessionError = confirmSessionResult?.error?.message || (confirmSessionResult?.data && !confirmSessionResult.data.success ? confirmSessionResult.data.error : null);
+const closeSessionError = closeSessionResult?.error?.message || (closeSessionResult?.data && !closeSessionResult.data.success ? closeSessionResult.data.error : null);
+
 const renamePlayerError = renamePlayerResult?.error?.message || (renamePlayerResult?.data && !renamePlayerResult.data.success ? renamePlayerResult.data.error : null);
 const removePlayerWarning = removePlayerResult?.data && !removePlayerResult.data.success && removePlayerResult.data.requiresConfirmation ? removePlayerResult.data.error : null;
 const removePlayerError = removePlayerResult?.error?.message || (removePlayerResult?.data && !removePlayerResult.data.success && !removePlayerResult.data.requiresConfirmation ? removePlayerResult.data.error : null);
@@ -463,25 +513,74 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
           </div>
         </section>
 
-        <!-- 5. SESSIONS PLACEHOLDER (M3) -->
-        <section class="border-2 border-dashed border-ink-primary/50 p-6 rounded-md bg-transparent">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <!-- 5. CAMPAIGN SESSIONS -->
+        <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-ink-primary/40 pb-3 mb-6">
             <div>
-              <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary font-bold mb-1">
-                ⚔ Campaign Session Polls
+              <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary font-bold m-0">
+                ⚔ Campaign Session Polls ({sessions.length})
               </h2>
-              <p class="font-serif text-sm text-ink-primary/80">
-                Schedule new D&D sessions, set candidate days, and track player availability.
+              <p class="font-serif text-sm text-ink-primary/80 mt-1">
+                Schedule D&D sessions, set candidate days, and manage lifecycle.
               </p>
             </div>
             <a
               href={`/admin/${canonicalSlug}/create`}
-              class="btn-frame border-2 border-ink-primary bg-parchment-secondary px-4 py-2 font-label uppercase tracking-wider text-xs text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold shrink-0 text-center"
+              class="btn-frame border-2 border-ink-primary bg-ink-primary px-4 py-2 font-label uppercase tracking-wider text-xs text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold shrink-0 text-center cursor-pointer"
             >
-              + Create Session Poll (M3) &rarr;
+              + Create Session Poll &rarr;
             </a>
           </div>
+
+          {confirmSessionError && (
+            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
+              ⚠️ {confirmSessionError}
+            </div>
+          )}
+
+          {closeSessionError && (
+            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
+              ⚠️ {closeSessionError}
+            </div>
+          )}
+
+          {sessions.length > 0 ? (
+            <div class="space-y-4">
+              {sessions.map((sess) => {
+                const tallies = allTallies[sess.id] || [];
+                const votedCount = voteCounts[sess.id] || 0;
+                return (
+                  <SessionCard
+                    session={sess}
+                    groupSlug={canonicalSlug}
+                    viabilityThreshold={group.viability_threshold}
+                    tallies={tallies}
+                    totalPlayersCount={players.length}
+                    votedCount={votedCount}
+                    isAdmin={true}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <div class="border-2 border-dashed border-ink-primary/40 p-8 text-center rounded-md bg-parchment-base">
+              <div class="font-gothic text-4xl text-ink-primary mb-2">🎲</div>
+              <h3 class="font-label text-lg uppercase tracking-wider text-ink-primary font-bold mb-1">
+                No Session Polls Created Yet
+              </h3>
+              <p class="font-serif text-sm text-ink-primary/80 max-w-md mx-auto mb-4">
+                Create a poll for an upcoming week to gather availability from your players.
+              </p>
+              <a
+                href={`/admin/${canonicalSlug}/create`}
+                class="btn-frame border-2 border-ink-primary bg-ink-primary px-5 py-2 font-label uppercase text-xs tracking-wider text-parchment-base font-bold inline-block hover:bg-parchment-secondary hover:text-ink-primary"
+              >
+                + Create First Session Poll
+              </a>
+            </div>
+          )}
         </section>
+
 
       </div>
     </div>
