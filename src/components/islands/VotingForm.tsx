@@ -73,12 +73,11 @@ export function VotingForm({
     setFeedback(null);
 
     try {
-      const formData = new FormData();
-      formData.append("sessionId", sessionId);
-      formData.append("playerId", selectedPlayerId);
-      formData.append("days", JSON.stringify(selectedDays));
-
-      const res = await actions.submitVotes(formData);
+      const res = await actions.submitVotes({
+        sessionId,
+        playerId: selectedPlayerId,
+        days: selectedDays,
+      });
 
       if (res.error) {
         setFeedback({ type: "error", message: res.error.message || "Failed to submit votes." });

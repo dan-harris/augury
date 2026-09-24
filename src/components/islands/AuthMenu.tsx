@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import { actions } from "astro:actions";
 
 interface AuthMenuProps {
@@ -10,17 +10,25 @@ export function AuthMenu({ userEmail }: AuthMenuProps) {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    if (!email) return;
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+    const emailVal = ((formData.get("email") as string) || email).trim();
+    if (!emailVal) return;
 
     setLoading(true);
     setErrorMsg(null);
 
     try {
       const result = await actions.requestMagicLink({
-        email,
+        email: emailVal,
         next: window.location.pathname,
       });
 
@@ -81,10 +89,16 @@ export function AuthMenu({ userEmail }: AuthMenuProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-1 sm:flex-row sm:items-center">
+    <form
+      onSubmit={handleSubmit}
+      data-testid="auth-menu-form"
+      data-hydrated={mounted ? "true" : "false"}
+      className="flex flex-col gap-1 sm:flex-row sm:items-center"
+    >
       <div className="relative flex items-center gap-2">
         <input
           type="email"
+          name="email"
           required
           placeholder="keeper@example.com"
           value={email}

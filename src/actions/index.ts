@@ -388,20 +388,10 @@ export const server = {
   }),
 
   submitVotes: defineAction({
-    accept: "form",
     input: z.object({
       sessionId: z.string().min(1, "Invalid session ID."),
       playerId: z.string().uuid("Invalid player ID."),
-      days: z.preprocess((val) => {
-        if (typeof val === "string") {
-          try {
-            return JSON.parse(val);
-          } catch {
-            return [Number(val)];
-          }
-        }
-        return val;
-      }, z.array(z.coerce.number().int().min(0).max(6))),
+      days: z.array(z.coerce.number().int().min(0).max(6)),
     }),
     handler: async (input, context) => {
       const supabase = createServerClient(context.cookies, context.request.headers);
