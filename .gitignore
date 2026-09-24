@@ -23,7 +23,7 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-.agents/plans/
+.agents/plans/styleguide/inspiration
 
 # wrangler files
 .wrangler
