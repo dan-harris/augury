@@ -1,6 +1,7 @@
 ---
-import { formatDayDate, formatWeekLabel } from "../lib/weeks";
+import Icon from "./Icon.astro";
 import { getBestDay, getViableDays, type TallyRow } from "../lib/viability";
+import { formatDayDate, formatWeekLabel } from "../lib/weeks";
 
 interface Props {
   session: {
@@ -87,7 +88,8 @@ const publicUrl = `/g/${groupSlug}/${session.id}`;
   <!-- Status / Viability Highlights -->
   {isConfirmed && session.confirmed_day !== null && session.confirmed_day !== undefined && (
     <div class="p-3 border border-green-800/40 bg-green-100/60 rounded text-green-950 font-serif text-sm font-bold flex items-center gap-2">
-      <span>🎲 Confirmed Day:</span>
+      <Icon name="dice" class="size-4 shrink-0" />
+      <span>Confirmed Day:</span>
       <span>{formatDayDate(session.week_start, session.confirmed_day)}</span>
     </div>
   )}

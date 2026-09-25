@@ -1,7 +1,7 @@
 import type { JSX } from "preact";
 
 export interface IconProps extends JSX.HTMLAttributes<SVGSVGElement> {
-  name: "dice" | "chair" | string;
+  name: "dice" | "chair" | "spikes" | "scroll" | "swords" | "info" | "chest" | "cave" | "castle" | string;
   class?: string;
   className?: string;
 }

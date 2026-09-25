@@ -1,5 +1,6 @@
 ---
 import { actions } from "astro:actions";
+import Icon from "../../../components/Icon.astro";
 import SessionCard from "../../../components/SessionCard.astro";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
@@ -175,8 +176,8 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
       <!-- Remove Player Confirmation Alert if needed -->
       {removePlayerWarning && (
         <div class="mb-8 p-4 border-2 border-rust-ink bg-rust-paper/40 rounded-md">
-          <h3 class="font-label text-lg uppercase tracking-wider text-rust-ink font-bold mb-1">
-            ⚠️ Player Removal Warning
+          <h3 class="font-label text-lg uppercase tracking-wider text-rust-ink font-bold mb-1 flex items-center gap-2">
+            <Icon name="spikes" class="size-5 shrink-0" /> <span>Player Removal Warning</span>
           </h3>
           <p class="font-serif text-sm text-rust-ink mb-3">{removePlayerWarning}</p>
           <div class="flex gap-3">
@@ -198,8 +199,8 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
       )}
 
       {removePlayerError && (
-        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-          ⚠️ {removePlayerError}
+        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+          <Icon name="spikes" class="size-5 shrink-0" /> <span>{removePlayerError}</span>
         </div>
       )}
 
@@ -213,8 +214,8 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
           </h2>
 
           {updateError && (
-            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-              ⚠️ {updateError}
+            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+              <Icon name="spikes" class="size-5 shrink-0" /> <span>{updateError}</span>
             </div>
           )}
 
@@ -271,19 +272,19 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
         <!-- 2. PLAYER ROSTER -->
         <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
           <div class="flex justify-between items-center border-b border-ink-primary/40 pb-2 mb-4">
-            <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary font-bold m-0">
-              👥 Player Roster ({players.length})
+            <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary font-bold m-0 flex items-center gap-2">
+              <Icon name="castle" class="size-6" /> <span>Player Roster ({players.length})</span>
             </h2>
           </div>
 
           {addPlayerError && (
-            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-              ⚠️ {addPlayerError}
+            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+              <Icon name="spikes" class="size-5 shrink-0" /> <span>{addPlayerError}</span>
             </div>
           )}
           {renamePlayerError && (
-            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-              ⚠️ {renamePlayerError}
+            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+              <Icon name="spikes" class="size-5 shrink-0" /> <span>{renamePlayerError}</span>
             </div>
           )}
 
@@ -318,7 +319,7 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
                       onclick={`document.getElementById('rename-form-${player.id}').classList.toggle('hidden'); document.getElementById('name-display-${player.id}').classList.toggle('hidden');`}
                       class="text-xs font-label uppercase tracking-wider text-ink-primary/60 hover:text-ink-primary underline ml-2 font-normal cursor-pointer"
                     >
-                      ✏️ Edit
+                      Edit
                     </button>
                     <!-- Hidden Rename Form -->
                     <form
@@ -374,19 +375,19 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
 
         <!-- 3. ADMINS & INVITES -->
         <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
-          <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 font-bold">
-            🛡 Group Admins & Invites
+          <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 font-bold flex items-center gap-2">
+            <Icon name="chair" class="size-6" /> <span>Group Admins & Invites</span>
           </h2>
 
           {removeAdminError && (
-            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-              ⚠️ {removeAdminError}
+            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+              <Icon name="spikes" class="size-5 shrink-0" /> <span>{removeAdminError}</span>
             </div>
           )}
 
           {createInviteError && (
-            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-              ⚠️ {createInviteError}
+            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+              <Icon name="spikes" class="size-5 shrink-0" /> <span>{createInviteError}</span>
             </div>
           )}
 
@@ -490,8 +491,8 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
 
         <!-- 4. SHARE & PUBLIC LINK -->
         <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
-          <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 font-bold">
-            🔗 Public Campaign Ledger Link
+          <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 font-bold flex items-center gap-2">
+            <Icon name="cave" class="size-6" /> <span>Public Campaign Ledger Link</span>
           </h2>
           <p class="font-serif text-sm text-ink-primary/80 mb-3">
             Share this link with your players so they can view campaign sessions and submit availability polls.
@@ -517,8 +518,8 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
         <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-ink-primary/40 pb-3 mb-6">
             <div>
-              <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary font-bold m-0">
-                ⚔ Campaign Session Polls ({sessions.length})
+              <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary font-bold m-0 flex items-center gap-2">
+                <Icon name="swords" class="size-6" /> <span>Campaign Session Polls ({sessions.length})</span>
               </h2>
               <p class="font-serif text-sm text-ink-primary/80 mt-1">
                 Schedule D&D sessions, set candidate days, and manage lifecycle.
@@ -533,14 +534,14 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
           </div>
 
           {confirmSessionError && (
-            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-              ⚠️ {confirmSessionError}
+            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+              <Icon name="spikes" class="size-5 shrink-0" /> <span>{confirmSessionError}</span>
             </div>
           )}
 
           {closeSessionError && (
-            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-              ⚠️ {closeSessionError}
+            <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+              <Icon name="spikes" class="size-5 shrink-0" /> <span>{closeSessionError}</span>
             </div>
           )}
 
@@ -563,8 +564,8 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
               })}
             </div>
           ) : (
-            <div class="border-2 border-dashed border-ink-primary/40 p-8 text-center rounded-md bg-parchment-base">
-              <div class="font-gothic text-4xl text-ink-primary mb-2">🎲</div>
+            <div class="border-2 border-dashed border-ink-primary/40 p-8 text-center rounded-md bg-parchment-base flex flex-col items-center">
+              <Icon name="dice" class="size-12 text-ink-primary mb-2" />
               <h3 class="font-label text-lg uppercase tracking-wider text-ink-primary font-bold mb-1">
                 No Session Polls Created Yet
               </h3>

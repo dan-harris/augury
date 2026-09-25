@@ -1,5 +1,6 @@
 ---
 import { actions } from "astro:actions";
+import Icon from "../../components/Icon.astro";
 import Layout from "../../layouts/Layout.astro";
 
 export const prerender = false;
@@ -19,7 +20,7 @@ const nextPath = `/admin/join?token=${encodeURIComponent(token)}`;
 <Layout title="Accept Admin Invite — Augury">
   <main class="max-w-[650px] mx-auto pt-8 pb-16">
     <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-10 relative text-center">
-      <div class="mx-auto mb-4 font-gothic text-6xl text-ink-primary">📜</div>
+      <div class="mx-auto mb-4 flex justify-center"><Icon name="scroll" class="size-16 text-ink-primary" /></div>
       
       <h1 class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-3 mb-6 block leading-none">
         Group Admin Invitation
@@ -59,8 +60,8 @@ const nextPath = `/admin/join?token=${encodeURIComponent(token)}`;
           </p>
 
           {errorMessage && (
-            <div class="mb-6 p-4 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded text-left">
-              ⚠️ {errorMessage}
+            <div class="mb-6 p-4 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded text-left flex items-center gap-2">
+              <Icon name="spikes" class="size-5 shrink-0" /> <span>{errorMessage}</span>
             </div>
           )}
 

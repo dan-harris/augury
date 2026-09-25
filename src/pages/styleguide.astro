@@ -1,5 +1,8 @@
 ---
+import Checkbox from "../components/Checkbox.astro";
 import Icon from "../components/Icon.astro";
+import Radio from "../components/Radio.astro";
+import RadioGroup from "../components/RadioGroup.astro";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -124,38 +127,25 @@ import Layout from "../layouts/Layout.astro";
 								<label
 									class="font-serif text-xl cursor-pointer flex items-center gap-4"
 								>
-									<input
-										type="checkbox"
-										class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
-									/>
+									<Checkbox />
 									Lantern (lit)
 								</label>
 								<label
 									class="font-serif text-xl cursor-pointer flex items-center gap-4"
 								>
-									<input
-										type="checkbox"
-										class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
-										checked
-									/>
+									<Checkbox checked />
 									Rope (50ft)
 								</label>
 								<label
 									class="font-serif text-xl cursor-pointer flex items-center gap-4"
 								>
-									<input
-										type="checkbox"
-										class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
-									/>
+									<Checkbox />
 									Iron Rations (3 days)
 								</label>
 								<label
 									class="font-serif text-xl cursor-pointer flex items-center gap-4"
 								>
-									<input
-										type="checkbox"
-										class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
-									/>
+									<Checkbox />
 									Tinderbox & Torches
 								</label>
 							</div>
@@ -309,39 +299,26 @@ import Layout from "../layouts/Layout.astro";
 									/>
 								</div>
 
-								<div class="flex flex-col gap-3">
+								<RadioGroup class="flex flex-col gap-3">
 									<label
 										class="font-serif text-xl cursor-pointer flex items-center gap-4"
 									>
-										<input
-											type="radio"
-											name="status"
-											class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
-											checked
-										/>
+										<Radio name="status" checked />
 										Healthy & Hale
 									</label>
 									<label
 										class="font-serif text-xl cursor-pointer flex items-center gap-4"
 									>
-										<input
-											type="radio"
-											name="status"
-											class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
-										/>
+										<Radio name="status" />
 										Severely Wounded
 									</label>
 									<label
 										class="font-serif text-xl cursor-pointer flex items-center gap-4"
 									>
-										<input
-											type="radio"
-											name="status"
-											class="tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0"
-										/>
+										<Radio name="status" />
 										Doomed
 									</label>
-								</div>
+								</RadioGroup>
 							</div>
 						</section>
 					</div>
@@ -367,6 +344,48 @@ import Layout from "../layouts/Layout.astro";
 							<Icon name="chair" class="size-10 text-ink-primary" />
 							<span class="font-label text-xs uppercase tracking-widest font-bold">chair</span>
 							<code class="text-[10px] opacity-70">&lt;Icon name="chair" /&gt;</code>
+						</div>
+
+						<div class="border-2 border-ink-primary p-4 flex flex-col items-center justify-center gap-2 bg-parchment-secondary/30 rounded-sm text-center">
+							<Icon name="spikes" class="size-10 text-ink-primary" />
+							<span class="font-label text-xs uppercase tracking-widest font-bold">spikes</span>
+							<code class="text-[10px] opacity-70">&lt;Icon name="spikes" /&gt;</code>
+						</div>
+
+						<div class="border-2 border-ink-primary p-4 flex flex-col items-center justify-center gap-2 bg-parchment-secondary/30 rounded-sm text-center">
+							<Icon name="scroll" class="size-10 text-ink-primary" />
+							<span class="font-label text-xs uppercase tracking-widest font-bold">scroll</span>
+							<code class="text-[10px] opacity-70">&lt;Icon name="scroll" /&gt;</code>
+						</div>
+
+						<div class="border-2 border-ink-primary p-4 flex flex-col items-center justify-center gap-2 bg-parchment-secondary/30 rounded-sm text-center">
+							<Icon name="swords" class="size-10 text-ink-primary" />
+							<span class="font-label text-xs uppercase tracking-widest font-bold">swords</span>
+							<code class="text-[10px] opacity-70">&lt;Icon name="swords" /&gt;</code>
+						</div>
+
+						<div class="border-2 border-ink-primary p-4 flex flex-col items-center justify-center gap-2 bg-parchment-secondary/30 rounded-sm text-center">
+							<Icon name="info" class="size-10 text-ink-primary" />
+							<span class="font-label text-xs uppercase tracking-widest font-bold">info</span>
+							<code class="text-[10px] opacity-70">&lt;Icon name="info" /&gt;</code>
+						</div>
+
+						<div class="border-2 border-ink-primary p-4 flex flex-col items-center justify-center gap-2 bg-parchment-secondary/30 rounded-sm text-center">
+							<Icon name="chest" class="size-10 text-ink-primary" />
+							<span class="font-label text-xs uppercase tracking-widest font-bold">chest</span>
+							<code class="text-[10px] opacity-70">&lt;Icon name="chest" /&gt;</code>
+						</div>
+
+						<div class="border-2 border-ink-primary p-4 flex flex-col items-center justify-center gap-2 bg-parchment-secondary/30 rounded-sm text-center">
+							<Icon name="cave" class="size-10 text-ink-primary" />
+							<span class="font-label text-xs uppercase tracking-widest font-bold">cave</span>
+							<code class="text-[10px] opacity-70">&lt;Icon name="cave" /&gt;</code>
+						</div>
+
+						<div class="border-2 border-ink-primary p-4 flex flex-col items-center justify-center gap-2 bg-parchment-secondary/30 rounded-sm text-center">
+							<Icon name="castle" class="size-10 text-ink-primary" />
+							<span class="font-label text-xs uppercase tracking-widest font-bold">castle</span>
+							<code class="text-[10px] opacity-70">&lt;Icon name="castle" /&gt;</code>
 						</div>
 					</div>
 				</section>

@@ -1,5 +1,6 @@
 ---
 import { actions } from "astro:actions";
+import Icon from "../../components/Icon.astro";
 import Layout from "../../layouts/Layout.astro";
 import { composeSlug } from "../../lib/slugs";
 
@@ -43,7 +44,7 @@ if (user) {
     <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-12 relative">
       {!user ? (
         <div class="border-2 border-ink-primary p-8 text-center bg-transparent rounded-md">
-          <div class="mx-auto mb-4 font-gothic text-5xl text-ink-primary">⚔</div>
+          <div class="mx-auto mb-4 flex justify-center"><Icon name="swords" class="size-14 text-ink-primary" /></div>
           <h1 class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-2 mb-4 block leading-none">
             Sign In Required
           </h1>
@@ -76,8 +77,8 @@ if (user) {
                 Create New Campaign Group
               </h2>
               {createErrorMessage && (
-                <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-                  ⚠️ {createErrorMessage}
+                <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+                  <Icon name="spikes" class="size-5 shrink-0" /> <span>{createErrorMessage}</span>
                 </div>
               )}
               <form method="POST" action={actions.createGroup} class="flex flex-col sm:flex-row gap-3">
@@ -139,8 +140,8 @@ if (user) {
               })}
             </div>
           ) : (
-            <div class="border-2 border-dashed border-ink-primary/60 p-10 text-center rounded-md bg-transparent">
-              <div class="font-gothic text-4xl text-ink-primary mb-2">📜</div>
+            <div class="border-2 border-dashed border-ink-primary/60 p-10 text-center rounded-md bg-transparent flex flex-col items-center">
+              <Icon name="scroll" class="size-12 text-ink-primary mb-2" />
               <h3 class="font-label text-xl uppercase tracking-wider text-ink-primary font-bold mb-2">
                 No Campaign Groups Found
               </h3>

@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends HTMLAttributes<"input"> {
+  checked?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const { checked = false, disabled = false, class: className = "", ...rest } = Astro.props;
+---
+
+<input
+  type="checkbox"
+  checked={checked}
+  disabled={disabled}
+  class={`tickbox-input w-7 h-7 border-2 border-ink-primary bg-transparent cursor-pointer relative shrink-0 ${className}`}
+  {...rest}
+/>

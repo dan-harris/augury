@@ -2,6 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { createBrowserClient } from "../../lib/supabase/browser";
 import { getBestDay, getClosestDay, getProgressCopy, getViableDays, type TallyRow } from "../../lib/viability";
 import { formatDayDate } from "../../lib/weeks";
+import { Icon } from "../Icon";
 
 interface Player {
   id: string;
@@ -179,7 +180,7 @@ export function LiveTally({
       {/* Confirmed / Closed State Banner */}
       {status === "confirmed" && (
         <div class="p-6 border-2 border-green-800 bg-green-100/90 text-green-950 rounded-md text-center shadow-md">
-          <span class="font-gothic text-4xl block mb-1">🎲</span>
+          <div class="flex justify-center mb-2"><Icon name="dice" class="size-12 text-green-950" /></div>
           <h2 class="font-gothic text-3xl sm:text-4xl text-green-950 m-0 leading-none">
             Session Confirmed!
           </h2>
@@ -193,7 +194,7 @@ export function LiveTally({
 
       {status === "closed" && (
         <div class="p-6 border-2 border-ink-primary/40 bg-parchment-secondary/40 text-ink-primary text-center rounded-md">
-          <span class="font-gothic text-3xl block mb-1">📜</span>
+          <div class="flex justify-center mb-2"><Icon name="scroll" class="size-10 text-ink-primary" /></div>
           <h2 class="font-gothic text-2xl text-ink-primary m-0">
             Session Closed Without a Pick
           </h2>

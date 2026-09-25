@@ -1,5 +1,6 @@
 ---
 import { actions } from "astro:actions";
+import Icon from "../../../components/Icon.astro";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
 import { getDayName, getNextNWeeks, weekStart } from "../../../lib/weeks";
@@ -88,8 +89,8 @@ const upcomingMonday = weekStart();
       </header>
 
       {errorMessage && (
-        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-          ⚠️ {errorMessage}
+        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+          <Icon name="spikes" class="size-5 shrink-0" /> <span>{errorMessage}</span>
         </div>
       )}
 
@@ -156,9 +157,10 @@ const upcomingMonday = weekStart();
           </a>
           <button
             type="submit"
-            class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer transition-colors"
+            class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer transition-colors inline-flex items-center gap-2"
           >
-            Publish Session Poll 🎲
+            <span>Publish Session Poll</span>
+            <Icon name="dice" class="size-4" />
           </button>
         </div>
       </form>

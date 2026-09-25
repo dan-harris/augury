@@ -1,5 +1,5 @@
-import { h } from "preact";
 import { formatDayDate, getDayShortName } from "../../lib/weeks";
+import { Checkbox } from "../Checkbox";
 
 interface DayPickerProps {
   weekStart: string;
@@ -18,7 +18,7 @@ export function DayPicker({
 }: DayPickerProps) {
   return (
     <div class="space-y-3">
-      <label class="block font-label text-sm uppercase tracking-wider text-ink-primary font-bold">
+      <label class="block font-label text-sm uppercase tracking-wider font-bold">
         2. Select Days You Can Play (Multi-Select)
       </label>
 
@@ -34,27 +34,27 @@ export function DayPicker({
               type="button"
               disabled={disabled}
               onClick={() => !disabled && onToggleDay(dayIndex)}
-              class={`btn-frame p-3.5 border-2 text-left font-serif transition-all flex items-center justify-between cursor-pointer ${
+              class={`p-3.5 border-2 text-left font-serif transition-all flex items-center justify-between cursor-pointer rounded-[255px_5px_225px_3px/2px_255px_3px_25px] hover:bg-sage-block ${
                 isSelected
-                  ? "border-ink-primary bg-ink-primary text-parchment-base shadow-sm"
-                  : "border-ink-primary/60 bg-parchment-base text-ink-primary hover:border-ink-primary hover:bg-parchment-secondary"
+                  ? "border-ink-primary bg-sage-paper shadow-sm"
+                  : "border-ink-primary/60 bg-parchment-base hover:border-ink-primary"
               } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <div>
                 <span class="font-label text-xs uppercase tracking-widest block opacity-75">
                   {dayShort}
                 </span>
-                <span class="font-serif text-base font-bold">{formattedDate.split(", ")[1] || formattedDate}</span>
+                <span class="font-serif font-bold">
+                  {formattedDate.split(", ")[1] || formattedDate}
+                </span>
               </div>
-              <div
-                class={`w-6 h-6 rounded-full border-2 flex items-center justify-center font-bold text-xs ${
-                  isSelected
-                    ? "border-parchment-base bg-parchment-base text-ink-primary"
-                    : "border-ink-primary/40 bg-transparent text-transparent"
-                }`}
-              >
-                ✓
-              </div>
+              <Checkbox
+                checked={isSelected}
+                disabled={disabled}
+                tabIndex={-1}
+                class="pointer-events-none"
+                readOnly
+              />
             </button>
           );
         })}
@@ -62,3 +62,4 @@ export function DayPicker({
     </div>
   );
 }
+

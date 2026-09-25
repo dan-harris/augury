@@ -118,14 +118,14 @@ export function VotingForm({
 
       {feedback && (
         <div
-          class={`p-3 text-sm font-serif font-bold border-2 rounded ${
+          class={`p-3 text-sm font-serif font-bold border-2 rounded flex items-center gap-2 ${
             feedback.type === "success"
               ? "border-green-800 bg-green-100 text-green-900"
               : "border-rust-ink bg-rust-paper/40 text-rust-ink"
           }`}
         >
-          {feedback.type === "success" ? "✓ " : "⚠️ "}
-          {feedback.message}
+          {feedback.type === "success" ? "✓ " : <Icon name="spikes" class="size-4 shrink-0" />}
+          <span>{feedback.message}</span>
         </div>
       )}
 

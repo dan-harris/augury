@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends HTMLAttributes<"div"> {
+  label?: string;
+  class?: string;
+}
+
+const { label, class: className = "", ...rest } = Astro.props;
+---
+
+<div role="radiogroup" aria-label={label} class={`space-y-3 ${className}`}>
+  {label && (
+    <label class="block font-label text-sm uppercase tracking-wider text-ink-primary font-bold">
+      {label}
+    </label>
+  )}
+  <slot />
+</div>

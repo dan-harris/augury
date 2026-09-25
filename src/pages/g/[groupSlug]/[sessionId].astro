@@ -187,15 +187,15 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
 
       {
         confirmError && (
-          <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-            ⚠️ {confirmError}
+          <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+            <Icon name="spikes" class="size-5 shrink-0" /> <span>{confirmError}</span>
           </div>
         )
       }
       {
         closeError && (
-          <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-            ⚠️ {closeError}
+          <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+            <Icon name="spikes" class="size-5 shrink-0" /> <span>{closeError}</span>
           </div>
         )
       }

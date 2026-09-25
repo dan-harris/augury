@@ -1,5 +1,6 @@
 ---
 import { actions } from "astro:actions";
+import Icon from "../../../components/Icon.astro";
 import SessionCard from "../../../components/SessionCard.astro";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
@@ -124,13 +125,13 @@ if (sessionIds.length > 0) {
       </header>
 
       {linkError && (
-        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-          ⚠️ {linkError}
+        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+          <Icon name="spikes" class="size-5 shrink-0" /> <span>{linkError}</span>
         </div>
       )}
       {unlinkError && (
-        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-          ⚠️ {unlinkError}
+        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+          <Icon name="spikes" class="size-5 shrink-0" /> <span>{unlinkError}</span>
         </div>
       )}
 
@@ -138,8 +139,8 @@ if (sessionIds.length > 0) {
         <!-- 1. CONFIRMED UPCOMING SESSIONS (M4 Task 3) -->
         {confirmedUpcomingSessions.length > 0 && (
           <section class="border-2 border-green-800 p-6 rounded-md bg-green-50/60 shadow-xs">
-            <h2 class="font-label text-2xl uppercase tracking-widest text-green-950 border-b border-green-800/30 pb-2 mb-4 block font-bold flex items-center gap-2">
-              <span>🎲 Confirmed Upcoming Sessions ({confirmedUpcomingSessions.length})</span>
+            <h2 class="font-label text-2xl uppercase tracking-widest text-green-950 border-b border-green-800/30 pb-2 mb-4 font-bold flex items-center gap-2">
+              <Icon name="dice" class="size-7" /> <span>Confirmed Upcoming Sessions ({confirmedUpcomingSessions.length})</span>
             </h2>
             <div class="space-y-4">
               {confirmedUpcomingSessions.map((sess) => (
@@ -158,8 +159,8 @@ if (sessionIds.length > 0) {
 
         <!-- 2. OPEN SESSIONS SECTION (M3 / M4) -->
         <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
-          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold flex items-center gap-2">
-            <span>⚔ Open Session Polls ({openSessions.length})</span>
+          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 font-bold flex items-center gap-2">
+            <Icon name="swords" class="size-7" /> <span>Open Session Polls ({openSessions.length})</span>
           </h2>
 
           {openSessions.length > 0 ? (
@@ -176,8 +177,8 @@ if (sessionIds.length > 0) {
               ))}
             </div>
           ) : (
-            <div class="border-2 border-dashed border-ink-primary/40 p-8 text-center rounded-md bg-transparent">
-              <div class="font-gothic text-4xl text-ink-primary mb-2">🎲</div>
+            <div class="border-2 border-dashed border-ink-primary/40 p-8 text-center rounded-md bg-transparent flex flex-col items-center">
+              <Icon name="dice" class="size-12 text-ink-primary mb-2" />
               <h3 class="font-label text-lg uppercase tracking-wider text-ink-primary font-bold mb-1">
                 No Open Polls Right Now
               </h3>
@@ -191,8 +192,8 @@ if (sessionIds.length > 0) {
         <!-- 3. CAMPAIGN ROSTER & USER LINKING (M3 Task 5) -->
         <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-ink-primary/40 pb-2 mb-4 gap-2">
-            <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary font-bold m-0">
-              👥 Campaign Roster ({players.length})
+            <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary font-bold m-0 flex items-center gap-2">
+              <Icon name="castle" class="size-7" /> <span>Campaign Roster ({players.length})</span>
             </h2>
             {user && (
               <span class="font-serif text-xs text-ink-primary/80 italic">
@@ -212,8 +213,8 @@ if (sessionIds.length > 0) {
                     isLinkedToMe ? "border-ink-primary bg-ink-primary/5" : "border-ink-primary/40"
                   }`}>
                     <div class="flex items-center justify-between gap-2">
-                      <span class="font-serif text-base font-bold text-ink-primary">
-                        ⚔ {player.name}
+                      <span class="font-serif text-base font-bold text-ink-primary flex items-center gap-1.5">
+                        <Icon name="swords" class="size-4" /> {player.name}
                       </span>
                       {isLinkedToMe && (
                         <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-ink-primary text-parchment-base rounded font-bold">
@@ -264,8 +265,8 @@ if (sessionIds.length > 0) {
 
         <!-- 4. SESSION HISTORY (M4 Task 3) -->
         <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
-          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold">
-            📜 Past & Closed Session History ({historySessions.length})
+          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 font-bold flex items-center gap-2">
+            <Icon name="scroll" class="size-7" /> <span>Past & Closed Session History ({historySessions.length})</span>
           </h2>
 
           {historySessions.length > 0 ? (
