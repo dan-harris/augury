@@ -1,11 +1,12 @@
 ---
 import { actions } from "astro:actions";
-import Layout from "../../../layouts/Layout.astro";
+import Icon from "../../../components/Icon.astro";
 import { LiveTally } from "../../../components/islands/LiveTally";
 import { VotingForm } from "../../../components/islands/VotingForm";
+import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
-import { formatDayDate, formatWeekLabel } from "../../../lib/weeks";
 import { getBestDay, type TallyRow } from "../../../lib/viability";
+import { formatDayDate, formatWeekLabel } from "../../../lib/weeks";
 
 export const prerender = false;
 
@@ -52,8 +53,16 @@ if (!session) {
 // Action results for admin confirm / close
 const confirmResult = Astro.getActionResult(actions.confirmSession);
 const closeResult = Astro.getActionResult(actions.closeSession);
-const confirmError = confirmResult?.error?.message || (confirmResult?.data && !confirmResult.data.success ? confirmResult.data.error : null);
-const closeError = closeResult?.error?.message || (closeResult?.data && !closeResult.data.success ? closeResult.data.error : null);
+const confirmError =
+  confirmResult?.error?.message ||
+  (confirmResult?.data && !confirmResult.data.success
+    ? confirmResult.data.error
+    : null);
+const closeError =
+  closeResult?.error?.message ||
+  (closeResult?.data && !closeResult.data.success
+    ? closeResult.data.error
+    : null);
 
 // Check if current user is an admin of this group
 let isAdmin = false;
@@ -119,110 +128,149 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
 
 <Layout title={`${weekLabel} — ${group.name} Session Poll`}>
   <main class="max-w-[900px] mx-auto pb-16">
-    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-10 relative">
+    <div
+      class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-10 relative"
+    >
       <!-- Header Navigation -->
-      <nav class="mb-6 flex justify-between items-center border-b border-ink-primary/30 pb-3">
-        <a href={`/g/${canonicalSlug}`} class="font-label text-sm uppercase tracking-wider text-ink-primary hover:underline">
+      <nav
+        class="mb-6 flex justify-between items-center border-b border-ink-primary/30 pb-3"
+      >
+        <a
+          href={`/g/${canonicalSlug}`}
+          class="font-label text-sm uppercase tracking-wider text-ink-primary hover:underline"
+        >
           &larr; Back to {group.name} Ledger
         </a>
-        {isAdmin && (
-          <a
-            href={`/admin/${canonicalSlug}`}
-            class="btn-frame border border-ink-primary bg-parchment-secondary px-3 py-1 font-label uppercase text-xs tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold"
-          >
-            🛡 Admin Controls
-          </a>
-        )}
+        {
+          isAdmin && (
+            <a
+              href={`/admin/${canonicalSlug}`}
+              class="btn-frame border border-ink-primary bg-parchment-secondary px-3 py-1 font-label uppercase text-xs tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold"
+            >
+              Admin Controls
+            </a>
+          )
+        }
       </nav>
 
       <!-- Session Title Header -->
       <header class="border-b-2 border-ink-primary pb-6 mb-8">
-        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-          <h1 class="font-gothic text-4xl sm:text-5xl text-ink-primary m-0 leading-none">
+        <div
+          class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2"
+        >
+          <h1
+            class="font-gothic text-4xl sm:text-5xl text-ink-primary m-0 leading-none"
+          >
             {weekLabel}
           </h1>
-          <span class={`font-label uppercase tracking-widest text-xs px-3 py-1 border-2 font-bold inline-block self-start sm:self-auto ${
-            session.status === "confirmed"
-              ? "border-green-800 bg-green-100 text-green-950"
-              : session.status === "closed"
-              ? "border-ink-primary/40 bg-parchment-secondary text-ink-primary/70"
-              : "border-ink-primary bg-ink-primary text-parchment-base"
-          }`}>
+          <span
+            class={`font-label uppercase tracking-widest text-xs px-3 py-1 border-2 font-bold inline-block self-start sm:self-auto ${
+              session.status === "confirmed"
+                ? "border-green-800 bg-green-100 text-green-950"
+                : session.status === "closed"
+                  ? "border-ink-primary/40 bg-parchment-secondary text-ink-primary/70"
+                  : "border-ink-primary bg-ink-primary text-parchment-base"
+            }`}
+          >
             {session.status.toUpperCase()}
           </span>
         </div>
         <p class="font-serif text-sm text-ink-primary/80 mt-2">
-          Group: <strong class="font-bold">{group.name}</strong> &bull; Viability Threshold: <strong class="font-bold">{group.viability_threshold} players</strong> &bull; Roster Size: <strong class="font-bold">{players.length} players</strong>
+          Group: <strong class="font-bold">{group.name}</strong> &bull; Viability
+          Threshold: <strong class="font-bold"
+            >{group.viability_threshold} players</strong
+          > &bull; Roster Size: <strong class="font-bold"
+            >{players.length} players</strong
+          >
         </p>
       </header>
 
-      {confirmError && (
-        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-          ⚠️ {confirmError}
-        </div>
-      )}
-      {closeError && (
-        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
-          ⚠️ {closeError}
-        </div>
-      )}
+      {
+        confirmError && (
+          <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
+            ⚠️ {confirmError}
+          </div>
+        )
+      }
+      {
+        closeError && (
+          <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded">
+            ⚠️ {closeError}
+          </div>
+        )
+      }
 
       <!-- Admin Inline Controls Section (If Admin & Open) -->
-      {isAdmin && session.status === "open" && (
-        <section class="mb-8 p-5 border-2 border-ink-primary bg-parchment-secondary/40 rounded-md">
-          <h3 class="font-label text-sm uppercase tracking-wider text-ink-primary font-bold mb-3 flex items-center gap-2">
-            <span>🛡 Admin Session Lifecycle Controls</span>
-          </h3>
+      {
+        isAdmin && session.status === "open" && (
+          <section class="mb-8 p-5 border-2 border-ink-primary bg-parchment-secondary/40 rounded-md">
+            <h3 class="font-label text-sm uppercase tracking-wider text-ink-primary font-bold mb-3 flex items-center gap-2">
+              <span class="flex items-center gap-1.5">
+                <Icon name="chair" class="size-8 inline-block" /> Admin Session
+                Lifecycle Controls
+              </span>
+            </h3>
 
-          <div class="flex flex-wrap items-center gap-3">
-            {session.candidate_days.map((dayIdx) => {
-              const isBest = bestDay === dayIdx;
-              const formatted = formatDayDate(session.week_start, dayIdx);
-              return (
-                <form method="POST" action={actions.confirmSession} class="inline">
-                  <input type="hidden" name="sessionId" value={session.id} />
-                  <input type="hidden" name="day" value={dayIdx} />
-                  <button
-                    type="submit"
-                    class={`btn-frame border-2 px-3 py-1 font-label uppercase text-xs tracking-wider font-bold cursor-pointer transition-colors ${
-                      isBest
-                        ? "border-green-800 bg-green-800 text-green-50 hover:bg-green-900"
-                        : "border-ink-primary bg-parchment-base text-ink-primary hover:bg-ink-primary hover:text-parchment-base"
-                    }`}
+            <div class="flex flex-wrap items-center gap-3">
+              {session.candidate_days.map((dayIdx) => {
+                const isBest = bestDay === dayIdx;
+                const formatted = formatDayDate(session.week_start, dayIdx);
+                return (
+                  <form
+                    method="POST"
+                    action={actions.confirmSession}
+                    class="inline"
                   >
-                    Confirm {formatted} {isBest ? "★" : ""}
-                  </button>
-                </form>
-              );
-            })}
+                    <input type="hidden" name="sessionId" value={session.id} />
+                    <input type="hidden" name="day" value={dayIdx} />
+                    <button
+                      type="submit"
+                      class={`btn-frame border-2 px-3 py-1 font-label uppercase text-xs tracking-wider font-bold cursor-pointer transition-colors ${
+                        isBest
+                          ? "border-green-800 bg-green-800 text-green-50 hover:bg-green-900"
+                          : "border-ink-primary bg-parchment-base text-ink-primary hover:bg-ink-primary hover:text-parchment-base"
+                      }`}
+                    >
+                      Confirm {formatted} {isBest ? "★" : ""}
+                    </button>
+                  </form>
+                );
+              })}
 
-            <form method="POST" action={actions.closeSession} class="inline ml-auto">
-              <input type="hidden" name="sessionId" value={session.id} />
-              <button
-                type="submit"
-                class="btn-frame border border-rust-ink bg-rust-paper/40 text-rust-ink px-3 py-1 font-label uppercase text-xs tracking-wider font-bold hover:bg-rust-ink hover:text-parchment-base cursor-pointer"
+              <form
+                method="POST"
+                action={actions.closeSession}
+                class="inline ml-auto"
               >
-                Close Without Pick
-              </button>
-            </form>
-          </div>
-        </section>
-      )}
+                <input type="hidden" name="sessionId" value={session.id} />
+                <button
+                  type="submit"
+                  class="btn-frame border border-rust-ink bg-rust-paper/40 text-rust-ink px-3 py-1 font-label uppercase text-xs tracking-wider font-bold hover:bg-rust-ink hover:text-parchment-base cursor-pointer"
+                >
+                  Close Without Pick
+                </button>
+              </form>
+            </div>
+          </section>
+        )
+      }
 
       <div class="space-y-10">
         <!-- 1. Voting Form (If Session is Open) -->
-        {session.status === "open" && (
-          <VotingForm
-            client:load
-            sessionId={session.id}
-            weekStart={session.week_start}
-            candidateDays={session.candidate_days}
-            players={players}
-            playerVotesMap={playerVotesMap}
-            votedPlayerIds={votedPlayerIds}
-            linkedPlayerId={linkedPlayerId}
-          />
-        )}
+        {
+          session.status === "open" && (
+            <VotingForm
+              client:load
+              sessionId={session.id}
+              weekStart={session.week_start}
+              candidateDays={session.candidate_days}
+              players={players}
+              playerVotesMap={playerVotesMap}
+              votedPlayerIds={votedPlayerIds}
+              linkedPlayerId={linkedPlayerId}
+            />
+          )
+        }
 
         <!-- 2. Realtime Tally Board -->
         <LiveTally

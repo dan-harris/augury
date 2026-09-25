@@ -50,16 +50,16 @@ const user = Astro.locals.user;
         class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-8"
       >
         <div class="flex items-center gap-6">
-          <a href="/" class="flex items-center gap-3 group focus:outline-none">
+          <a href="/" class="flex items-center gap-1 group focus:outline-none">
             <img
-              src="/logo.png"
+              src="/logo-hourglass.png"
               alt="Augury Logo"
-              class="h-10 mix-blend-multiply transition-transform group-hover:scale-105"
+              class="h-7 transition-transform group-hover:scale-105"
               onerror="this.style.display='none'"
             />
             <div class="flex flex-col">
               <span
-                class="font-gothic text-3xl sm:text-4xl text-ink-primary leading-none group-hover:opacity-80 transition-opacity"
+                class="font-gothic text-3xl sm:text-4xl text-ink-primary leading-none group-hover:opacity-80 transition-opacity mb-1"
               >
                 Augury
               </span>
@@ -69,11 +69,6 @@ const user = Astro.locals.user;
           <nav
             class="hidden md:flex items-center gap-4 text-xs font-label uppercase tracking-widest border-l-2 border-ink-primary/30 pl-6"
           >
-            <a
-              href="/"
-              class="hover:underline underline-offset-4 decoration-ink-primary"
-              >Ledger</a
-            >
             <a
               href="/admin"
               class="hover:underline underline-offset-4 decoration-ink-primary"

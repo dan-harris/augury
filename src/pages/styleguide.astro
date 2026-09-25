@@ -1,4 +1,5 @@
 ---
+import Icon from "../components/Icon.astro";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -38,7 +39,7 @@ import Layout from "../layouts/Layout.astro";
 			<header class="mb-10">
 				<div class="flex items-center justify-center gap-6 mb-2">
 					<img
-						src="/logo.png"
+						src="/logo-hourglass.png"
 						alt="Augury Logo"
 						class="h-20 mix-blend-multiply"
 						onerror="this.style.display = 'none'"
@@ -57,9 +58,7 @@ import Layout from "../layouts/Layout.astro";
 			</header>
 
 			<main>
-				<div
-					class="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-8 mt-8"
-				>
+				<div class="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-8 mt-8">
 					<!-- Left Column: Details -->
 					<div class="flex flex-col gap-8">
 						<!-- Identity Block -->
@@ -171,20 +170,39 @@ import Layout from "../layouts/Layout.astro";
 								<div class="ledger-initial-box">S</div>
 								<div class="ledger-block-title">tats</div>
 							</div>
-							<div class="ledger-banner">
-								1. Roll 6d10 each:
-							</div>
+							<div class="ledger-banner">1. Roll 6d10 each:</div>
 							<div class="p-6 flex flex-col gap-6">
 								<!-- Strength -->
 								<div class="flex flex-col items-center gap-2">
-									<span class="font-label font-bold uppercase tracking-widest text-lg">Strength</span>
-									<div class="relative w-24 h-24 border-2 border-ink-primary flex items-center justify-center bg-transparent">
-										<div class="absolute top-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="absolute top-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="absolute bottom-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="absolute bottom-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="w-18 h-18 rounded-full border-2 border-ink-primary flex items-center justify-center">
-											<div class="w-15 h-15 rounded-full border border-ink-primary flex items-center justify-center font-gothic text-4xl font-bold">
+									<span
+										class="font-label font-bold uppercase tracking-widest text-lg"
+										>Strength</span
+									>
+									<div
+										class="relative w-24 h-24 border-2 border-ink-primary flex items-center justify-center bg-transparent"
+									>
+										<div
+											class="absolute top-1 left-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="absolute top-1 right-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="absolute bottom-1 left-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="absolute bottom-1 right-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="w-18 h-18 rounded-full border-2 border-ink-primary flex items-center justify-center"
+										>
+											<div
+												class="w-15 h-15 rounded-full border border-ink-primary flex items-center justify-center font-gothic text-4xl font-bold"
+											>
 												12
 											</div>
 										</div>
@@ -193,14 +211,35 @@ import Layout from "../layouts/Layout.astro";
 
 								<!-- Intellect -->
 								<div class="flex flex-col items-center gap-2">
-									<span class="font-label font-bold uppercase tracking-widest text-lg">Intellect</span>
-									<div class="relative w-24 h-24 border-2 border-ink-primary flex items-center justify-center bg-transparent">
-										<div class="absolute top-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="absolute top-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="absolute bottom-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="absolute bottom-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="w-18 h-18 rounded-full border-2 border-ink-primary flex items-center justify-center">
-											<div class="w-15 h-15 rounded-full border border-ink-primary flex items-center justify-center font-gothic text-4xl font-bold">
+									<span
+										class="font-label font-bold uppercase tracking-widest text-lg"
+										>Intellect</span
+									>
+									<div
+										class="relative w-24 h-24 border-2 border-ink-primary flex items-center justify-center bg-transparent"
+									>
+										<div
+											class="absolute top-1 left-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="absolute top-1 right-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="absolute bottom-1 left-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="absolute bottom-1 right-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="w-18 h-18 rounded-full border-2 border-ink-primary flex items-center justify-center"
+										>
+											<div
+												class="w-15 h-15 rounded-full border border-ink-primary flex items-center justify-center font-gothic text-4xl font-bold"
+											>
 												8
 											</div>
 										</div>
@@ -209,14 +248,35 @@ import Layout from "../layouts/Layout.astro";
 
 								<!-- Will -->
 								<div class="flex flex-col items-center gap-2">
-									<span class="font-label font-bold uppercase tracking-widest text-lg">Will</span>
-									<div class="relative w-24 h-24 border-2 border-ink-primary flex items-center justify-center bg-transparent">
-										<div class="absolute top-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="absolute top-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="absolute bottom-1 left-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="absolute bottom-1 right-1 w-3 h-3 rounded-full border border-ink-primary"></div>
-										<div class="w-18 h-18 rounded-full border-2 border-ink-primary flex items-center justify-center">
-											<div class="w-15 h-15 rounded-full border border-ink-primary flex items-center justify-center font-gothic text-4xl font-bold">
+									<span
+										class="font-label font-bold uppercase tracking-widest text-lg"
+										>Will</span
+									>
+									<div
+										class="relative w-24 h-24 border-2 border-ink-primary flex items-center justify-center bg-transparent"
+									>
+										<div
+											class="absolute top-1 left-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="absolute top-1 right-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="absolute bottom-1 left-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="absolute bottom-1 right-1 w-3 h-3 rounded-full border border-ink-primary"
+										>
+										</div>
+										<div
+											class="w-18 h-18 rounded-full border-2 border-ink-primary flex items-center justify-center"
+										>
+											<div
+												class="w-15 h-15 rounded-full border border-ink-primary flex items-center justify-center font-gothic text-4xl font-bold"
+											>
 												14
 											</div>
 										</div>
@@ -286,6 +346,30 @@ import Layout from "../layouts/Layout.astro";
 						</section>
 					</div>
 				</div>
+
+				<!-- SVG Spritesheet Inventory Block -->
+				<section class="ledger-block mt-8">
+					<div class="ledger-block-header">
+						<div class="ledger-initial-box">S</div>
+						<div class="ledger-block-title">pritesheet Icons</div>
+					</div>
+					<div class="ledger-banner">
+						SVG Icon Inventory (/icons/spritesheet.svg):
+					</div>
+					<div class="p-6 grid grid-cols-2 sm:grid-cols-4 gap-6">
+						<div class="border-2 border-ink-primary p-4 flex flex-col items-center justify-center gap-2 bg-parchment-secondary/30 rounded-sm text-center">
+							<Icon name="dice" class="size-10 text-ink-primary" />
+							<span class="font-label text-xs uppercase tracking-widest font-bold">dice</span>
+							<code class="text-[10px] opacity-70">&lt;Icon name="dice" /&gt;</code>
+						</div>
+
+						<div class="border-2 border-ink-primary p-4 flex flex-col items-center justify-center gap-2 bg-parchment-secondary/30 rounded-sm text-center">
+							<Icon name="chair" class="size-10 text-ink-primary" />
+							<span class="font-label text-xs uppercase tracking-widest font-bold">chair</span>
+							<code class="text-[10px] opacity-70">&lt;Icon name="chair" /&gt;</code>
+						</div>
+					</div>
+				</section>
 
 				<div class="mt-12">
 					<button

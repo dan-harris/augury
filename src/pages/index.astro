@@ -8,15 +8,15 @@ import Layout from "../layouts/Layout.astro";
 			class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-12 relative"
 		>
 			<header class="mb-10 text-center">
-				<div class="flex items-center justify-center gap-6 mb-3">
+				<div class="flex items-center justify-center gap-1 mb-3">
 					<img
-						src="/logo.png"
+						src="/logo-hourglass.png"
 						alt="Augury Logo"
 						class="h-20 mix-blend-multiply"
 						onerror="this.style.display = 'none'"
 					/>
 					<h1
-						class="font-gothic text-6xl sm:text-8xl text-ink-primary m-0 leading-none"
+						class="font-gothic text-6xl sm:text-8xl text-ink-primary m-0 leading-none mb-2"
 					>
 						Augury
 					</h1>
@@ -28,90 +28,21 @@ import Layout from "../layouts/Layout.astro";
 				</div>
 			</header>
 
-			<section class="mb-12 text-center max-w-2xl mx-auto">
-				<p
-					class="font-serif text-xl leading-relaxed text-ink-primary mb-6"
-				>
+			<section class="text-center max-w-2xl mx-auto flex flex-col gap-10">
+				<p class="font-serif text-xl leading-relaxed text-ink-primary">
 					Coordinate campaign sessions without the endless quest for
 					consensus. Gather candidate days, tally player availability,
 					and lock in confirmed dates with an archaic, reliable
 					ledger.
 				</p>
 
-				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+				<div class="flex flex-col items-center gap-4">
 					<a
 						href="/admin"
-						class="btn-frame inline-block w-full p-4 bg-ink-primary text-parchment-base border-2 border-ink-primary font-label uppercase tracking-[2px] font-bold text-lg text-center hover:bg-parchment-secondary hover:text-ink-primary transition-colors shadow-sm"
+						class="btn-frame inline-block p-4 bg-ink-primary text-parchment-base border-2 border-ink-primary font-label uppercase tracking-[2px] font-bold text-lg text-center hover:bg-parchment-secondary hover:text-ink-primary transition-colors shadow-sm"
 					>
 						Open Admin Dashboard
 					</a>
-				</div>
-			</section>
-
-			<section class="mb-8">
-				<h2
-					class="font-label text-2xl sm:text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none"
-				>
-					Grim Features
-				</h2>
-
-				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-					<div
-						class="border-2 border-ink-primary p-5 relative rounded-md bg-transparent"
-					>
-						<label
-							class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider"
-						>
-							Auth Mechanism
-						</label>
-						<h3
-							class="font-label text-xl font-bold uppercase tracking-wider mb-2 text-ink-primary"
-						>
-							Magic Link Auth
-						</h3>
-						<p class="font-serif text-base text-ink-primary/90">
-							PKCE passwordless magic-link verification designed
-							for campaign admins with long-lived session trust.
-						</p>
-					</div>
-
-					<div
-						class="border-2 border-ink-primary p-5 relative rounded-md bg-transparent"
-					>
-						<label
-							class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider"
-						>
-							Security Guard
-						</label>
-						<h3
-							class="font-label text-xl font-bold uppercase tracking-wider mb-2 text-ink-primary"
-						>
-							Row Level Security
-						</h3>
-						<p class="font-serif text-base text-ink-primary/90">
-							Postgres RLS policies and security-definer RPCs
-							enforce strict administrative boundary rules.
-						</p>
-					</div>
-
-					<div
-						class="border-2 border-ink-primary p-5 relative rounded-md bg-transparent"
-					>
-						<label
-							class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider"
-						>
-							Live Updates
-						</label>
-						<h3
-							class="font-label text-xl font-bold uppercase tracking-wider mb-2 text-ink-primary"
-						>
-							Realtime Tallies
-						</h3>
-						<p class="font-serif text-base text-ink-primary/90">
-							Broadcast candidate day yes-counts instantly as
-							adventuring party members submit their availability.
-						</p>
-					</div>
 				</div>
 			</section>
 		</div>

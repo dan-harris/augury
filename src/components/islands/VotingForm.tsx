@@ -1,6 +1,6 @@
 import { actions } from "astro:actions";
-import { h } from "preact";
 import { useState } from "preact/hooks";
+import { Icon } from "../Icon";
 import { DayPicker } from "./DayPicker";
 import { PlayerPicker } from "./PlayerPicker";
 
@@ -110,7 +110,10 @@ export function VotingForm({
   return (
     <form onSubmit={handleSubmit} class="space-y-6 border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/30">
       <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 font-bold flex items-center gap-2">
-        <span>🎲 Submit Availability Poll</span>
+        <span class="flex items-center gap-1.5">
+          <Icon name="dice" class="size-8 inline mt-0.5" />{" "}
+          Submit Availability Poll
+        </span>
       </h2>
 
       {feedback && (
@@ -157,7 +160,7 @@ export function VotingForm({
           disabled={!selectedPlayerId || isSubmitting}
           class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2.5 font-label uppercase text-sm tracking-widest text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
         >
-          {isSubmitting ? "Submitting..." : "Submit Votes 🎲"}
+          {isSubmitting ? "Submitting..." : "Submit Votes"}
         </button>
       </div>
     </form>

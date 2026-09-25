@@ -1,4 +1,3 @@
-import { h } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { createBrowserClient } from "../../lib/supabase/browser";
 import { getBestDay, getClosestDay, getProgressCopy, getViableDays, type TallyRow } from "../../lib/viability";
@@ -322,7 +321,7 @@ export function LiveTally({
         {/* Voted List */}
         <div class="border border-ink-primary/40 p-4 rounded bg-parchment-base">
           <h4 class="font-label text-xs uppercase tracking-wider text-ink-primary font-bold mb-2 flex items-center justify-between">
-            <span>✓ Submitted Responses</span>
+            <span>Submitted Responses</span>
             <span class="text-xs px-2 py-0.5 bg-ink-primary/10 rounded">{votedPlayers.length} / {players.length}</span>
           </h4>
           {votedPlayers.length > 0 ? (
@@ -341,7 +340,7 @@ export function LiveTally({
         {/* Not Yet Voted List */}
         <div class="border border-ink-primary/40 p-4 rounded bg-parchment-base">
           <h4 class="font-label text-xs uppercase tracking-wider text-rust-ink font-bold mb-2 flex items-center justify-between">
-            <span>⌛ Pending Responses</span>
+            <span>Pending Responses</span>
             <span class="text-xs px-2 py-0.5 bg-rust-paper/60 rounded">{notVotedPlayers.length} / {players.length}</span>
           </h4>
           {notVotedPlayers.length > 0 ? (

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "preact/hooks";
 import { actions } from "astro:actions";
+import { useEffect, useState } from "preact/hooks";
 
 interface AuthMenuProps {
   userEmail?: string | null;
@@ -59,13 +59,6 @@ export function AuthMenu({ userEmail }: AuthMenuProps) {
           <span className="font-semibold underline underline-offset-4 decoration-ink-primary/40">
             {userEmail}
           </span>
-        </a>
-
-        <a
-          href="/admin"
-          className="btn-frame border-2 border-ink-primary bg-parchment-secondary px-3 py-1 text-xs font-label uppercase tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base"
-        >
-          Admin
         </a>
 
         <form action="/auth/signout" method="POST">
