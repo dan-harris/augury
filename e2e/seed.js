@@ -37,5 +37,9 @@ export async function seedTestData() {
     status: "open",
   });
 
+  // Clear previous votes to ensure idempotent test runs
+  await supabaseAdmin.from("votes").delete().eq("session_id", sessionId);
+  await supabaseAdmin.from("vote_responses").delete().eq("session_id", sessionId);
+
   return { groupId, slugId, groupName, player1Id, player2Id, sessionId };
 }

@@ -1,0 +1,34 @@
+---
+import Icon from "../components/Icon.astro";
+import Layout from "../layouts/Layout.astro";
+
+interface Props {
+  error: unknown;
+}
+
+const { error } = Astro.props;
+---
+
+<Layout title="500: Server Error — Augury Ledger">
+  <main class="max-w-[850px] mx-auto">
+    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-12 relative">
+      <div class="p-8 text-center bg-transparent rounded-md">
+        <div class="mx-auto mb-4 flex justify-center">
+          <Icon name="spikes" class="size-14 text-rust-ink" />
+        </div>
+        <h1 class="font-label text-3xl uppercase tracking-widest text-rust-ink border-b-2 border-rust-ink pb-2 mb-4 block leading-none">
+          500: Server Error
+        </h1>
+        <p class="font-serif text-lg text-ink-primary/90 max-w-md mx-auto">
+          The auguries are clouded. Something went wrong on our end while trying to fulfill your request.
+        </p>
+        
+        {error instanceof Error && (
+          <div class="mt-6 inline-block border border-rust-ink/40 bg-rust-paper/40 px-4 py-2 rounded text-left">
+            <code class="text-xs font-mono text-rust-ink font-bold">{error.message}</code>
+          </div>
+        )}
+      </div>
+    </div>
+  </main>
+</Layout>
