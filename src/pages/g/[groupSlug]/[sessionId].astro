@@ -129,7 +129,7 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
 <Layout title={`${weekLabel} — ${group.name} Session Poll`}>
   <main class="max-w-[900px] mx-auto pb-16">
     <div
-      class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-10 relative"
+      class="border-page border-2 border-ink-primary p-6 sm:p-10 relative"
     >
       <!-- Header Navigation -->
       <nav
@@ -145,7 +145,7 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
           isAdmin && (
             <a
               href={`/admin/${canonicalSlug}`}
-              class="btn-frame border border-ink-primary bg-parchment-secondary px-3 py-1 font-label uppercase text-xs tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold"
+              class="border-button border border-ink-primary bg-parchment-secondary px-3 py-1 font-label uppercase text-xs tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold"
             >
               Admin Controls
             </a>
@@ -225,7 +225,7 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
                     <input type="hidden" name="day" value={dayIdx} />
                     <button
                       type="submit"
-                      class={`btn-frame border-2 px-3 py-1 font-label uppercase text-xs tracking-wider font-bold cursor-pointer transition-colors ${
+                      class={`border-button border-2 px-3 py-1 font-label uppercase text-xs tracking-wider font-bold cursor-pointer transition-colors ${
                         isBest
                           ? "border-green-800 bg-green-800 text-green-50 hover:bg-green-900"
                           : "border-ink-primary bg-parchment-base text-ink-primary hover:bg-ink-primary hover:text-parchment-base"
@@ -245,7 +245,7 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
                 <input type="hidden" name="sessionId" value={session.id} />
                 <button
                   type="submit"
-                  class="btn-frame border border-rust-ink bg-rust-paper/40 text-rust-ink px-3 py-1 font-label uppercase text-xs tracking-wider font-bold hover:bg-rust-ink hover:text-parchment-base cursor-pointer"
+                  class="border-button border border-rust-ink bg-rust-paper/40 text-rust-ink px-3 py-1 font-label uppercase text-xs tracking-wider font-bold hover:bg-rust-ink hover:text-parchment-base cursor-pointer"
                 >
                   Close Without Pick
                 </button>

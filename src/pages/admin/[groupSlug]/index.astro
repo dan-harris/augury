@@ -1,6 +1,7 @@
 ---
 import { actions } from "astro:actions";
 import Icon from "../../../components/Icon.astro";
+import Input from "../../../components/Input.astro";
 import SessionCard from "../../../components/SessionCard.astro";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
@@ -143,7 +144,7 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
 
 <Layout title={`${group.name} — Admin Dashboard`}>
   <main class="max-w-[900px] mx-auto pb-12">
-    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-10 relative">
+    <div class="border-page border-2 border-ink-primary p-6 sm:p-10 relative">
       <!-- Top Navigation -->
       <nav class="mb-6 flex justify-between items-center border-b border-ink-primary/30 pb-3">
         <a href="/admin" class="font-label text-sm uppercase tracking-wider text-ink-primary hover:underline">
@@ -152,7 +153,7 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
         <a
           href={publicGroupUrl}
           target="_blank"
-          class="btn-frame border-2 border-ink-primary bg-parchment-secondary px-3 py-1 font-label uppercase text-xs tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold transition-colors"
+          class="border-button border-2 border-ink-primary bg-parchment-secondary px-3 py-1 font-label uppercase text-xs tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold transition-colors"
         >
           Public Group Shell ↗
         </a>
@@ -186,12 +187,12 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
               <input type="hidden" name="confirmed" value="true" />
               <button
                 type="submit"
-                class="btn-frame border border-rust-ink bg-rust-ink text-parchment-base px-4 py-1.5 font-label uppercase text-xs tracking-wider font-bold hover:bg-rust-block"
+                class="border-button border border-rust-ink bg-rust-ink text-parchment-base px-4 py-1.5 font-label uppercase text-xs tracking-wider font-bold hover:bg-rust-block"
               >
                 Confirm Delete & Delete Votes
               </button>
             </form>
-            <a href={`/admin/${canonicalSlug}`} class="btn-frame border border-ink-primary bg-parchment-base px-4 py-1.5 font-label uppercase text-xs tracking-wider font-bold">
+            <a href={`/admin/${canonicalSlug}`} class="border-button border border-ink-primary bg-parchment-base px-4 py-1.5 font-label uppercase text-xs tracking-wider font-bold">
               Cancel
             </a>
           </div>
@@ -227,16 +228,16 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
                 Group Name
               </label>
               <div class="flex gap-2">
-                <input
+                <Input
                   type="text"
                   name="name"
                   value={group.name}
                   required
-                  class="underline-input flex-1 px-2 py-1 font-serif text-base"
+                  class="flex-1 px-2 py-1 font-serif text-base"
                 />
                 <button
                   type="submit"
-                  class="btn-frame border-2 border-ink-primary bg-ink-primary px-3 py-1 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer"
+                  class="border-button border-2 border-ink-primary bg-ink-primary px-3 py-1 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer"
                 >
                   Rename
                 </button>
@@ -250,17 +251,17 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
                 Viability Threshold (Min Players)
               </label>
               <div class="flex gap-2">
-                <input
+                <Input
                   type="number"
                   name="viabilityThreshold"
                   value={group.viability_threshold}
                   min="1"
                   required
-                  class="underline-input w-24 px-2 py-1 font-serif text-base"
+                  class="w-24 px-2 py-1 font-serif text-base"
                 />
                 <button
                   type="submit"
-                  class="btn-frame border-2 border-ink-primary bg-ink-primary px-3 py-1 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer"
+                  class="border-button border-2 border-ink-primary bg-ink-primary px-3 py-1 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer"
                 >
                   Save Threshold
                 </button>
@@ -291,16 +292,16 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
           <!-- Add Player Form -->
           <form method="POST" action={actions.addPlayer} class="flex gap-3 mb-6">
             <input type="hidden" name="groupId" value={group.id} />
-            <input
+            <Input
               type="text"
               name="name"
               required
               placeholder="Enter player name (e.g. Thorin Oakenshield)"
-              class="underline-input flex-1 px-3 py-1.5 font-serif text-base"
+              class="flex-1 px-3 py-1.5 font-serif text-base"
             />
             <button
               type="submit"
-              class="btn-frame border-2 border-ink-primary bg-ink-primary px-4 py-1.5 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer"
+              class="border-button border-2 border-ink-primary bg-ink-primary px-4 py-1.5 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer"
             >
               + Add Player
             </button>
@@ -329,16 +330,16 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
                       class="hidden flex items-center gap-2"
                     >
                       <input type="hidden" name="playerId" value={player.id} />
-                      <input
+                      <Input
                         type="text"
                         name="name"
                         defaultValue={player.name}
                         required
-                        class="underline-input px-2 py-0.5 text-sm font-serif"
+                        class="px-2 py-0.5 text-sm font-serif"
                       />
                       <button
                         type="submit"
-                        class="btn-frame border border-ink-primary bg-ink-primary text-parchment-base px-2 py-0.5 text-xs font-label uppercase tracking-wider"
+                        class="border-button border border-ink-primary bg-ink-primary text-parchment-base px-2 py-0.5 text-xs font-label uppercase tracking-wider"
                       >
                         Save
                       </button>
@@ -358,7 +359,7 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
                     <input type="hidden" name="confirmed" value="false" />
                     <button
                       type="submit"
-                      class="btn-frame border border-ink-primary/50 text-ink-primary/80 hover:text-rust-ink hover:border-rust-ink px-2.5 py-1 text-xs font-label uppercase tracking-wider font-bold transition-colors cursor-pointer"
+                      class="border-button border border-ink-primary/50 text-ink-primary/80 hover:text-rust-ink hover:border-rust-ink px-2.5 py-1 text-xs font-label uppercase tracking-wider font-bold transition-colors cursor-pointer"
                     >
                       Remove
                     </button>
@@ -415,7 +416,7 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
                         <input type="hidden" name="userId" value={adm.user_id} />
                         <button
                           type="submit"
-                          class="btn-frame border border-ink-primary/50 text-ink-primary/80 hover:text-rust-ink hover:border-rust-ink px-2.5 py-1 text-xs font-label uppercase tracking-wider font-bold transition-colors cursor-pointer"
+                          class="border-button border border-ink-primary/50 text-ink-primary/80 hover:text-rust-ink hover:border-rust-ink px-2.5 py-1 text-xs font-label uppercase tracking-wider font-bold transition-colors cursor-pointer"
                         >
                           Remove Admin
                         </button>
@@ -436,7 +437,7 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
                   <input type="hidden" name="groupId" value={group.id} />
                   <button
                     type="submit"
-                    class="btn-frame border-2 border-ink-primary bg-ink-primary px-3 py-1 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer"
+                    class="border-button border-2 border-ink-primary bg-ink-primary px-3 py-1 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer"
                   >
                     + Generate Invite Link
                   </button>
@@ -462,7 +463,7 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
                           <button
                             type="button"
                             onclick={`navigator.clipboard.writeText('${joinUrl}'); this.innerText='Copied!'; setTimeout(() => this.innerText='Copy Link', 2000);`}
-                            class="btn-frame border border-ink-primary bg-parchment-secondary px-2.5 py-1 text-xs font-label uppercase tracking-wider font-bold hover:bg-ink-primary hover:text-parchment-base cursor-pointer"
+                            class="border-button border border-ink-primary bg-parchment-secondary px-2.5 py-1 text-xs font-label uppercase tracking-wider font-bold hover:bg-ink-primary hover:text-parchment-base cursor-pointer"
                           >
                             Copy Link
                           </button>
@@ -470,7 +471,7 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
                             <input type="hidden" name="inviteId" value={inv.id} />
                             <button
                               type="submit"
-                              class="btn-frame border border-ink-primary/40 text-ink-primary/70 hover:text-rust-ink px-2.5 py-1 text-xs font-label uppercase tracking-wider font-bold cursor-pointer"
+                              class="border-button border border-ink-primary/40 text-ink-primary/70 hover:text-rust-ink px-2.5 py-1 text-xs font-label uppercase tracking-wider font-bold cursor-pointer"
                             >
                               Revoke
                             </button>
@@ -498,16 +499,16 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
             Share this link with your players so they can view campaign sessions and submit availability polls.
           </p>
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-            <input
+            <Input
               type="text"
               readonly
               value={publicGroupUrl}
-              class="underline-input flex-1 px-3 py-2 font-mono text-sm bg-parchment-base/60"
+              class="flex-1 px-3 py-2 font-mono text-sm bg-parchment-base/60"
             />
             <button
               type="button"
               onclick={`navigator.clipboard.writeText('${publicGroupUrl}'); this.innerText='Copied!'; setTimeout(() => this.innerText='Copy Public URL', 2000);`}
-              class="btn-frame border-2 border-ink-primary bg-ink-primary px-4 py-2 font-label uppercase tracking-wider text-xs text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer shrink-0"
+              class="border-button border-2 border-ink-primary bg-ink-primary px-4 py-2 font-label uppercase tracking-wider text-xs text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer shrink-0"
             >
               Copy Public URL
             </button>
@@ -527,7 +528,7 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
             </div>
             <a
               href={`/admin/${canonicalSlug}/create`}
-              class="btn-frame border-2 border-ink-primary bg-ink-primary px-4 py-2 font-label uppercase tracking-wider text-xs text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold shrink-0 text-center cursor-pointer"
+              class="border-button border-2 border-ink-primary bg-ink-primary px-4 py-2 font-label uppercase tracking-wider text-xs text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold shrink-0 text-center cursor-pointer"
             >
               + Create Session Poll &rarr;
             </a>
@@ -574,7 +575,7 @@ const removeAdminError = removeAdminResult?.error?.message || (removeAdminResult
               </p>
               <a
                 href={`/admin/${canonicalSlug}/create`}
-                class="btn-frame border-2 border-ink-primary bg-ink-primary px-5 py-2 font-label uppercase text-xs tracking-wider text-parchment-base font-bold inline-block hover:bg-parchment-secondary hover:text-ink-primary"
+                class="border-button border-2 border-ink-primary bg-ink-primary px-5 py-2 font-label uppercase text-xs tracking-wider text-parchment-base font-bold inline-block hover:bg-parchment-secondary hover:text-ink-primary"
               >
                 + Create First Session Poll
               </a>

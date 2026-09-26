@@ -19,7 +19,7 @@ const nextPath = `/admin/join?token=${encodeURIComponent(token)}`;
 
 <Layout title="Accept Admin Invite — Augury">
   <main class="max-w-[650px] mx-auto pt-8 pb-16">
-    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-10 relative text-center">
+    <div class="border-page border-2 border-ink-primary p-6 sm:p-10 relative text-center">
       <div class="mx-auto mb-4 flex justify-center"><Icon name="scroll" class="size-16 text-ink-primary" /></div>
       
       <h1 class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-3 mb-6 block leading-none">
@@ -31,7 +31,7 @@ const nextPath = `/admin/join?token=${encodeURIComponent(token)}`;
           <p class="font-bold text-lg mb-2">Invalid Invite URL</p>
           <p class="text-sm">No invite token was provided in the URL. Please check your invitation link.</p>
           <div class="mt-4">
-            <a href="/admin" class="btn-frame border border-rust-ink bg-rust-ink text-parchment-base px-4 py-2 font-label uppercase text-xs tracking-wider font-bold">
+            <a href="/admin" class="border-button border border-rust-ink bg-rust-ink text-parchment-base px-4 py-2 font-label uppercase text-xs tracking-wider font-bold">
               Go to Dashboard
             </a>
           </div>
@@ -69,7 +69,7 @@ const nextPath = `/admin/join?token=${encodeURIComponent(token)}`;
             <input type="hidden" name="token" value={token} />
             <button
               type="submit"
-              class="btn-frame border-2 border-ink-primary bg-ink-primary px-8 py-3 font-label uppercase tracking-widest text-base text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold transition-colors cursor-pointer"
+              class="border-button border-2 border-ink-primary bg-ink-primary px-8 py-3 font-label uppercase tracking-widest text-base text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold transition-colors cursor-pointer"
             >
               Accept Invite & Join Dashboard &rarr;
             </button>

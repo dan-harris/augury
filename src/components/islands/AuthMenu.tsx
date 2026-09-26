@@ -1,5 +1,6 @@
 import { actions } from "astro:actions";
 import { useEffect, useState } from "preact/hooks";
+import { Input } from "../Input";
 
 interface AuthMenuProps {
   userEmail?: string | null;
@@ -64,7 +65,7 @@ export function AuthMenu({ userEmail }: AuthMenuProps) {
         <form action="/auth/signout" method="POST">
           <button
             type="submit"
-            className="btn-frame border-2 border-ink-primary/60 bg-transparent px-3 py-1 text-xs font-label uppercase tracking-wider text-ink-primary hover:border-ink-primary hover:bg-ink-primary hover:text-parchment-base"
+            className="border-button border-2 border-ink-primary/60 bg-transparent px-3 py-1 text-xs font-label uppercase tracking-wider text-ink-primary hover:border-ink-primary hover:bg-ink-primary hover:text-parchment-base"
           >
             Sign Out
           </button>
@@ -89,19 +90,19 @@ export function AuthMenu({ userEmail }: AuthMenuProps) {
       className="flex flex-col gap-1 sm:flex-row sm:items-center"
     >
       <div className="relative flex items-center gap-2">
-        <input
+        <Input
           type="email"
           name="email"
           required
           placeholder="keeper@example.com"
           value={email}
           onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
-          className="underline-input w-44 px-2 py-1 text-xs font-serif text-ink-primary placeholder:text-ink-primary/40"
+          className="w-44 px-2 py-1 text-xs font-serif placeholder:text-ink-primary/40"
         />
         <button
           type="submit"
           disabled={loading}
-          className="btn-frame border-2 border-ink-primary bg-ink-primary px-3 py-1 text-xs font-label uppercase tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary disabled:opacity-50"
+          className="border-button border-2 border-ink-primary bg-ink-primary px-3 py-1 text-xs font-label uppercase tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary disabled:opacity-50"
         >
           {loading ? "Sending..." : "Sign In"}
         </button>

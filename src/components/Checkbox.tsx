@@ -21,7 +21,7 @@ export function Checkbox({
       type="checkbox"
       checked={checked}
       disabled={disabled}
-      class={`tickbox-input w-7 h-7 border-2 border-ink-primary bg-surface cursor-pointer relative shrink-0 ${extraClass}`}
+      class={`appearance-none [border-radius:3px_255px_5px_25px_/_255px_5px_225px_3px] checked:after:content-['✘'] checked:after:absolute checked:after:top-[45%] checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:text-[1.4rem] checked:after:text-[#181716] checked:after:font-sans w-7 h-7 border-2 border-ink-primary bg-surface cursor-pointer relative shrink-0 ${extraClass}`}
       {...rest}
     />
   );

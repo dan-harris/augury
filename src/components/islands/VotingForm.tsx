@@ -158,7 +158,7 @@ export function VotingForm({
         <button
           type="submit"
           disabled={!selectedPlayerId || isSubmitting}
-          class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2.5 font-label uppercase text-sm tracking-widest text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+          class="border-button border-2 border-ink-primary bg-ink-primary px-6 py-2.5 font-label uppercase text-sm tracking-widest text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
         >
           {isSubmitting ? "Submitting..." : "Submit Votes"}
         </button>

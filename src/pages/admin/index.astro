@@ -1,6 +1,7 @@
 ---
 import { actions } from "astro:actions";
 import Icon from "../../components/Icon.astro";
+import Input from "../../components/Input.astro";
 import Layout from "../../layouts/Layout.astro";
 import { composeSlug } from "../../lib/slugs";
 
@@ -53,7 +54,7 @@ if (user) {
 <Layout title="Admin Dashboard — Augury Ledger">
   <main class="max-w-[850px] mx-auto">
     <div
-      class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-12 relative"
+      class="border-page border-2 border-ink-primary p-6 sm:p-12 relative"
     >
       {
         !user ? (
@@ -104,16 +105,16 @@ if (user) {
                   action={actions.createGroup}
                   class="flex flex-col sm:flex-row gap-3"
                 >
-                  <input
+                  <Input
                     type="text"
                     name="name"
                     required
                     placeholder="e.g. Dungeons and Dads"
-                    class="underline-input flex-1 px-3 py-2 font-serif text-lg"
+                    class="flex-1 px-3 py-2 font-serif text-lg"
                   />
                   <button
                     type="submit"
-                    class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2 font-label uppercase tracking-wider text-sm text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold transition-colors cursor-pointer"
+                    class="border-button border-2 border-ink-primary bg-ink-primary px-6 py-2 font-label uppercase tracking-wider text-sm text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold transition-colors cursor-pointer"
                   >
                     Create Group &rarr;
                   </button>
@@ -157,7 +158,7 @@ if (user) {
                         </a>
                         <a
                           href={adminUrl}
-                          class="btn-frame border-2 border-ink-primary bg-ink-primary px-4 py-1.5 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold"
+                          class="border-button border-2 border-ink-primary bg-ink-primary px-4 py-1.5 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold"
                         >
                           Manage Group &rarr;
                         </a>

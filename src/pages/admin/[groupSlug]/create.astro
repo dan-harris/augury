@@ -72,7 +72,7 @@ const upcomingMonday = weekStart();
 
 <Layout title={`Create Session Poll — ${group.name}`}>
   <main class="max-w-[750px] mx-auto pb-12">
-    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-10 relative">
+    <div class="border-page border-2 border-ink-primary p-6 sm:p-10 relative">
       <nav class="mb-6 flex justify-between items-center border-b border-ink-primary/30 pb-3">
         <a href={`/admin/${canonicalSlug}`} class="font-label text-sm uppercase tracking-wider text-ink-primary hover:underline">
           &larr; Back to {group.name} Admin
@@ -129,7 +129,7 @@ const upcomingMonday = weekStart();
               const dayName = getDayName(dayIdx);
               const isCheckedDefault = defaultCandidateDays.includes(dayIdx);
               return (
-                <label class="btn-frame border-2 border-ink-primary/60 bg-parchment-base hover:bg-parchment-secondary p-3 rounded flex items-center gap-2 cursor-pointer font-serif text-sm">
+                <label class="border-button border-2 border-ink-primary/60 bg-parchment-base hover:bg-parchment-secondary p-3 rounded flex items-center gap-2 cursor-pointer font-serif text-sm">
                   <input
                     type="checkbox"
                     name="candidateDays"
@@ -151,13 +151,13 @@ const upcomingMonday = weekStart();
         <div class="pt-4 border-t border-ink-primary/30 flex justify-end gap-3">
           <a
             href={`/admin/${canonicalSlug}`}
-            class="btn-frame border border-ink-primary bg-parchment-base px-5 py-2 font-label uppercase text-xs tracking-wider font-bold"
+            class="border-button border border-ink-primary bg-parchment-base px-5 py-2 font-label uppercase text-xs tracking-wider font-bold"
           >
             Cancel
           </a>
           <button
             type="submit"
-            class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer transition-colors inline-flex items-center gap-2"
+            class="border-button border-2 border-ink-primary bg-ink-primary px-6 py-2 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer transition-colors inline-flex items-center gap-2"
           >
             <span>Publish Session Poll</span>
             <Icon name="dice" class="size-4" />

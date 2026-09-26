@@ -45,7 +45,7 @@
   }
 }
 
-.page-container {
+.border-page {
   border-radius: 2px 255px 3px 25px / 255px 5px 225px 3px;
   background-color: var(--color-surface-1);
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
@@ -54,103 +54,7 @@
     5px 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.page-container-inner {
-  position: relative;
-}
-
-.btn-frame {
+.border-button {
   border-radius: 255px 5px 225px 3px / 2px 255px 3px 25px;
   transition: all 0.2s ease;
-}
-
-.underline-input {
-  border-bottom: 2px solid var(--color-ink-primary);
-  background: transparent;
-  color: var(--color-ink-primary);
-}
-
-.underline-input:focus {
-  outline: none;
-  background-color: rgba(0, 0, 0, 0.03);
-}
-
-.tickbox-input {
-  appearance: none;
-  -webkit-appearance: none;
-  border-radius: 3px 255px 5px 25px / 255px 5px 225px 3px;
-}
-
-.tickbox-input[type="radio"] {
-  border-radius: 50% 45% 55% 50% / 45% 55% 45% 50%;
-}
-
-.tickbox-input:checked::after {
-  content: "✘";
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.4rem;
-  color: #181716;
-  font-family: sans-serif;
-}
-
-.tickbox-input[type="radio"]:checked::after {
-  content: "●";
-  font-size: 1rem;
-}
-
-/* OSR Ledger Block Design System */
-.ledger-block {
-  border: 3px solid var(--color-ink-primary, #000000);
-  background-color: var(--color-parchment-base, #ffffff);
-  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.12);
-  position: relative;
-}
-
-.ledger-block-header {
-  display: flex;
-  align-items: center;
-  border-bottom: 3px solid var(--color-ink-primary, #000000);
-  background-color: var(--color-parchment-base, #ffffff);
-}
-
-.ledger-initial-box {
-  width: 3.5rem;
-  height: 3.5rem;
-  border-right: 3px solid var(--color-ink-primary, #000000);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-gothic);
-  font-size: 2.25rem;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--color-ink-primary, #000000);
-  flex-shrink: 0;
-  user-select: none;
-  background-color: var(--color-parchment-base, #ffffff);
-}
-
-.ledger-block-title {
-  padding-left: 1rem;
-  padding-right: 1rem;
-  font-family: var(--font-gothic);
-  font-size: 2.25rem;
-  font-weight: 700;
-  color: var(--color-ink-primary, #000000);
-  letter-spacing: 0.025em;
-  line-height: 1;
-}
-
-.ledger-banner {
-  background-color: var(--color-ink-primary, #000000);
-  color: var(--color-parchment-base, #ffffff);
-  padding: 0.35rem 1rem;
-  font-family: var(--font-serif);
-  font-size: 0.95rem;
-  font-style: italic;
-  font-weight: 600;
-  letter-spacing: 0.025em;
-  border-bottom: 2px solid var(--color-ink-primary, #000000);
 }
