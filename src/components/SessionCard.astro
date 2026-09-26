@@ -105,7 +105,7 @@ const publicUrl = `/g/${groupSlug}/${session.id}`;
     isOpen && (
       <div class="flex flex-wrap items-center gap-3 text-xs font-serif">
         {viableDays.length > 0 ? (
-          <span class="font-label uppercase tracking-wider text-[11px] text-green-900 bg-green-200 px-2 py-0.5 rounded font-bold">
+          <span class="font-label uppercase tracking-wider text-[11px] text-ink-primary bg-sage-paper px-2 py-0.5 rounded font-bold">
             ✓ Viable: {viableDays.map((d) => getDayShortName(d)).join(", ")}
           </span>
         ) : (
