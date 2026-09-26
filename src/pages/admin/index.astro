@@ -10,11 +10,20 @@ const user = Astro.locals.user;
 const supabase = Astro.locals.supabase;
 
 const createResult = Astro.getActionResult(actions.createGroup);
-if (createResult && !createResult.error && createResult.data?.success && createResult.data.redirectUrl) {
+if (
+  createResult &&
+  !createResult.error &&
+  createResult.data?.success &&
+  createResult.data.redirectUrl
+) {
   return Astro.redirect(createResult.data.redirectUrl);
 }
 
-const createErrorMessage = createResult?.error?.message || (createResult?.data && !createResult.data.success ? createResult.data.error : null);
+const createErrorMessage =
+  createResult?.error?.message ||
+  (createResult?.data && !createResult.data.success
+    ? createResult.data.error
+    : null);
 
 let groups: any[] = [];
 let isGroupCreator = false;
@@ -22,7 +31,9 @@ let isGroupCreator = false;
 if (user) {
   const { data: adminGroups } = await supabase
     .from("group_admins")
-    .select("group_id, groups(id, name, slug_id, viability_threshold, created_at)")
+    .select(
+      "group_id, groups(id, name, slug_id, viability_threshold, created_at)",
+    )
     .eq("user_id", user.id);
 
   if (adminGroups) {
@@ -41,119 +52,136 @@ if (user) {
 
 <Layout title="Admin Dashboard — Augury Ledger">
   <main class="max-w-[850px] mx-auto">
-    <div class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-12 relative">
-      {!user ? (
-        <div class="border-2 border-ink-primary p-8 text-center bg-transparent rounded-md">
-          <div class="mx-auto mb-4 flex justify-center"><Icon name="swords" class="size-14 text-ink-primary" /></div>
-          <h1 class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-2 mb-4 block leading-none">
-            Sign In Required
-          </h1>
-          <p class="font-serif text-lg text-ink-primary/90 max-w-md mx-auto">
-            Please enter your email address into the header ledger form above to receive a magic link and access your admin dashboard.
-          </p>
-        </div>
-      ) : (
-        <div>
-          <header class="flex flex-col sm:flex-row sm:items-end justify-between border-b-2 border-ink-primary pb-4 mb-8 gap-4">
-            <div>
-              <h1 class="font-gothic text-5xl sm:text-6xl text-ink-primary leading-none m-0">
-                Admin Dashboard
-              </h1>
-              <div class="font-label uppercase tracking-[3px] text-xs text-ink-primary/80 mt-2">
-                Campaign Groups & Session Ledger
-              </div>
+    <div
+      class="page-container page-container-inner border-2 border-ink-primary p-6 sm:p-12 relative"
+    >
+      {
+        !user ? (
+          <div class="p-8 text-center bg-transparent rounded-md">
+            <div class="mx-auto mb-4 flex justify-center">
+              <Icon name="swords" class="size-14 text-ink-primary" />
             </div>
+            <h1 class="font-label text-3xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-2 mb-4 block leading-none">
+              Sign In Required
+            </h1>
+            <p class="font-serif text-lg text-ink-primary/90 max-w-md mx-auto">
+              Please enter your email address into the header ledger form above
+              to receive a magic link and access your admin dashboard.
+            </p>
+          </div>
+        ) : (
+          <div>
+            <header class="flex flex-col sm:flex-row sm:items-end justify-between border-b-2 border-ink-primary pb-4 mb-8 gap-4">
+              <div>
+                <h1 class="font-gothic text-5xl sm:text-6xl text-ink-primary leading-none m-0">
+                  Admin Dashboard
+                </h1>
+                <div class="font-label uppercase tracking-[3px] text-xs text-ink-primary/80 mt-2">
+                  Campaign Groups & Session Ledger
+                </div>
+              </div>
+
+              {isGroupCreator && (
+                <span class="font-label uppercase tracking-widest text-xs px-3 py-1 border-2 border-ink-primary bg-parchment-secondary text-ink-primary font-bold">
+                  ★ Group Creator Allowed
+                </span>
+              )}
+            </header>
 
             {isGroupCreator && (
-              <span class="font-label uppercase tracking-widest text-xs px-3 py-1 border-2 border-ink-primary bg-parchment-secondary text-ink-primary font-bold">
-                ★ Group Creator Allowed
-              </span>
-            )}
-          </header>
-
-          {isGroupCreator && (
-            <section class="border-2 border-ink-primary p-6 mb-8 rounded-md bg-parchment-secondary/30">
-              <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold">
-                Create New Campaign Group
-              </h2>
-              {createErrorMessage && (
-                <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
-                  <Icon name="spikes" class="size-5 shrink-0" /> <span>{createErrorMessage}</span>
-                </div>
-              )}
-              <form method="POST" action={actions.createGroup} class="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  placeholder="e.g. Dungeons and Dads"
-                  class="underline-input flex-1 px-3 py-2 font-serif text-lg"
-                />
-                <button
-                  type="submit"
-                  class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2 font-label uppercase tracking-wider text-sm text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold transition-colors cursor-pointer"
-                >
-                  Create Group &rarr;
-                </button>
-              </form>
-            </section>
-          )}
-
-          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none">
-            Your Campaign Groups
-          </h2>
-
-          {groups.length > 0 ? (
-            <div class="grid gap-6 sm:grid-cols-2">
-              {groups.map((group) => {
-                const composed = composeSlug(group.name, group.slug_id);
-                const adminUrl = `/admin/${composed}`;
-                const publicUrl = `/g/${composed}`;
-                return (
-                  <div class="border-2 border-ink-primary p-5 relative rounded-md bg-transparent flex flex-col justify-between">
-                    <label class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider border border-ink-primary/30">
-                      ID: {group.slug_id}
-                    </label>
-                    <div>
-                      <h3 class="font-gothic text-3xl text-ink-primary mb-2">{group.name}</h3>
-                      <p class="font-serif text-sm text-ink-primary/80">
-                        Viability Threshold: <strong class="font-bold">{group.viability_threshold} players</strong>
-                      </p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-ink-primary/30 flex justify-between items-center gap-2">
-                      <a
-                        href={publicUrl}
-                        class="text-xs font-label uppercase tracking-wider text-ink-primary/70 hover:underline"
-                        target="_blank"
-                      >
-                        Public Link ↗
-                      </a>
-                      <a
-                        href={adminUrl}
-                        class="btn-frame border-2 border-ink-primary bg-ink-primary px-4 py-1.5 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold"
-                      >
-                        Manage Group &rarr;
-                      </a>
-                    </div>
+              <section class="border-2 border-ink-primary p-6 mb-8 rounded-md bg-parchment-secondary/30">
+                <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 block font-bold">
+                  Create New Campaign Group
+                </h2>
+                {createErrorMessage && (
+                  <div class="mb-4 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+                    <Icon name="spikes" class="size-5 shrink-0" />{" "}
+                    <span>{createErrorMessage}</span>
                   </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div class="border-2 border-dashed border-ink-primary/60 p-10 text-center rounded-md bg-transparent flex flex-col items-center">
-              <Icon name="scroll" class="size-12 text-ink-primary mb-2" />
-              <h3 class="font-label text-xl uppercase tracking-wider text-ink-primary font-bold mb-2">
-                No Campaign Groups Found
-              </h3>
-              <p class="font-serif text-base text-ink-primary/90 max-w-md mx-auto">
-                {isGroupCreator
-                  ? "You have not registered any campaign groups yet. Use the form above to create your first group."
-                  : "You do not belong to any campaign groups yet. Ask a group admin for an invite link to gain access."}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
+                )}
+                <form
+                  method="POST"
+                  action={actions.createGroup}
+                  class="flex flex-col sm:flex-row gap-3"
+                >
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    placeholder="e.g. Dungeons and Dads"
+                    class="underline-input flex-1 px-3 py-2 font-serif text-lg"
+                  />
+                  <button
+                    type="submit"
+                    class="btn-frame border-2 border-ink-primary bg-ink-primary px-6 py-2 font-label uppercase tracking-wider text-sm text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold transition-colors cursor-pointer"
+                  >
+                    Create Group &rarr;
+                  </button>
+                </form>
+              </section>
+            )}
+
+            <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b-2 border-ink-primary pb-1 mb-6 block leading-none">
+              Your Campaign Groups
+            </h2>
+
+            {groups.length > 0 ? (
+              <div class="grid gap-6 sm:grid-cols-2">
+                {groups.map((group) => {
+                  const composed = composeSlug(group.name, group.slug_id);
+                  const adminUrl = `/admin/${composed}`;
+                  const publicUrl = `/g/${composed}`;
+                  return (
+                    <div class="border-2 border-ink-primary p-5 relative rounded-md bg-transparent flex flex-col justify-between">
+                      <label class="absolute -top-3.5 left-4 bg-parchment-base px-2 font-label font-bold uppercase text-xs tracking-wider border border-ink-primary/30">
+                        ID: {group.slug_id}
+                      </label>
+                      <div>
+                        <h3 class="font-gothic text-3xl text-ink-primary mb-2">
+                          {group.name}
+                        </h3>
+                        <p class="font-serif text-sm text-ink-primary/80">
+                          Viability Threshold:{" "}
+                          <strong class="font-bold">
+                            {group.viability_threshold} players
+                          </strong>
+                        </p>
+                      </div>
+                      <div class="mt-4 pt-3 border-t border-ink-primary/30 flex justify-between items-center gap-2">
+                        <a
+                          href={publicUrl}
+                          class="text-xs font-label uppercase tracking-wider text-ink-primary/70 hover:underline"
+                          target="_blank"
+                        >
+                          Public Link ↗
+                        </a>
+                        <a
+                          href={adminUrl}
+                          class="btn-frame border-2 border-ink-primary bg-ink-primary px-4 py-1.5 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold"
+                        >
+                          Manage Group &rarr;
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div class="border-2 border-dashed border-ink-primary/60 p-10 text-center rounded-md bg-transparent flex flex-col items-center">
+                <Icon name="scroll" class="size-12 text-ink-primary mb-2" />
+                <h3 class="font-label text-xl uppercase tracking-wider text-ink-primary font-bold mb-2">
+                  No Campaign Groups Found
+                </h3>
+                <p class="font-serif text-base text-ink-primary/90 max-w-md mx-auto">
+                  {isGroupCreator
+                    ? "You have not registered any campaign groups yet. Use the form above to create your first group."
+                    : "You do not belong to any campaign groups yet. Ask a group admin for an invite link to gain access."}
+                </p>
+              </div>
+            )}
+          </div>
+        )
+      }
     </div>
   </main>
 </Layout>

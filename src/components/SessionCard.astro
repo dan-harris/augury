@@ -1,7 +1,7 @@
 ---
-import Icon from "./Icon.astro";
 import { getBestDay, getViableDays, type TallyRow } from "../lib/viability";
-import { formatDayDate, formatWeekLabel } from "../lib/weeks";
+import { formatDayDate, formatWeekLabel, getDayShortName } from "../lib/weeks";
+import Icon from "./Icon.astro";
 
 interface Props {
   session: {
@@ -41,37 +41,49 @@ const isOpen = session.status === "open";
 const publicUrl = `/g/${groupSlug}/${session.id}`;
 ---
 
-<div class={`p-5 border-2 rounded-md transition-all ${
-  isConfirmed
-    ? "border-green-800 bg-green-50/60"
-    : isClosed
-    ? "border-ink-primary/30 bg-parchment-secondary/30 opacity-80"
-    : "border-ink-primary bg-parchment-base hover:border-ink-primary shadow-xs"
-}`}>
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-ink-primary/30 pb-3 mb-3">
+<div
+  class={`p-5 border-2 rounded-md transition-all ${
+    isConfirmed
+      ? "border-green-800 bg-green-50/60"
+      : isClosed
+        ? "border-ink-primary/30 bg-parchment-secondary/30 opacity-80"
+        : "border-ink-primary bg-parchment-base hover:border-ink-primary shadow-xs"
+  }`}
+>
+  <div
+    class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-ink-primary/30 pb-3 mb-3"
+  >
     <div>
       <div class="flex items-center gap-2">
         <h3 class="font-gothic text-2xl text-ink-primary m-0 leading-tight">
           {weekLabel}
         </h3>
-        {isOpen && (
-          <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-ink-primary text-parchment-base rounded font-bold">
-            Open Poll
-          </span>
-        )}
-        {isConfirmed && (
-          <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-green-800 text-green-50 rounded font-bold">
-            Confirmed
-          </span>
-        )}
-        {isClosed && (
-          <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-ink-primary/20 text-ink-primary/70 rounded">
-            Closed
-          </span>
-        )}
+        {
+          isOpen && (
+            <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-ink-primary text-parchment-base rounded font-bold">
+              Open Poll
+            </span>
+          )
+        }
+        {
+          isConfirmed && (
+            <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-green-800 text-green-50 rounded font-bold">
+              Confirmed
+            </span>
+          )
+        }
+        {
+          isClosed && (
+            <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-ink-primary/20 text-ink-primary/70 rounded">
+              Closed
+            </span>
+          )
+        }
       </div>
       <p class="font-serif text-xs text-ink-primary/70 mt-1">
-        {session.candidate_days.length} Candidate Day{session.candidate_days.length === 1 ? "" : "s"} &bull; {votedCount} of {totalPlayersCount} Players Voted
+        {session.candidate_days.length} Candidate Day{
+          session.candidate_days.length === 1 ? "" : "s"
+        } &bull; {votedCount} of {totalPlayersCount} Players Voted
       </p>
     </div>
 
@@ -86,37 +98,47 @@ const publicUrl = `/g/${groupSlug}/${session.id}`;
   </div>
 
   <!-- Status / Viability Highlights -->
-  {isConfirmed && session.confirmed_day !== null && session.confirmed_day !== undefined && (
-    <div class="p-3 border border-green-800/40 bg-green-100/60 rounded text-green-950 font-serif text-sm font-bold flex items-center gap-2">
-      <Icon name="dice" class="size-4 shrink-0" />
-      <span>Confirmed Day:</span>
-      <span>{formatDayDate(session.week_start, session.confirmed_day)}</span>
-    </div>
-  )}
+  {
+    isConfirmed &&
+      session.confirmed_day !== null &&
+      session.confirmed_day !== undefined && (
+        <div class="p-3 border border-green-800/40 bg-green-100/60 rounded text-green-950 font-serif text-sm font-bold flex items-center gap-2">
+          <Icon name="dice" class="size-4 shrink-0" />
+          <span>Confirmed Day:</span>
+          <span>
+            {formatDayDate(session.week_start, session.confirmed_day)}
+          </span>
+        </div>
+      )
+  }
 
-  {isOpen && (
-    <div class="flex flex-wrap items-center gap-3 text-xs font-serif">
-      {viableDays.length > 0 ? (
-        <span class="font-label uppercase tracking-wider text-[11px] text-green-900 bg-green-200 px-2 py-0.5 rounded font-bold">
-          ✓ Viable: {viableDays.map(d => getDayShortName(d)).join(", ")}
-        </span>
-      ) : (
-        <span class="font-label uppercase tracking-wider text-[11px] text-rust-ink bg-rust-paper/60 px-2 py-0.5 rounded font-bold">
-          ○ No Viable Days Yet
-        </span>
-      )}
+  {
+    isOpen && (
+      <div class="flex flex-wrap items-center gap-3 text-xs font-serif">
+        {viableDays.length > 0 ? (
+          <span class="font-label uppercase tracking-wider text-[11px] text-green-900 bg-green-200 px-2 py-0.5 rounded font-bold">
+            ✓ Viable: {viableDays.map((d) => getDayShortName(d)).join(", ")}
+          </span>
+        ) : (
+          <span class="font-label uppercase tracking-wider text-[11px] text-rust-ink bg-rust-paper/60 px-2 py-0.5 rounded font-bold">
+            ○ No Viable Days Yet
+          </span>
+        )}
 
-      {bestDay !== null && (
-        <span class="text-ink-primary font-bold">
-          ★ Suggested Best: {formatDayDate(session.week_start, bestDay)}
-        </span>
-      )}
-    </div>
-  )}
+        {bestDay !== null && (
+          <span class="text-ink-primary font-bold">
+            ★ Suggested Best: {formatDayDate(session.week_start, bestDay)}
+          </span>
+        )}
+      </div>
+    )
+  }
 
-  {isClosed && (
-    <p class="font-serif text-xs italic text-ink-primary/70">
-      Closed without a confirmed date.
-    </p>
-  )}
+  {
+    isClosed && (
+      <p class="font-serif text-xs italic text-ink-primary/70">
+        Closed without a confirmed date.
+      </p>
+    )
+  }
 </div>
