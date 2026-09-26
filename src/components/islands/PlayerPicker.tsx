@@ -23,7 +23,7 @@ export function PlayerPicker({
   onSelectPlayer,
 }: PlayerPickerProps) {
   return (
-    <RadioGroup label="1. Select Your Character / Player Name">
+    <RadioGroup>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
         {players.map((p) => {
           const isSelected = selectedPlayerId === p.id;

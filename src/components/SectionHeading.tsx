@@ -1,0 +1,29 @@
+export interface SectionHeadingProps {
+  title: string;
+  class?: string;
+  className?: string;
+}
+
+export function SectionHeading({
+  title,
+  class: classNameProp,
+  className,
+}: SectionHeadingProps) {
+  const extraClass = classNameProp || className || "";
+  const trimmedTitle = (title || "").trim();
+  const firstLetter = trimmedTitle.slice(0, 1).toUpperCase();
+  const restText = trimmedTitle.slice(1).toLowerCase();
+
+  return (
+    <div
+      class={`flex items-end border-b-3 shadow-[0_3px_0_rgba(0,0,0,0.12)] border-ink-primary ${extraClass}`}
+    >
+      <div class="size-12 border-t-3 border-l-3 border-r-3 border-ink-primary flex items-center justify-center font-gothic text-[3.25rem] font-bold leading-none text-ink-primary shrink-0 select-none bg-parchment-base">
+        {firstLetter}
+      </div>
+      <div class="p-1 font-gothic text-4xl font-bold text-ink-primary tracking-wide leading-none">
+        {restText}
+      </div>
+    </div>
+  );
+}

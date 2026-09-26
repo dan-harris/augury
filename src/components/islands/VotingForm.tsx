@@ -1,6 +1,7 @@
 import { actions } from "astro:actions";
 import { useState } from "preact/hooks";
 import { Icon } from "../Icon";
+import { SectionHeading } from "../SectionHeading";
 import { DayPicker } from "./DayPicker";
 import { PlayerPicker } from "./PlayerPicker";
 
@@ -108,61 +109,62 @@ export function VotingForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} class="space-y-6 border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/30">
-      <h2 class="font-label text-xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 font-bold flex items-center gap-2">
-        <span class="flex items-center gap-1.5">
-          <Icon name="dice" class="size-8 inline mt-0.5" />{" "}
-          Submit Availability Poll
-        </span>
-      </h2>
+    <form onSubmit={handleSubmit} class="flex flex-col gap-11">
+      <section class="flex flex-col gap-8">
+        <SectionHeading title="Players" />
 
-      {feedback && (
-        <div
-          class={`p-3 text-sm font-serif font-bold border-2 rounded flex items-center gap-2 ${
-            feedback.type === "success"
-              ? "border-green-800 bg-green-100 text-green-900"
-              : "border-rust-ink bg-rust-paper/40 text-rust-ink"
-          }`}
-        >
-          {feedback.type === "success" ? "✓ " : <Icon name="spikes" class="size-4 shrink-0" />}
-          <span>{feedback.message}</span>
-        </div>
-      )}
+        {feedback && (
+          <div
+            class={`p-3 text-sm font-serif font-bold border-2 rounded flex items-center gap-2 ${
+              feedback.type === "success"
+                ? "border-green-800 bg-green-100 text-green-900"
+                : "border-rust-ink bg-rust-paper/40 text-rust-ink"
+            }`}
+          >
+            {feedback.type === "success" ? "✓ " : <Icon name="spikes" class="size-4 shrink-0" />}
+            <span>{feedback.message}</span>
+          </div>
+        )}
 
-      {/* 1. Player Picker */}
-      <PlayerPicker
-        players={players}
-        selectedPlayerId={selectedPlayerId}
-        votedPlayerIds={votedPlayerIds}
-        linkedPlayerId={linkedPlayerId}
-        onSelectPlayer={handleSelectPlayer}
-      />
+        {/* 1. Player Picker */}
+        <PlayerPicker
+          players={players}
+          selectedPlayerId={selectedPlayerId}
+          votedPlayerIds={votedPlayerIds}
+          linkedPlayerId={linkedPlayerId}
+          onSelectPlayer={handleSelectPlayer}
+        />
+      </section>
 
-      {/* 2. Day Picker */}
-      <DayPicker
-        weekStart={weekStart}
-        candidateDays={candidateDays}
-        selectedDays={selectedDays}
-        onToggleDay={handleToggleDay}
-        disabled={!selectedPlayerId || isSubmitting}
-      />
+      <section class="flex flex-col gap-8">
+        <SectionHeading title="Availability" />
 
-      {/* Submit Button */}
-      <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <p class="font-serif text-xs italic text-ink-primary/70">
-          {selectedDays.length === 0
-            ? "No days selected = submitting as 'unavailable for all days'."
-            : `Selected ${selectedDays.length} candidate day${selectedDays.length === 1 ? "" : "s"}.`}
-        </p>
-
-        <button
-          type="submit"
+        {/* 2. Day Picker */}
+        <DayPicker
+          weekStart={weekStart}
+          candidateDays={candidateDays}
+          selectedDays={selectedDays}
+          onToggleDay={handleToggleDay}
           disabled={!selectedPlayerId || isSubmitting}
-          class="border-button border-2 border-ink-primary bg-ink-primary px-6 py-2.5 font-label uppercase text-sm tracking-widest text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
-        >
-          {isSubmitting ? "Submitting..." : "Submit Votes"}
-        </button>
-      </div>
+        />
+
+        {/* Submit Button */}
+        <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p class="font-serif text-xs italic text-ink-primary/70">
+            {selectedDays.length === 0
+              ? "No days selected = submitting as 'unavailable for all days'."
+              : `Selected ${selectedDays.length} candidate day${selectedDays.length === 1 ? "" : "s"}.`}
+          </p>
+
+          <button
+            type="submit"
+            disabled={!selectedPlayerId || isSubmitting}
+            class="border-button border-2 border-ink-primary bg-ink-primary px-6 py-2.5 font-label uppercase text-sm tracking-widest text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold cursor-pointer transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+          >
+            {isSubmitting ? "Submitting..." : "Submit Votes"}
+          </button>
+        </div>
+      </section>
     </form>
   );
 }

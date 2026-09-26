@@ -18,10 +18,6 @@ export function DayPicker({
 }: DayPickerProps) {
   return (
     <div class="space-y-3">
-      <label class="block font-label text-sm uppercase tracking-wider font-bold">
-        2. Select Days You Can Play (Multi-Select)
-      </label>
-
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
         {candidateDays.map((dayIndex) => {
           const isSelected = selectedDays.includes(dayIndex);

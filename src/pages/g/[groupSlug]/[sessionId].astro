@@ -1,7 +1,6 @@
 ---
 import { actions } from "astro:actions";
 import Icon from "../../../components/Icon.astro";
-import { LiveTally } from "../../../components/islands/LiveTally";
 import { VotingForm } from "../../../components/islands/VotingForm";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
@@ -129,76 +128,78 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
 <Layout title={`${weekLabel} — ${group.name} Session Poll`}>
   <main class="max-w-[900px] mx-auto pb-16">
     <div
-      class="border-page border-2 border-ink-primary p-6 sm:p-10 relative"
+      class="border-page border-2 border-ink-primary p-6 sm:p-10 relative gap-16 flex flex-col"
     >
-      <!-- Header Navigation -->
-      <nav
-        class="mb-6 flex justify-between items-center border-b border-ink-primary/30 pb-3"
-      >
-        <a
-          href={`/g/${canonicalSlug}`}
-          class="font-label text-sm uppercase tracking-wider text-ink-primary hover:underline"
-        >
-          &larr; Back to {group.name} Ledger
-        </a>
-        {
-          isAdmin && (
-            <a
-              href={`/admin/${canonicalSlug}`}
-              class="border-button border border-ink-primary bg-parchment-secondary px-3 py-1 font-label uppercase text-xs tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold"
-            >
-              Admin Controls
-            </a>
-          )
-        }
-      </nav>
+      <div class="gap-8 flex flex-col">
+        <!-- Header Navigation -->
+        <nav class="flex justify-between items-center">
+          <a
+            href={`/g/${canonicalSlug}`}
+            class="font-label text-sm uppercase tracking-wider text-ink-primary hover:underline"
+          >
+            &larr; {group.name}
+          </a>
+          {
+            isAdmin && (
+              <a
+                href={`/admin/${canonicalSlug}`}
+                class="border-button border border-ink-primary bg-parchment-secondary px-3 py-1 font-label uppercase text-xs tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold"
+              >
+                Admin Controls
+              </a>
+            )
+          }
+        </nav>
 
-      <!-- Session Title Header -->
-      <header class="border-b-2 border-ink-primary pb-6 mb-8">
-        <div
-          class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2"
-        >
-          <h1
-            class="font-gothic text-4xl sm:text-5xl text-ink-primary m-0 leading-none"
+        <!-- Session Title Header -->
+        <header>
+          <div
+            class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2"
           >
-            {weekLabel}
-          </h1>
-          <span
-            class={`font-label uppercase tracking-widest text-xs px-3 py-1 border-2 font-bold inline-block self-start sm:self-auto ${
-              session.status === "confirmed"
-                ? "border-green-800 bg-green-100 text-green-950"
-                : session.status === "closed"
-                  ? "border-ink-primary/40 bg-parchment-secondary text-ink-primary/70"
-                  : "border-ink-primary bg-ink-primary text-parchment-base"
-            }`}
-          >
-            {session.status.toUpperCase()}
-          </span>
-        </div>
-        <p class="font-serif text-sm text-ink-primary/80 mt-2">
+            <h1
+              class="font-gothic text-4xl sm:text-5xl text-ink-primary m-0 leading-none"
+            >
+              {weekLabel}
+            </h1>
+            <span
+              class={`font-label uppercase tracking-widest text-xs px-3 py-1 border-2 font-bold inline-block self-start sm:self-auto ${
+                session.status === "confirmed"
+                  ? "border-green-800 bg-green-100 text-green-950"
+                  : session.status === "closed"
+                    ? "border-ink-primary/40 bg-parchment-secondary text-ink-primary/70"
+                    : "border-ink-primary bg-ink-primary text-parchment-base"
+              }`}
+            >
+              {session.status.toUpperCase()}
+            </span>
+          </div>
+          <!-- <p class="font-serif text-sm text-ink-primary/80 mt-2">
           Group: <strong class="font-bold">{group.name}</strong> &bull; Viability
           Threshold: <strong class="font-bold"
             >{group.viability_threshold} players</strong
           > &bull; Roster Size: <strong class="font-bold"
             >{players.length} players</strong
           >
-        </p>
-      </header>
+        </p> -->
+        </header>
 
-      {
-        confirmError && (
-          <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
-            <Icon name="spikes" class="size-5 shrink-0" /> <span>{confirmError}</span>
-          </div>
-        )
-      }
-      {
-        closeError && (
-          <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
-            <Icon name="spikes" class="size-5 shrink-0" /> <span>{closeError}</span>
-          </div>
-        )
-      }
+        {
+          confirmError && (
+            <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+              <Icon name="spikes" class="size-5 shrink-0" />{" "}
+              <span>{confirmError}</span>
+            </div>
+          )
+        }
+        {
+          closeError && (
+            <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+              <Icon name="spikes" class="size-5 shrink-0" />{" "}
+              <span>{closeError}</span>
+            </div>
+          )
+        }
+      </div>
 
       <!-- Admin Inline Controls Section (If Admin & Open) -->
       {
@@ -255,7 +256,7 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
         )
       }
 
-      <div class="space-y-10">
+      <div>
         <!-- 1. Voting Form (If Session is Open) -->
         {
           session.status === "open" && (
@@ -271,21 +272,6 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
             />
           )
         }
-
-        <!-- 2. Realtime Tally Board -->
-        <LiveTally
-          client:load
-          sessionId={session.id}
-          weekStart={session.week_start}
-          candidateDays={session.candidate_days}
-          viabilityThreshold={group.viability_threshold}
-          initialStatus={session.status}
-          initialConfirmedDay={session.confirmed_day}
-          initialTallies={tallies}
-          initialVotedPlayerIds={votedPlayerIds}
-          players={players}
-          isAdmin={isAdmin}
-        />
       </div>
     </div>
   </main>
