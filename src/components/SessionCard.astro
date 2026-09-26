@@ -41,33 +41,23 @@ const isOpen = session.status === "open";
 const publicUrl = `/g/${groupSlug}/${session.id}`;
 ---
 
-<div
-  class={`p-5 border-2 rounded-md transition-all ${
+<a
+  href={publicUrl}
+  class={`p-4 border-2 text-left font-serif transition-all flex flex-col gap-5 cursor-pointer rounded-[255px_5px_225px_3px/2px_255px_3px_25px] hover:bg-sage-paper ${
     isConfirmed
-      ? "border-green-800 bg-green-50/60"
-      : isClosed
-        ? "border-ink-primary/30 bg-parchment-secondary/30 opacity-80"
-        : "border-ink-primary bg-parchment-base hover:border-ink-primary shadow-xs"
-  }`}
+      ? "border-ink-primary bg-sage-paper shadow-sm"
+      : "border-ink-primary/60 bg-parchment-base hover:border-ink-primary"
+  } ${isClosed ? "opacity-50 cursor-not-allowed" : ""}`}
 >
-  <div
-    class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-ink-primary/30 pb-3 mb-3"
-  >
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
     <div>
       <div class="flex items-center gap-2">
         <h3 class="font-gothic text-2xl text-ink-primary m-0 leading-tight">
           {weekLabel}
         </h3>
         {
-          isOpen && (
-            <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-ink-primary text-parchment-base rounded font-bold">
-              Open Poll
-            </span>
-          )
-        }
-        {
           isConfirmed && (
-            <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-green-800 text-green-50 rounded font-bold">
+            <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-sage-block text-green-50 rounded font-bold">
               Confirmed
             </span>
           )
@@ -88,12 +78,11 @@ const publicUrl = `/g/${groupSlug}/${session.id}`;
     </div>
 
     <div class="flex items-center gap-2 shrink-0">
-      <a
-        href={publicUrl}
-        class="border-button border-2 border-ink-primary bg-ink-primary px-4 py-1.5 font-label uppercase text-xs tracking-wider text-parchment-base hover:bg-parchment-secondary hover:text-ink-primary font-bold transition-colors"
+      <div
+        class="border-button border-2 border-ink-primary px-4 py-1.5 font-label uppercase text-xs tracking-wider font-bold transition-colors"
       >
-        {isOpen ? "Vote / View Poll &rarr;" : "View Details &rarr;"}
-      </a>
+        Vote
+      </div>
     </div>
   </div>
 
@@ -124,12 +113,6 @@ const publicUrl = `/g/${groupSlug}/${session.id}`;
             ○ No Viable Days Yet
           </span>
         )}
-
-        {bestDay !== null && (
-          <span class="text-ink-primary font-bold">
-            ★ Suggested Best: {formatDayDate(session.week_start, bestDay)}
-          </span>
-        )}
       </div>
     )
   }
@@ -141,4 +124,4 @@ const publicUrl = `/g/${groupSlug}/${session.id}`;
       </p>
     )
   }
-</div>
+</a>

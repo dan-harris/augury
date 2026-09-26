@@ -4,8 +4,16 @@ import Icon from "../../../components/Icon.astro";
 import { VotingForm } from "../../../components/islands/VotingForm";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
-import { getBestDay, type TallyRow } from "../../../lib/viability";
-import { formatDayDate, formatWeekLabel } from "../../../lib/weeks";
+import {
+  getBestDay,
+  getViableDays,
+  type TallyRow,
+} from "../../../lib/viability";
+import {
+  formatDayDate,
+  formatWeekLabel,
+  getDayShortName,
+} from "../../../lib/weeks";
 
 export const prerender = false;
 
@@ -122,6 +130,7 @@ if (rawVotes) {
 }
 
 const weekLabel = formatWeekLabel(session.week_start);
+const viableDays = getViableDays(tallies, group.viability_threshold);
 const bestDay = getBestDay(tallies, group.viability_threshold);
 ---
 
@@ -153,25 +162,36 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
 
         <!-- Session Title Header -->
         <header>
-          <div
-            class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2"
-          >
+          <div class="flex flex-col gap-4">
             <h1
               class="font-gothic text-4xl sm:text-5xl text-ink-primary m-0 leading-none"
             >
               {weekLabel}
             </h1>
-            <span
-              class={`font-label uppercase tracking-widest text-xs px-3 py-1 border-2 font-bold inline-block self-start sm:self-auto ${
-                session.status === "confirmed"
-                  ? "border-green-800 bg-green-100 text-green-950"
-                  : session.status === "closed"
-                    ? "border-ink-primary/40 bg-parchment-secondary text-ink-primary/70"
-                    : "border-ink-primary bg-ink-primary text-parchment-base"
-              }`}
-            >
-              {session.status.toUpperCase()}
-            </span>
+            <div>
+              {
+                session.status === "closed" && (
+                  <span class="font-label uppercase tracking-widest text-xs px-3 py-1 rounded-xs font-bold inline-block bg-ink-secondary/20">
+                    Closed
+                  </span>
+                )
+              }
+              {
+                session.status !== "closed" && viableDays.length > 0 && (
+                  <span class="font-label uppercase tracking-wider text-[11px] text-ink-primary bg-sage-paper px-2 py-0.5 rounded font-bold">
+                    ✓ Viable:{" "}
+                    {viableDays.map((d) => getDayShortName(d)).join(", ")}
+                  </span>
+                )
+              }
+              {
+                session.status !== "closed" && viableDays.length === 0 && (
+                  <span class="font-label uppercase tracking-wider text-[11px] text-rust-ink bg-rust-paper/60 px-2 py-0.5 rounded font-bold">
+                    ○ No Viable Days Yet
+                  </span>
+                )
+              }
+            </div>
           </div>
           <!-- <p class="font-serif text-sm text-ink-primary/80 mt-2">
           Group: <strong class="font-bold">{group.name}</strong> &bull; Viability
@@ -204,11 +224,10 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
       <!-- Admin Inline Controls Section (If Admin & Open) -->
       {
         isAdmin && session.status === "open" && (
-          <section class="mb-8 p-5 border-2 border-ink-primary bg-parchment-secondary/40 rounded-md">
+          <section class="bg-parchment-secondary/40 rounded-md">
             <h3 class="font-label text-sm uppercase tracking-wider text-ink-primary font-bold mb-3 flex items-center gap-2">
               <span class="flex items-center gap-1.5">
-                <Icon name="chair" class="size-8 inline-block" /> Admin Session
-                Lifecycle Controls
+                <Icon name="chair" class="size-8 inline-block" /> Admin
               </span>
             </h3>
 
@@ -248,7 +267,7 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
                   type="submit"
                   class="border-button border border-rust-ink bg-rust-paper/40 text-rust-ink px-3 py-1 font-label uppercase text-xs tracking-wider font-bold hover:bg-rust-ink hover:text-parchment-base cursor-pointer"
                 >
-                  Close Without Pick
+                  Close
                 </button>
               </form>
             </div>

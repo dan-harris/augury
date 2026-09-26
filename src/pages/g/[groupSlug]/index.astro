@@ -1,6 +1,7 @@
 ---
 import { actions } from "astro:actions";
 import Icon from "../../../components/Icon.astro";
+import SectionHeading from "../../../components/SectionHeading.astro";
 import SessionCard from "../../../components/SessionCard.astro";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
@@ -107,41 +108,38 @@ if (sessionIds.length > 0) {
 ---
 
 <Layout title={`${group.name} — Campaign Ledger`}>
-  <main class="max-w-[850px] mx-auto pb-16">
-    <div class="border-page border-2 border-ink-primary p-6 sm:p-12 relative">
-      <!-- Public Group Header -->
-      <header class="border-b-2 border-ink-primary pb-6 mb-8 text-center sm:text-left">
-        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-          <h1 class="font-gothic text-5xl sm:text-6xl text-ink-primary m-0 leading-none">
-            {group.name}
-          </h1>
-          <span class="font-label uppercase tracking-widest text-xs px-3 py-1 border-2 border-ink-primary bg-parchment-secondary text-ink-primary font-bold inline-block self-start sm:self-auto">
-            Public Campaign Ledger
-          </span>
-        </div>
-        <p class="font-serif text-base text-ink-primary/80 mt-3">
-          Session Scheduling & Player Availability Polls &bull; Viability Threshold: <strong class="font-bold">{group.viability_threshold} players</strong>
-        </p>
-      </header>
+  <main class="max-w-[900px] mx-auto pb-16">
+    <div class="border-page border-2 border-ink-primary p-6 sm:p-12 relative gap-16 flex flex-col">
+      <div>
+        <!-- Public Group Header -->
+        <header class="text-center sm:text-left">
+          <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+            <h1 class="font-gothic text-5xl sm:text-6xl text-ink-primary m-0 leading-none">
+              {group.name}
+            </h1>
+          </div>
+          <p class="font-serif text-base text-ink-primary/80 mt-3">
+            Session Scheduling & Player Availability Polls &bull; Viability Threshold: <strong class="font-bold">{group.viability_threshold} players</strong>
+          </p>
+        </header>
 
-      {linkError && (
-        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
-          <Icon name="spikes" class="size-5 shrink-0" /> <span>{linkError}</span>
-        </div>
-      )}
-      {unlinkError && (
-        <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
-          <Icon name="spikes" class="size-5 shrink-0" /> <span>{unlinkError}</span>
-        </div>
-      )}
+        {linkError && (
+          <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+            <Icon name="spikes" class="size-5 shrink-0" /> <span>{linkError}</span>
+          </div>
+        )}
+        {unlinkError && (
+          <div class="mb-6 p-3 border-2 border-rust-ink bg-rust-paper/40 text-rust-ink text-sm font-serif font-bold rounded flex items-center gap-2">
+            <Icon name="spikes" class="size-5 shrink-0" /> <span>{unlinkError}</span>
+          </div>
+        )}
+      </div>
 
-      <div class="space-y-10">
+      <div class="gap-14 flex flex-col">
         <!-- 1. CONFIRMED UPCOMING SESSIONS (M4 Task 3) -->
         {confirmedUpcomingSessions.length > 0 && (
-          <section class="border-2 border-green-800 p-6 rounded-md bg-green-50/60 shadow-xs">
-            <h2 class="font-label text-2xl uppercase tracking-widest text-green-950 border-b border-green-800/30 pb-2 mb-4 font-bold flex items-center gap-2">
-              <Icon name="dice" class="size-7" /> <span>Confirmed Upcoming Sessions ({confirmedUpcomingSessions.length})</span>
-            </h2>
+          <section class="gap-8 flex flex-col">
+            <SectionHeading title="Upcoming" />
             <div class="space-y-4">
               {confirmedUpcomingSessions.map((sess) => (
                 <SessionCard
@@ -158,10 +156,8 @@ if (sessionIds.length > 0) {
         )}
 
         <!-- 2. OPEN SESSIONS SECTION (M3 / M4) -->
-        <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
-          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 font-bold flex items-center gap-2">
-            <Icon name="swords" class="size-7" /> <span>Open Session Polls ({openSessions.length})</span>
-          </h2>
+        <section class="gap-8 flex flex-col">
+          <SectionHeading title="Candidates" />
 
           {openSessions.length > 0 ? (
             <div class="space-y-4">
@@ -177,8 +173,8 @@ if (sessionIds.length > 0) {
               ))}
             </div>
           ) : (
-            <div class="border-2 border-dashed border-ink-primary/40 p-8 text-center rounded-md bg-transparent flex flex-col items-center">
-              <Icon name="dice" class="size-12 text-ink-primary mb-2" />
+            <div class="text-center rounded-md flex flex-col items-center">
+              <Icon name="dice" class="size-12 text-ink-primary" />
               <h3 class="font-label text-lg uppercase tracking-wider text-ink-primary font-bold mb-1">
                 No Open Polls Right Now
               </h3>
@@ -190,84 +186,80 @@ if (sessionIds.length > 0) {
         </section>
 
         <!-- 3. CAMPAIGN ROSTER & USER LINKING (M3 Task 5) -->
-        <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-ink-primary/40 pb-2 mb-4 gap-2">
-            <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary font-bold m-0 flex items-center gap-2">
-              <Icon name="castle" class="size-7" /> <span>Campaign Roster ({players.length})</span>
-            </h2>
+        <section class="gap-8 flex flex-col">
+          <SectionHeading title="Players" />
+          <div class="flex flex-col">
             {user && (
               <span class="font-serif text-xs text-ink-primary/80 italic">
                 {linkedPlayer ? `Linked to ${linkedPlayer.name}` : "Signed in — click 'Is this you?' to link your character"}
               </span>
             )}
-          </div>
 
-          {players.length > 0 ? (
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {players.map((player) => {
-                const isLinkedToMe = user && player.user_id === user.id;
-                const isUnlinked = !player.user_id;
+            {players.length > 0 ? (
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {players.map((player) => {
+                  const isLinkedToMe = user && player.user_id === user.id;
+                  const isUnlinked = !player.user_id;
 
-                return (
-                  <div class={`p-3.5 border-2 rounded bg-parchment-base flex flex-col justify-between gap-2 shadow-xs ${
-                    isLinkedToMe ? "border-ink-primary bg-ink-primary/5" : "border-ink-primary/40"
-                  }`}>
-                    <div class="flex items-center justify-between gap-2">
-                      <span class="font-serif text-base font-bold text-ink-primary flex items-center gap-1.5">
-                        <Icon name="swords" class="size-4" /> {player.name}
-                      </span>
-                      {isLinkedToMe && (
-                        <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-ink-primary text-parchment-base rounded font-bold">
-                          You
+                  return (
+                    <div class={`p-3.5 border-button border-2 rounded flex flex-col justify-between gap-2 ${
+                      isLinkedToMe ? "border-ink-primary bg-ink-primary/5" : "border-ink-primary/40"
+                    }`}>
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="font-serif text-base font-bold text-ink-primary flex items-center gap-1.5">
+                          <Icon name="swords" class="size-4" /> {player.name}
                         </span>
+                        {isLinkedToMe && (
+                          <span class="font-label text-[10px] uppercase tracking-wider px-2 py-0.5 bg-ink-primary text-parchment-base rounded font-bold">
+                            You
+                          </span>
+                        )}
+                      </div>
+
+                      <!-- User Link Affordance -->
+                      {user && (
+                        <div class="pt-1 border-t border-ink-primary/20 flex items-center justify-between text-xs">
+                          {isLinkedToMe ? (
+                            <form method="POST" action={actions.unlinkPlayerFromUser} class="w-full text-right">
+                              <input type="hidden" name="playerId" value={player.id} />
+                              <button
+                                type="submit"
+                                class="text-[11px] font-label uppercase tracking-wider text-ink-primary/60 hover:text-rust-ink underline cursor-pointer"
+                              >
+                                Unlink Account
+                              </button>
+                            </form>
+                          ) : isUnlinked && !linkedPlayer ? (
+                            <form method="POST" action={actions.linkPlayerToUser} class="w-full flex items-center justify-between">
+                              <span class="font-serif text-[11px] text-ink-primary/60 italic">Unlinked</span>
+                              <input type="hidden" name="playerId" value={player.id} />
+                              <button
+                                type="submit"
+                                class="border-button border border-ink-primary bg-parchment-secondary px-2.5 py-0.5 font-label uppercase text-[10px] tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold cursor-pointer"
+                              >
+                                Is this you?
+                              </button>
+                            </form>
+                          ) : player.user_id ? (
+                            <span class="font-serif text-[11px] text-ink-primary/50 italic">Linked to user</span>
+                          ) : null}
+                        </div>
                       )}
                     </div>
-
-                    <!-- User Link Affordance -->
-                    {user && (
-                      <div class="pt-1 border-t border-ink-primary/20 flex items-center justify-between text-xs">
-                        {isLinkedToMe ? (
-                          <form method="POST" action={actions.unlinkPlayerFromUser} class="w-full text-right">
-                            <input type="hidden" name="playerId" value={player.id} />
-                            <button
-                              type="submit"
-                              class="text-[11px] font-label uppercase tracking-wider text-ink-primary/60 hover:text-rust-ink underline cursor-pointer"
-                            >
-                              Unlink Account
-                            </button>
-                          </form>
-                        ) : isUnlinked && !linkedPlayer ? (
-                          <form method="POST" action={actions.linkPlayerToUser} class="w-full flex items-center justify-between">
-                            <span class="font-serif text-[11px] text-ink-primary/60 italic">Unlinked</span>
-                            <input type="hidden" name="playerId" value={player.id} />
-                            <button
-                              type="submit"
-                              class="border-button border border-ink-primary bg-parchment-secondary px-2.5 py-0.5 font-label uppercase text-[10px] tracking-wider text-ink-primary hover:bg-ink-primary hover:text-parchment-base font-bold cursor-pointer"
-                            >
-                              Is this you?
-                            </button>
-                          </form>
-                        ) : player.user_id ? (
-                          <span class="font-serif text-[11px] text-ink-primary/50 italic">Linked to user</span>
-                        ) : null}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <p class="font-serif italic text-sm text-ink-primary/70 text-center py-4 border border-dashed border-ink-primary/30 rounded">
-              No players registered in the roster yet.
-            </p>
-          )}
+                  );
+                })}
+              </div>
+            ) : (
+              <p class="font-serif italic text-sm text-ink-primary/70 text-center">
+                No players registered in the roster yet.
+              </p>
+            )}
+          </div>
         </section>
 
         <!-- 4. SESSION HISTORY (M4 Task 3) -->
-        <section class="border-2 border-ink-primary p-6 rounded-md bg-parchment-secondary/20">
-          <h2 class="font-label text-2xl uppercase tracking-widest text-ink-primary border-b border-ink-primary/40 pb-2 mb-4 font-bold flex items-center gap-2">
-            <Icon name="scroll" class="size-7" /> <span>Past & Closed Session History ({historySessions.length})</span>
-          </h2>
+        <section class="gap-8 flex flex-col">
+          <SectionHeading title="History" />
 
           {historySessions.length > 0 ? (
             <div class="space-y-3">
@@ -283,7 +275,7 @@ if (sessionIds.length > 0) {
               ))}
             </div>
           ) : (
-            <p class="font-serif italic text-sm text-ink-primary/70 text-center py-4 border border-dashed border-ink-primary/30 rounded">
+            <p class="font-serif italic text-sm text-ink-primary/70 text-center min-h-24 flex items-center justify-center">
               No past or closed sessions in history.
             </p>
           )}
