@@ -57,7 +57,7 @@ const { data: sessionsList } = await supabase
   .from("sessions")
   .select("*")
   .eq("group_id", group.id)
-  .order("week_start", { ascending: false });
+  .order("week_start", { ascending: true });
 
 const sessions = sessionsList || [];
 const currentMonday = weekStart();
