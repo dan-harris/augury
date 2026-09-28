@@ -104,11 +104,11 @@ const publicUrl = `/g/${groupSlug}/${session.id}`;
       <div class="flex flex-wrap items-center gap-3 text-xs font-serif">
         {viableDays.length > 0 ? (
           <span class="font-label uppercase tracking-wider text-[11px] text-ink-primary bg-sage-paper px-2 py-0.5 rounded font-bold">
-            ✓ Viable: {viableDays.map((d) => getDayShortName(d)).join(", ")}
+            Viable: {viableDays.map((d) => getDayShortName(d)).join(", ")}
           </span>
         ) : (
           <span class="font-label uppercase tracking-wider text-[11px] text-rust-ink bg-rust-paper/60 px-2 py-0.5 rounded font-bold">
-            ○ No Viable Days Yet
+            No Viable Days Yet
           </span>
         )}
       </div>

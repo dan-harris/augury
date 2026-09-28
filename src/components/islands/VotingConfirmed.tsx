@@ -45,6 +45,8 @@ export function VotingConfirmed({
                 isSelected={isSelected}
                 disabled={dayIndex !== confirmedDay}
                 availablePlayersText={availablePlayersText}
+                voteCount={availablePlayers.length}
+                totalPlayers={players.length}
               />
             );
           })}

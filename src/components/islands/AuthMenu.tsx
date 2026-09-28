@@ -54,9 +54,6 @@ export function AuthMenu({ userEmail }: AuthMenuProps) {
           href="/admin"
           className="text-xs font-serif text-ink-primary transition-opacity hover:opacity-80 focus:outline-none"
         >
-          <span className="hidden sm:inline font-label uppercase tracking-wider text-[11px] opacity-70 me-1">
-            Keeper:
-          </span>
           <span className="font-semibold underline underline-offset-4 decoration-ink-primary/40">
             {userEmail}
           </span>
@@ -77,7 +74,7 @@ export function AuthMenu({ userEmail }: AuthMenuProps) {
   if (submitted) {
     return (
       <div className="flex items-center gap-2 rounded border border-ink-primary/40 bg-parchment-secondary px-3 py-1.5 text-xs font-serif text-ink-primary">
-        <span>✓ Check your ledger inbox for the magic link!</span>
+        <span>Check your inbox for the magic link</span>
       </div>
     );
   }

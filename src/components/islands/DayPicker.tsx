@@ -32,13 +32,13 @@ export function DayPicker({
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
         {candidateDays.map((dayIndex) => {
           const isSelected = selectedDays.includes(dayIndex);
-          const availablePlayersText = players
-            .filter((player) => {
-              if (player.id === selectedPlayerId) {
-                return selectedDays.includes(dayIndex);
-              }
-              return (playerVotesMap[player.id] || []).includes(dayIndex);
-            })
+          const availablePlayers = players.filter((player) => {
+            if (player.id === selectedPlayerId) {
+              return selectedDays.includes(dayIndex);
+            }
+            return (playerVotesMap[player.id] || []).includes(dayIndex);
+          });
+          const availablePlayersText = availablePlayers
             .map((player) => player.name)
             .join(", ");
 
@@ -51,6 +51,8 @@ export function DayPicker({
               disabled={disabled}
               onClick={() => onToggleDay(dayIndex)}
               availablePlayersText={availablePlayersText}
+              voteCount={availablePlayers.length}
+              totalPlayers={players.length}
             />
           );
         })}
