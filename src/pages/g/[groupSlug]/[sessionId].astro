@@ -1,8 +1,8 @@
 ---
 import { actions } from "astro:actions";
 import Icon from "../../../components/Icon.astro";
-import { VotingForm } from "../../../components/islands/VotingForm";
 import { VotingConfirmed } from "../../../components/islands/VotingConfirmed";
+import { VotingForm } from "../../../components/islands/VotingForm";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
 import {
@@ -184,19 +184,30 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
                 )
               }
               {
-                session.status !== "closed" && viableDays.length > 0 && (
+                session.status === "confirmed" && (
                   <span class="font-label uppercase tracking-wider text-[11px] text-ink-primary bg-sage-paper px-2 py-0.5 rounded font-bold">
-                    ✓ Viable:{" "}
-                    {viableDays.map((d) => getDayShortName(d)).join(", ")}
+                    Confirmed
                   </span>
                 )
               }
               {
-                session.status !== "closed" && viableDays.length === 0 && (
-                  <span class="font-label uppercase tracking-wider text-[11px] text-rust-ink bg-rust-paper/60 px-2 py-0.5 rounded font-bold">
-                    ○ No Viable Days Yet
-                  </span>
-                )
+                session.status !== "closed" &&
+                  session.status !== "confirmed" &&
+                  viableDays.length > 0 && (
+                    <span class="font-label uppercase tracking-wider text-[11px] text-ink-primary bg-sage-paper px-2 py-0.5 rounded font-bold">
+                      ✓ Viable:{" "}
+                      {viableDays.map((d) => getDayShortName(d)).join(", ")}
+                    </span>
+                  )
+              }
+              {
+                session.status !== "closed" &&
+                  session.status !== "confirmed" &&
+                  viableDays.length === 0 && (
+                    <span class="font-label uppercase tracking-wider text-[11px] text-rust-ink bg-rust-paper/60 px-2 py-0.5 rounded font-bold">
+                      ○ No Viable Days Yet
+                    </span>
+                  )
               }
             </div>
           </div>
