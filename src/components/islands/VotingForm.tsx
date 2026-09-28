@@ -146,6 +146,9 @@ export function VotingForm({
           selectedDays={selectedDays}
           onToggleDay={handleToggleDay}
           disabled={!selectedPlayerId || isSubmitting}
+          players={players}
+          playerVotesMap={playerVotesMap}
+          selectedPlayerId={selectedPlayerId}
         />
 
         {/* Submit Button */}
