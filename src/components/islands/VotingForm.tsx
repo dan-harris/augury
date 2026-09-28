@@ -2,6 +2,7 @@ import { actions } from "astro:actions";
 import { useState } from "preact/hooks";
 import { Icon } from "../Icon";
 import { SectionHeading } from "../SectionHeading";
+import { DayCard } from "./DayCard";
 import { DayPicker } from "./DayPicker";
 import { PlayerPicker } from "./PlayerPicker";
 
@@ -140,16 +141,34 @@ export function VotingForm({
         <SectionHeading title="Availability" />
 
         {/* 2. Day Picker */}
-        <DayPicker
-          weekStart={weekStart}
-          candidateDays={candidateDays}
-          selectedDays={selectedDays}
-          onToggleDay={handleToggleDay}
-          disabled={!selectedPlayerId || isSubmitting}
-          players={players}
-          playerVotesMap={playerVotesMap}
-          selectedPlayerId={selectedPlayerId}
-        />
+        <div class="space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            {candidateDays.map((dayIndex) => {
+              const isSelected = selectedDays.includes(dayIndex);
+              const availablePlayersText = players
+                .filter((player) => {
+                  if (player.id === selectedPlayerId) {
+                    return selectedDays.includes(dayIndex);
+                  }
+                  return (playerVotesMap[player.id] || []).includes(dayIndex);
+                })
+                .map((player) => player.name)
+                .join(", ");
+
+              return (
+                <DayCard
+                  key={dayIndex}
+                  dayIndex={dayIndex}
+                  weekStart={weekStart}
+                  isSelected={isSelected}
+                  disabled={!selectedPlayerId || isSubmitting}
+                  onClick={() => handleToggleDay(dayIndex)}
+                  availablePlayersText={availablePlayersText}
+                />
+              );
+            })}
+          </div>
+        </div>
 
         {/* Submit Button */}
         <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">

@@ -2,6 +2,7 @@
 import { actions } from "astro:actions";
 import Icon from "../../../components/Icon.astro";
 import { VotingForm } from "../../../components/islands/VotingForm";
+import { VotingConfirmed } from "../../../components/islands/VotingConfirmed";
 import Layout from "../../../layouts/Layout.astro";
 import { composeSlug, parseSlugId } from "../../../lib/slugs";
 import {
@@ -166,7 +167,13 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
             <h1
               class="font-gothic text-4xl sm:text-5xl text-ink-primary m-0 leading-none"
             >
-              {weekLabel}
+              {
+                session.status === "confirmed" &&
+                session.confirmed_day !== null &&
+                session.confirmed_day !== undefined
+                  ? formatDayDate(session.week_start, session.confirmed_day)
+                  : weekLabel
+              }
             </h1>
             <div>
               {
@@ -276,7 +283,7 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
       }
 
       <div>
-        <!-- 1. Voting Form (If Session is Open) -->
+        {/* 1. Voting Form (If Session is Open) */}
         {
           session.status === "open" && (
             <VotingForm
@@ -288,6 +295,17 @@ const bestDay = getBestDay(tallies, group.viability_threshold);
               playerVotesMap={playerVotesMap}
               votedPlayerIds={votedPlayerIds}
               linkedPlayerId={linkedPlayerId}
+            />
+          )
+        }
+        {
+          session.status !== "open" && (
+            <VotingConfirmed
+              weekStart={session.week_start}
+              candidateDays={session.candidate_days}
+              confirmedDay={session.confirmed_day}
+              players={players}
+              playerVotesMap={playerVotesMap}
             />
           )
         }
